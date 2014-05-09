@@ -26,4 +26,5 @@ void SPI_MasterTransmit(char cData)
 	
 	USART_Transmit(cData >> 8);
 	USART_Transmit(cData);
+	
 }
