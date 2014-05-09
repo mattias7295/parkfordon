@@ -12,7 +12,7 @@
 #include "adc.h"
 #include "pwm.h"
 #include "spi.h"
-
+#include "twi.h"
 int main(void)
 {
 	USART_Init(MYUBRR);
