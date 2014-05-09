@@ -35,7 +35,9 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../fordon.c
+../adc.c \
+../fordon.c \
+../usart.c
 
 
 PREPROCESSING_SRCS += 
@@ -45,19 +47,27 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-fordon.o
+adc.o \
+fordon.o \
+usart.o
 
 
 OBJS_AS_ARGS +=  \
-fordon.o
+adc.o \
+fordon.o \
+usart.o
 
 
 C_DEPS +=  \
-fordon.d
+adc.d \
+fordon.d \
+usart.d
 
 
 C_DEPS_AS_ARGS +=  \
-fordon.d
+adc.d \
+fordon.d \
+usart.d
 
 
 OUTPUT_FILE_PATH +=fordon.elf
@@ -69,6 +79,10 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 
