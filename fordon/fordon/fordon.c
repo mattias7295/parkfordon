@@ -10,6 +10,7 @@
 #include <util/delay.h>
 #include "usart.h"
 #include "adc.h"
+#include "pwm.h"
 
 int main(void)
 {
