@@ -3,9 +3,9 @@ fordon.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  000001be  00000232  2**0
+  0 .data         00000000  00800100  000001c0  00000234  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         000001be  00000000  00000000  00000074  2**1
+  1 .text         000001c0  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   2 .stab         000006cc  00000000  00000000  00000234  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -13,17 +13,17 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   4 .debug_aranges 00000100  00000000  00000000  00000988  2**3
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   000006ee  00000000  00000000  00000a88  2**0
+  5 .debug_info   000006f0  00000000  00000000  00000a88  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000002f1  00000000  00000000  00001176  2**0
+  6 .debug_abbrev 000002f1  00000000  00000000  00001178  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000006b9  00000000  00000000  00001467  2**0
+  7 .debug_line   000006ba  00000000  00000000  00001469  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000134  00000000  00000000  00001b20  2**2
+  8 .debug_frame  00000134  00000000  00000000  00001b24  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000001e9  00000000  00000000  00001c54  2**0
+  9 .debug_str    000001f2  00000000  00000000  00001c58  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000002b  00000000  00000000  00001e3d  2**0
+ 10 .debug_loc    0000003e  00000000  00000000  00001e4a  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -77,7 +77,7 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	ee eb       	ldi	r30, 0xBE	; 190
+  9e:	e0 ec       	ldi	r30, 0xC0	; 192
   a0:	f1 e0       	ldi	r31, 0x01	; 1
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
@@ -103,7 +103,7 @@ Disassembly of section .text:
   c0:	b1 07       	cpc	r27, r17
   c2:	e1 f7       	brne	.-8      	; 0xbc <.do_clear_bss_loop>
   c4:	0e 94 86 00 	call	0x10c	; 0x10c <main>
-  c8:	0c 94 dd 00 	jmp	0x1ba	; 0x1ba <_exit>
+  c8:	0c 94 de 00 	jmp	0x1bc	; 0x1bc <_exit>
 
 000000cc <__bad_interrupt>:
   cc:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -163,15 +163,15 @@ uint8_t adc_read(uint8_t adcx) {
  10a:	08 95       	ret
 
 0000010c <main>:
-#include "adc.h"
 #include "pwm.h"
+#include "spi.h"
 
 int main(void)
 {
 	USART_Init(MYUBRR);
  10c:	8c e0       	ldi	r24, 0x0C	; 12
  10e:	90 e0       	ldi	r25, 0x00	; 0
- 110:	0e 94 c1 00 	call	0x182	; 0x182 <USART_Init>
+ 110:	0e 94 c2 00 	call	0x184	; 0x184 <USART_Init>
 	adc_init();
  114:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_init>
     while(1)
@@ -179,7 +179,7 @@ int main(void)
 		USART_Transmit(adc_read(ADC_PIN));
  118:	80 e0       	ldi	r24, 0x00	; 0
  11a:	0e 94 6e 00 	call	0xdc	; 0xdc <adc_read>
- 11e:	0e 94 cd 00 	call	0x19a	; 0x19a <USART_Transmit>
+ 11e:	0e 94 ce 00 	call	0x19c	; 0x19c <USART_Transmit>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
@@ -292,69 +292,71 @@ void SPI_MasterTransmit(char cData)
  17c:	07 fe       	sbrs	r0, 7
  17e:	fd cf       	rjmp	.-6      	; 0x17a <SPI_MasterTransmit+0x2>
 	;
- 180:	08 95       	ret
+	cData = SPDR;
+ 180:	8e b5       	in	r24, 0x2e	; 46
+ 182:	08 95       	ret
 
-00000182 <USART_Init>:
+00000184 <USART_Init>:
 
 #include "usart.h"
 
 void USART_Init( unsigned int baud )
 {
 	DDRD |= (1<<PD1);
- 182:	51 9a       	sbi	0x0a, 1	; 10
+ 184:	51 9a       	sbi	0x0a, 1	; 10
 	/* Set baud rate */
 	UBRR0H = (unsigned char)(baud>>8);
- 184:	90 93 c5 00 	sts	0x00C5, r25
+ 186:	90 93 c5 00 	sts	0x00C5, r25
 	UBRR0L = (unsigned char)baud;
- 188:	80 93 c4 00 	sts	0x00C4, r24
+ 18a:	80 93 c4 00 	sts	0x00C4, r24
 	/* Enable receiver and transmitter */
 	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
- 18c:	88 e1       	ldi	r24, 0x18	; 24
- 18e:	80 93 c1 00 	sts	0x00C1, r24
+ 18e:	88 e1       	ldi	r24, 0x18	; 24
+ 190:	80 93 c1 00 	sts	0x00C1, r24
 	/* Set frame format: 8data, 2stop bit */
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
- 192:	8e e0       	ldi	r24, 0x0E	; 14
- 194:	80 93 c2 00 	sts	0x00C2, r24
+ 194:	8e e0       	ldi	r24, 0x0E	; 14
+ 196:	80 93 c2 00 	sts	0x00C2, r24
 }
- 198:	08 95       	ret
+ 19a:	08 95       	ret
 
-0000019a <USART_Transmit>:
+0000019c <USART_Transmit>:
 
 void USART_Transmit( uint8_t data )
 {
 	/* Wait for empty transmit buffer */
 	while ( !( UCSR0A & (1<<UDRE0)) )
- 19a:	e0 ec       	ldi	r30, 0xC0	; 192
- 19c:	f0 e0       	ldi	r31, 0x00	; 0
- 19e:	90 81       	ld	r25, Z
- 1a0:	95 ff       	sbrs	r25, 5
- 1a2:	fd cf       	rjmp	.-6      	; 0x19e <USART_Transmit+0x4>
+ 19c:	e0 ec       	ldi	r30, 0xC0	; 192
+ 19e:	f0 e0       	ldi	r31, 0x00	; 0
+ 1a0:	90 81       	ld	r25, Z
+ 1a2:	95 ff       	sbrs	r25, 5
+ 1a4:	fd cf       	rjmp	.-6      	; 0x1a0 <USART_Transmit+0x4>
 	;
 	/* Put data into buffer, sends the data */
 	UDR0 = data;
- 1a4:	80 93 c6 00 	sts	0x00C6, r24
+ 1a6:	80 93 c6 00 	sts	0x00C6, r24
 }
- 1a8:	08 95       	ret
+ 1aa:	08 95       	ret
 
-000001aa <USART_Receive>:
+000001ac <USART_Receive>:
 
 unsigned char USART_Receive( void )
 {
 	/* Wait for data to be received */
 	while ( !(UCSR0A & (1<<RXC0)) )
- 1aa:	e0 ec       	ldi	r30, 0xC0	; 192
- 1ac:	f0 e0       	ldi	r31, 0x00	; 0
- 1ae:	80 81       	ld	r24, Z
- 1b0:	88 23       	and	r24, r24
- 1b2:	ec f7       	brge	.-6      	; 0x1ae <USART_Receive+0x4>
+ 1ac:	e0 ec       	ldi	r30, 0xC0	; 192
+ 1ae:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b0:	80 81       	ld	r24, Z
+ 1b2:	88 23       	and	r24, r24
+ 1b4:	ec f7       	brge	.-6      	; 0x1b0 <USART_Receive+0x4>
 	;
 	/* Get and return received data from buffer */
 	return UDR0;
- 1b4:	80 91 c6 00 	lds	r24, 0x00C6
- 1b8:	08 95       	ret
+ 1b6:	80 91 c6 00 	lds	r24, 0x00C6
+ 1ba:	08 95       	ret
 
-000001ba <_exit>:
- 1ba:	f8 94       	cli
+000001bc <_exit>:
+ 1bc:	f8 94       	cli
 
-000001bc <__stop_program>:
- 1bc:	ff cf       	rjmp	.-2      	; 0x1bc <__stop_program>
+000001be <__stop_program>:
+ 1be:	ff cf       	rjmp	.-2      	; 0x1be <__stop_program>

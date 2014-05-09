@@ -16,10 +16,11 @@
 int main(void)
 {
 	USART_Init(MYUBRR);
+	SPI_MasterInit();
 	adc_init();
     while(1)
     {
-		USART_Transmit(adc_read(ADC_PIN));
+		USART_Transmit();
 		_delay_ms(100);
         
     }
