@@ -1,19 +1,15 @@
 /*
  * fordon.c
  *
- * Created: 2014-05-08 16:13:26
- *  Author: Mattias
+ * Created: 2014-05-09 09:20:07
+ *  Author: masc0058
  */ 
 
-#include <avr/io.h>
-#include "usart.h"
 
+#include <avr/io.h>
 
 int main(void)
 {
-	// Init USART
-	USART_Init(MYUBRR);
-	
     while(1)
     {
         //TODO:: Please write your application code 

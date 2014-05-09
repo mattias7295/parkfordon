@@ -1,8 +1,8 @@
 /*
  * kontroll.c
  *
- * Created: 2014-05-08 16:14:54
- *  Author: Rymdleffe
+ * Created: 2014-05-09 09:20:57
+ *  Author: masc0058
  */ 
 
 
