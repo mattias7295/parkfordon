@@ -1,27 +1,6 @@
-# Object files
-*.o
-*.ko
-*.obj
-*.elf
+# Debug files
+fordon/fordon/Debug/
 
-# Libraries
-*.lib
-*.a
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
-*.i*86
-*.x86_64
-*.hex
-*.atsuo
 
 # Ignore specific files here
 fordon/fordon.atsuo
