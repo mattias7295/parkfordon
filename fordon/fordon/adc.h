@@ -11,7 +11,7 @@
 
 #include <avr/io.h>
 
-#define ADC_PIN			5
+#define ADC_PIN			0
 
 void adc_init();
 

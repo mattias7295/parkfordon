@@ -7,11 +7,18 @@
 
 
 #include <avr/io.h>
+#include <util/delay.h>
+#include "usart.h"
+#include "adc.h"
 
 int main(void)
 {
+	USART_Init(MYUBRR);
+	adc_init();
     while(1)
     {
-        //TODO:: Please write your application code 
+		USART_Transmit(adc_read(ADC_PIN));
+		_delay_ms(100);
+        
     }
 }

@@ -14,7 +14,7 @@
 #define MYUBRR 12
 
 void USART_Init( unsigned int baud );
-void USART_Transmit( unsigned char data );
+void USART_Transmit( uint8_t data );
 unsigned char USART_Receive( void );
 
 

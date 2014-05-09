@@ -9,6 +9,7 @@
 
 void USART_Init( unsigned int baud )
 {
+	DDRD |= (1<<PD1);
 	/* Set baud rate */
 	UBRR0H = (unsigned char)(baud>>8);
 	UBRR0L = (unsigned char)baud;
@@ -18,7 +19,7 @@ void USART_Init( unsigned int baud )
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
 }
 
-void USART_Transmit( unsigned char data )
+void USART_Transmit( uint8_t data )
 {
 	/* Wait for empty transmit buffer */
 	while ( !( UCSR0A & (1<<UDRE0)) )
