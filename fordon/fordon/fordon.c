@@ -21,7 +21,7 @@ int main(void)
 	char cdata;
     while(1)
     {
-		SPI_MasterTransmit(41);
+		SPI_MasterTransmit(0x41);
 		_delay_ms(100);
         
     }
