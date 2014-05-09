@@ -3,27 +3,27 @@ fordon.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  0000028a  000002fe  2**0
+  0 .data         00000000  00800100  0000027c  000002f0  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         0000028a  00000000  00000000  00000074  2**1
+  1 .text         0000027c  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  00000300  2**2
+  2 .stab         000006cc  00000000  00000000  000002f0  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000085  00000000  00000000  000009cc  2**0
+  3 .stabstr      00000085  00000000  00000000  000009bc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_aranges 00000120  00000000  00000000  00000a58  2**3
+  4 .debug_aranges 00000120  00000000  00000000  00000a48  2**3
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000854  00000000  00000000  00000b78  2**0
+  5 .debug_info   00000854  00000000  00000000  00000b68  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000003ee  00000000  00000000  000013cc  2**0
+  6 .debug_abbrev 000003ee  00000000  00000000  000013bc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   0000085c  00000000  00000000  000017ba  2**0
+  7 .debug_line   0000087b  00000000  00000000  000017aa  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000174  00000000  00000000  00002018  2**2
+  8 .debug_frame  00000160  00000000  00000000  00002028  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000211  00000000  00000000  0000218c  2**0
+  9 .debug_str    00000211  00000000  00000000  00002188  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000000da  00000000  00000000  0000239d  2**0
+ 10 .debug_loc    00000091  00000000  00000000  00002399  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -77,7 +77,7 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	ea e8       	ldi	r30, 0x8A	; 138
+  9e:	ec e7       	ldi	r30, 0x7C	; 124
   a0:	f2 e0       	ldi	r31, 0x02	; 2
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
@@ -103,7 +103,7 @@ Disassembly of section .text:
   c0:	b1 07       	cpc	r27, r17
   c2:	e1 f7       	brne	.-8      	; 0xbc <.do_clear_bss_loop>
   c4:	0e 94 86 00 	call	0x10c	; 0x10c <main>
-  c8:	0c 94 43 01 	jmp	0x286	; 0x286 <_exit>
+  c8:	0c 94 3c 01 	jmp	0x278	; 0x278 <_exit>
 
 000000cc <__bad_interrupt>:
   cc:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -171,15 +171,15 @@ int main(void)
 	USART_Init(MYUBRR);
  10c:	8c e0       	ldi	r24, 0x0C	; 12
  10e:	90 e0       	ldi	r25, 0x00	; 0
- 110:	0e 94 27 01 	call	0x24e	; 0x24e <USART_Init>
-	SPI_MasterInit();
- 114:	0e 94 b7 00 	call	0x16e	; 0x16e <SPI_MasterInit>
+ 110:	0e 94 20 01 	call	0x240	; 0x240 <USART_Init>
 	adc_init();
- 118:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_init>
+ 114:	0e 94 b7 00 	call	0x16e	; 0x16e <SPI_MasterInit>
 	char cdata;
+ 118:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_init>
+	twi_init();
     while(1)
     {
-		SPI_MasterTransmit(0x41);
+		compas_update();
  11c:	81 e4       	ldi	r24, 0x41	; 65
  11e:	0e 94 bc 00 	call	0x178	; 0x178 <SPI_MasterTransmit>
 	#else
@@ -301,238 +301,196 @@ void SPI_MasterTransmit(char cData)
 	USART_Transmit(cData >> 8);
  184:	80 e0       	ldi	r24, 0x00	; 0
  186:	90 e0       	ldi	r25, 0x00	; 0
- 188:	0e 94 33 01 	call	0x266	; 0x266 <USART_Transmit>
+ 188:	0e 94 2c 01 	call	0x258	; 0x258 <USART_Transmit>
 	USART_Transmit(cData);
  18c:	8c 2f       	mov	r24, r28
  18e:	90 e0       	ldi	r25, 0x00	; 0
- 190:	0e 94 33 01 	call	0x266	; 0x266 <USART_Transmit>
+ 190:	0e 94 2c 01 	call	0x258	; 0x258 <USART_Transmit>
 	
  194:	cf 91       	pop	r28
  196:	08 95       	ret
 
 00000198 <compas_update>:
-#include "twi.h"
-#include <util/delay.h>
 #include "usart.h"
 
 void compas_update()
 {
- 198:	0f 93       	push	r16
- 19a:	1f 93       	push	r17
- 19c:	cf 93       	push	r28
- 19e:	df 93       	push	r29
 	//Start
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
- 1a0:	84 ea       	ldi	r24, 0xA4	; 164
- 1a2:	80 93 bc 00 	sts	0x00BC, r24
+ 198:	84 ea       	ldi	r24, 0xA4	; 164
+ 19a:	80 93 bc 00 	sts	0x00BC, r24
 	while (!(TWCR & (1<<TWINT)));
- 1a6:	ec eb       	ldi	r30, 0xBC	; 188
- 1a8:	f0 e0       	ldi	r31, 0x00	; 0
- 1aa:	80 81       	ld	r24, Z
- 1ac:	88 23       	and	r24, r24
- 1ae:	ec f7       	brge	.-6      	; 0x1aa <compas_update+0x12>
+ 19e:	ec eb       	ldi	r30, 0xBC	; 188
+ 1a0:	f0 e0       	ldi	r31, 0x00	; 0
+ 1a2:	80 81       	ld	r24, Z
+ 1a4:	88 23       	and	r24, r24
+ 1a6:	ec f7       	brge	.-6      	; 0x1a2 <compas_update+0xa>
 	
 	
 	//Send address
 	TWDR = 0x42;
- 1b0:	82 e4       	ldi	r24, 0x42	; 66
- 1b2:	80 93 bb 00 	sts	0x00BB, r24
+ 1a8:	82 e4       	ldi	r24, 0x42	; 66
+ 1aa:	80 93 bb 00 	sts	0x00BB, r24
 	TWCR = (1<<TWINT) | (1<<TWEN);
- 1b6:	ec eb       	ldi	r30, 0xBC	; 188
- 1b8:	f0 e0       	ldi	r31, 0x00	; 0
- 1ba:	84 e8       	ldi	r24, 0x84	; 132
- 1bc:	80 83       	st	Z, r24
-	while (!(TWCR & (1<<TWINT)))
- 1be:	80 81       	ld	r24, Z
- 1c0:	88 23       	and	r24, r24
- 1c2:	3c f0       	brlt	.+14     	; 0x1d2 <compas_update+0x3a>
+ 1ae:	84 e8       	ldi	r24, 0x84	; 132
+ 1b0:	80 93 bc 00 	sts	0x00BC, r24
+	while (!(TWCR & (1<<TWINT)));
+ 1b4:	ec eb       	ldi	r30, 0xBC	; 188
+ 1b6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1b8:	80 81       	ld	r24, Z
+ 1ba:	88 23       	and	r24, r24
+ 1bc:	ec f7       	brge	.-6      	; 0x1b8 <compas_update+0x20>
 	
 	
 	//Send Data
 	TWDR = 0x41;
- 1c4:	ab eb       	ldi	r26, 0xBB	; 187
- 1c6:	b0 e0       	ldi	r27, 0x00	; 0
- 1c8:	91 e4       	ldi	r25, 0x41	; 65
- 1ca:	9c 93       	st	X, r25
-	
-	
-	//Send address
-	TWDR = 0x42;
+ 1be:	81 e4       	ldi	r24, 0x41	; 65
+ 1c0:	80 93 bb 00 	sts	0x00BB, r24
 	TWCR = (1<<TWINT) | (1<<TWEN);
-	while (!(TWCR & (1<<TWINT)))
- 1cc:	80 81       	ld	r24, Z
- 1ce:	88 23       	and	r24, r24
- 1d0:	e4 f7       	brge	.-8      	; 0x1ca <compas_update+0x32>
-	
-	
-	//Send Data
-	TWDR = 0x41;
-	TWCR = (1<<TWINT) | (1<<TWEN);
- 1d2:	ec eb       	ldi	r30, 0xBC	; 188
- 1d4:	f0 e0       	ldi	r31, 0x00	; 0
- 1d6:	84 e8       	ldi	r24, 0x84	; 132
- 1d8:	80 83       	st	Z, r24
-	while (!(TWCR & (1<<TWINT)))
- 1da:	80 81       	ld	r24, Z
- 1dc:	88 23       	and	r24, r24
- 1de:	2c f0       	brlt	.+10     	; 0x1ea <compas_update+0x52>
+ 1c4:	84 e8       	ldi	r24, 0x84	; 132
+ 1c6:	80 93 bc 00 	sts	0x00BC, r24
+	while (!(TWCR & (1<<TWINT)));
+ 1ca:	ec eb       	ldi	r30, 0xBC	; 188
+ 1cc:	f0 e0       	ldi	r31, 0x00	; 0
+ 1ce:	80 81       	ld	r24, Z
+ 1d0:	88 23       	and	r24, r24
+ 1d2:	ec f7       	brge	.-6      	; 0x1ce <compas_update+0x36>
 	
 	//Stop
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);	
- 1e0:	94 e9       	ldi	r25, 0x94	; 148
- 1e2:	90 83       	st	Z, r25
-	
-	
-	//Send Data
-	TWDR = 0x41;
-	TWCR = (1<<TWINT) | (1<<TWEN);
-	while (!(TWCR & (1<<TWINT)))
- 1e4:	80 81       	ld	r24, Z
- 1e6:	88 23       	and	r24, r24
- 1e8:	e4 f7       	brge	.-8      	; 0x1e2 <compas_update+0x4a>
- 1ea:	8b e5       	ldi	r24, 0x5B	; 91
- 1ec:	94 e4       	ldi	r25, 0x44	; 68
- 1ee:	01 97       	sbiw	r24, 0x01	; 1
- 1f0:	f1 f7       	brne	.-4      	; 0x1ee <compas_update+0x56>
- 1f2:	00 c0       	rjmp	.+0      	; 0x1f4 <compas_update+0x5c>
- 1f4:	00 00       	nop
-	//Stop
-	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);	
+ 1d4:	ec eb       	ldi	r30, 0xBC	; 188
+ 1d6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1d8:	84 e9       	ldi	r24, 0x94	; 148
+ 1da:	80 83       	st	Z, r24
+ 1dc:	8b e5       	ldi	r24, 0x5B	; 91
+ 1de:	94 e4       	ldi	r25, 0x44	; 68
+ 1e0:	01 97       	sbiw	r24, 0x01	; 1
+ 1e2:	f1 f7       	brne	.-4      	; 0x1e0 <compas_update+0x48>
+ 1e4:	00 c0       	rjmp	.+0      	; 0x1e6 <compas_update+0x4e>
+ 1e6:	00 00       	nop
 	_delay_ms(70);
 	
 	//Start
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
- 1f6:	84 ea       	ldi	r24, 0xA4	; 164
- 1f8:	80 93 bc 00 	sts	0x00BC, r24
+ 1e8:	84 ea       	ldi	r24, 0xA4	; 164
+ 1ea:	80 83       	st	Z, r24
 	while (!(TWCR & (1<<TWINT)));
- 1fc:	ec eb       	ldi	r30, 0xBC	; 188
- 1fe:	f0 e0       	ldi	r31, 0x00	; 0
- 200:	80 81       	ld	r24, Z
- 202:	88 23       	and	r24, r24
- 204:	ec f7       	brge	.-6      	; 0x200 <compas_update+0x68>
+ 1ec:	80 81       	ld	r24, Z
+ 1ee:	88 23       	and	r24, r24
+ 1f0:	ec f7       	brge	.-6      	; 0x1ec <compas_update+0x54>
 	
 	
 	//Send address
 	TWDR = 0x43;
- 206:	83 e4       	ldi	r24, 0x43	; 67
- 208:	80 93 bb 00 	sts	0x00BB, r24
+ 1f2:	83 e4       	ldi	r24, 0x43	; 67
+ 1f4:	80 93 bb 00 	sts	0x00BB, r24
 	TWCR = (1<<TWINT) | (1<<TWEN);
- 20c:	ec eb       	ldi	r30, 0xBC	; 188
- 20e:	f0 e0       	ldi	r31, 0x00	; 0
- 210:	84 e8       	ldi	r24, 0x84	; 132
- 212:	80 83       	st	Z, r24
-	while (!(TWCR & (1<<TWINT)))
- 214:	80 81       	ld	r24, Z
- 216:	88 23       	and	r24, r24
- 218:	2c f0       	brlt	.+10     	; 0x224 <compas_update+0x8c>
+ 1f8:	84 e8       	ldi	r24, 0x84	; 132
+ 1fa:	80 93 bc 00 	sts	0x00BC, r24
+	while (!(TWCR & (1<<TWINT)));
+ 1fe:	ec eb       	ldi	r30, 0xBC	; 188
+ 200:	f0 e0       	ldi	r31, 0x00	; 0
+ 202:	80 81       	ld	r24, Z
+ 204:	88 23       	and	r24, r24
+ 206:	ec f7       	brge	.-6      	; 0x202 <compas_update+0x6a>
 	
 	//Read data
 	TWCR = (1<<TWINT) | (1<<TWEA);
- 21a:	90 ec       	ldi	r25, 0xC0	; 192
- 21c:	90 83       	st	Z, r25
-	
-	
-	//Send address
-	TWDR = 0x43;
-	TWCR = (1<<TWINT) | (1<<TWEN);
-	while (!(TWCR & (1<<TWINT)))
- 21e:	80 81       	ld	r24, Z
- 220:	88 23       	and	r24, r24
- 222:	e4 f7       	brge	.-8      	; 0x21c <compas_update+0x84>
-	
-	//Read data
-	TWCR = (1<<TWINT) | (1<<TWEA);
+ 208:	80 ec       	ldi	r24, 0xC0	; 192
+ 20a:	80 93 bc 00 	sts	0x00BC, r24
+	while (!(TWCR & (1<<TWINT)));
+ 20e:	ec eb       	ldi	r30, 0xBC	; 188
+ 210:	f0 e0       	ldi	r31, 0x00	; 0
+ 212:	80 81       	ld	r24, Z
+ 214:	88 23       	and	r24, r24
+ 216:	ec f7       	brge	.-6      	; 0x212 <compas_update+0x7a>
 	uint8_t  high = TWDR;
- 224:	cb eb       	ldi	r28, 0xBB	; 187
- 226:	d0 e0       	ldi	r29, 0x00	; 0
- 228:	88 81       	ld	r24, Y
+ 218:	80 91 bb 00 	lds	r24, 0x00BB
 	USART_Transmit(high);
- 22a:	0e 94 33 01 	call	0x266	; 0x266 <USART_Transmit>
+ 21c:	0e 94 2c 01 	call	0x258	; 0x258 <USART_Transmit>
 	
 	TWCR = (1<<TWINT);
- 22e:	0c eb       	ldi	r16, 0xBC	; 188
- 230:	10 e0       	ldi	r17, 0x00	; 0
- 232:	80 e8       	ldi	r24, 0x80	; 128
- 234:	f8 01       	movw	r30, r16
- 236:	80 83       	st	Z, r24
+ 220:	80 e8       	ldi	r24, 0x80	; 128
+ 222:	80 93 bc 00 	sts	0x00BC, r24
+	while (!(TWCR & (1<<TWINT)));
+ 226:	ec eb       	ldi	r30, 0xBC	; 188
+ 228:	f0 e0       	ldi	r31, 0x00	; 0
+ 22a:	80 81       	ld	r24, Z
+ 22c:	88 23       	and	r24, r24
+ 22e:	ec f7       	brge	.-6      	; 0x22a <compas_update+0x92>
 	uint8_t low = TWDR;
- 238:	88 81       	ld	r24, Y
+ 230:	80 91 bb 00 	lds	r24, 0x00BB
 	USART_Transmit(low);
- 23a:	0e 94 33 01 	call	0x266	; 0x266 <USART_Transmit>
+ 234:	0e 94 2c 01 	call	0x258	; 0x258 <USART_Transmit>
 	
 	
 	//Stop
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
- 23e:	84 e9       	ldi	r24, 0x94	; 148
- 240:	f8 01       	movw	r30, r16
- 242:	80 83       	st	Z, r24
- 244:	df 91       	pop	r29
- 246:	cf 91       	pop	r28
- 248:	1f 91       	pop	r17
- 24a:	0f 91       	pop	r16
- 24c:	08 95       	ret
+ 238:	84 e9       	ldi	r24, 0x94	; 148
+ 23a:	80 93 bc 00 	sts	0x00BC, r24
+ 23e:	08 95       	ret
 
-0000024e <USART_Init>:
+00000240 <USART_Init>:
 
 #include "usart.h"
 
 void USART_Init( unsigned int baud )
 {
 	DDRD |= (1<<PD1);
- 24e:	51 9a       	sbi	0x0a, 1	; 10
+ 240:	51 9a       	sbi	0x0a, 1	; 10
 	/* Set baud rate */
 	UBRR0H = (unsigned char)(baud>>8);
- 250:	90 93 c5 00 	sts	0x00C5, r25
+ 242:	90 93 c5 00 	sts	0x00C5, r25
 	UBRR0L = (unsigned char)baud;
- 254:	80 93 c4 00 	sts	0x00C4, r24
+ 246:	80 93 c4 00 	sts	0x00C4, r24
 	/* Enable receiver and transmitter */
 	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
- 258:	88 e1       	ldi	r24, 0x18	; 24
- 25a:	80 93 c1 00 	sts	0x00C1, r24
+ 24a:	88 e1       	ldi	r24, 0x18	; 24
+ 24c:	80 93 c1 00 	sts	0x00C1, r24
 	/* Set frame format: 8data, 2stop bit */
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
- 25e:	8e e0       	ldi	r24, 0x0E	; 14
- 260:	80 93 c2 00 	sts	0x00C2, r24
+ 250:	8e e0       	ldi	r24, 0x0E	; 14
+ 252:	80 93 c2 00 	sts	0x00C2, r24
 }
- 264:	08 95       	ret
+ 256:	08 95       	ret
 
-00000266 <USART_Transmit>:
+00000258 <USART_Transmit>:
 
 void USART_Transmit( uint8_t data )
 {
 	/* Wait for empty transmit buffer */
 	while ( !( UCSR0A & (1<<UDRE0)) )
- 266:	e0 ec       	ldi	r30, 0xC0	; 192
- 268:	f0 e0       	ldi	r31, 0x00	; 0
- 26a:	90 81       	ld	r25, Z
- 26c:	95 ff       	sbrs	r25, 5
- 26e:	fd cf       	rjmp	.-6      	; 0x26a <USART_Transmit+0x4>
+ 258:	e0 ec       	ldi	r30, 0xC0	; 192
+ 25a:	f0 e0       	ldi	r31, 0x00	; 0
+ 25c:	90 81       	ld	r25, Z
+ 25e:	95 ff       	sbrs	r25, 5
+ 260:	fd cf       	rjmp	.-6      	; 0x25c <USART_Transmit+0x4>
 	;
 	/* Put data into buffer, sends the data */
 	UDR0 = data;
- 270:	80 93 c6 00 	sts	0x00C6, r24
+ 262:	80 93 c6 00 	sts	0x00C6, r24
 }
- 274:	08 95       	ret
+ 266:	08 95       	ret
 
-00000276 <USART_Receive>:
+00000268 <USART_Receive>:
 
 unsigned char USART_Receive( void )
 {
 	/* Wait for data to be received */
 	while ( !(UCSR0A & (1<<RXC0)) )
- 276:	e0 ec       	ldi	r30, 0xC0	; 192
- 278:	f0 e0       	ldi	r31, 0x00	; 0
- 27a:	80 81       	ld	r24, Z
- 27c:	88 23       	and	r24, r24
- 27e:	ec f7       	brge	.-6      	; 0x27a <USART_Receive+0x4>
+ 268:	e0 ec       	ldi	r30, 0xC0	; 192
+ 26a:	f0 e0       	ldi	r31, 0x00	; 0
+ 26c:	80 81       	ld	r24, Z
+ 26e:	88 23       	and	r24, r24
+ 270:	ec f7       	brge	.-6      	; 0x26c <USART_Receive+0x4>
 	;
 	/* Get and return received data from buffer */
 	return UDR0;
- 280:	80 91 c6 00 	lds	r24, 0x00C6
- 284:	08 95       	ret
+ 272:	80 91 c6 00 	lds	r24, 0x00C6
+ 276:	08 95       	ret
 
-00000286 <_exit>:
- 286:	f8 94       	cli
+00000278 <_exit>:
+ 278:	f8 94       	cli
 
-00000288 <__stop_program>:
- 288:	ff cf       	rjmp	.-2      	; 0x288 <__stop_program>
+0000027a <__stop_program>:
+ 27a:	ff cf       	rjmp	.-2      	; 0x27a <__stop_program>
