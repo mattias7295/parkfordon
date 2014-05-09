@@ -1,0 +1,254 @@
+
+kontroll.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .data         00000000  00800100  0000016e  000001e2  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  1 .text         0000016e  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  2 .stab         000006cc  00000000  00000000  000001e4  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      00000085  00000000  00000000  000008b0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  4 .debug_aranges 00000080  00000000  00000000  00000938  2**3
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000354  00000000  00000000  000009b8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000000b2  00000000  00000000  00000d0c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   000002a6  00000000  00000000  00000dbe  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000034  00000000  00000000  00001064  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000000a0  00000000  00000000  00001098  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000013  00000000  00000000  00001138  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 46 00 	jmp	0x8c	; 0x8c <__ctors_end>
+   4:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+   8:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+   c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  10:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  14:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  18:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  1c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  20:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  24:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  28:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  2c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  30:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  34:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  38:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  3c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  40:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  44:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  48:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  4c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  50:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  54:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  58:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  5c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  60:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  64:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  68:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  6c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  70:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  74:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  78:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  7c:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  80:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  84:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+  88:	0c 94 66 00 	jmp	0xcc	; 0xcc <__bad_interrupt>
+
+0000008c <__ctors_end>:
+  8c:	11 24       	eor	r1, r1
+  8e:	1f be       	out	0x3f, r1	; 63
+  90:	cf ef       	ldi	r28, 0xFF	; 255
+  92:	d0 e4       	ldi	r29, 0x40	; 64
+  94:	de bf       	out	0x3e, r29	; 62
+  96:	cd bf       	out	0x3d, r28	; 61
+
+00000098 <__do_copy_data>:
+  98:	11 e0       	ldi	r17, 0x01	; 1
+  9a:	a0 e0       	ldi	r26, 0x00	; 0
+  9c:	b1 e0       	ldi	r27, 0x01	; 1
+  9e:	ee e6       	ldi	r30, 0x6E	; 110
+  a0:	f1 e0       	ldi	r31, 0x01	; 1
+  a2:	00 e0       	ldi	r16, 0x00	; 0
+  a4:	0b bf       	out	0x3b, r16	; 59
+  a6:	02 c0       	rjmp	.+4      	; 0xac <__do_copy_data+0x14>
+  a8:	07 90       	elpm	r0, Z+
+  aa:	0d 92       	st	X+, r0
+  ac:	a0 30       	cpi	r26, 0x00	; 0
+  ae:	b1 07       	cpc	r27, r17
+  b0:	d9 f7       	brne	.-10     	; 0xa8 <__do_copy_data+0x10>
+  b2:	1b be       	out	0x3b, r1	; 59
+
+000000b4 <__do_clear_bss>:
+  b4:	11 e0       	ldi	r17, 0x01	; 1
+  b6:	a0 e0       	ldi	r26, 0x00	; 0
+  b8:	b1 e0       	ldi	r27, 0x01	; 1
+  ba:	01 c0       	rjmp	.+2      	; 0xbe <.do_clear_bss_start>
+
+000000bc <.do_clear_bss_loop>:
+  bc:	1d 92       	st	X+, r1
+
+000000be <.do_clear_bss_start>:
+  be:	a0 30       	cpi	r26, 0x00	; 0
+  c0:	b1 07       	cpc	r27, r17
+  c2:	e1 f7       	brne	.-8      	; 0xbc <.do_clear_bss_loop>
+  c4:	0e 94 7d 00 	call	0xfa	; 0xfa <main>
+  c8:	0c 94 b5 00 	jmp	0x16a	; 0x16a <_exit>
+
+000000cc <__bad_interrupt>:
+  cc:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+000000d0 <adc_read>:
+	/* adcx is the analog pin we want to use. ADMUX's first few bits are
+	* the binary representations of the numbers of the pins so we can
+	* just 'OR' the pin's number with ADMUX to select that pin.
+	* We first zero the four bits by setting ADMUX equal to its higher
+	* four bits. */
+	ADMUX &= 0xf0;
+  d0:	ec e7       	ldi	r30, 0x7C	; 124
+  d2:	f0 e0       	ldi	r31, 0x00	; 0
+  d4:	90 81       	ld	r25, Z
+  d6:	90 7f       	andi	r25, 0xF0	; 240
+  d8:	90 83       	st	Z, r25
+	ADMUX |= adcx;
+  da:	90 81       	ld	r25, Z
+  dc:	89 2b       	or	r24, r25
+  de:	80 83       	st	Z, r24
+
+	/* This starts the conversion. */
+	ADCSRA |= _BV(ADSC);
+  e0:	ea e7       	ldi	r30, 0x7A	; 122
+  e2:	f0 e0       	ldi	r31, 0x00	; 0
+  e4:	80 81       	ld	r24, Z
+  e6:	80 64       	ori	r24, 0x40	; 64
+  e8:	80 83       	st	Z, r24
+	/* This is an idle loop that just wait around until the conversion
+	* is finished. It constantly checks ADCSRA's ADSC bit, which we just
+	* set above, to see if it is still set. This bit is automatically
+	* reset (zeroed) when the conversion is ready so if we do this in
+	* a loop the loop will just go until the conversion is ready. */
+	while ( (ADCSRA & _BV(ADSC)) );
+  ea:	80 81       	ld	r24, Z
+  ec:	86 fd       	sbrc	r24, 6
+  ee:	fd cf       	rjmp	.-6      	; 0xea <adc_read+0x1a>
+
+	/* Finally, we return the converted value to the calling function. */
+	return ADC;
+  f0:	80 91 78 00 	lds	r24, 0x0078
+  f4:	90 91 79 00 	lds	r25, 0x0079
+  f8:	08 95       	ret
+
+000000fa <main>:
+
+
+int main(void)
+{
+	/* Enable the ADC */
+	ADCSRA |= _BV(ADEN);
+  fa:	ea e7       	ldi	r30, 0x7A	; 122
+  fc:	f0 e0       	ldi	r31, 0x00	; 0
+  fe:	80 81       	ld	r24, Z
+ 100:	80 68       	ori	r24, 0x80	; 128
+ 102:	80 83       	st	Z, r24
+
+	/*Set buttons as input*/
+	DDRA &= ~_BV(SW1);
+ 104:	0a 98       	cbi	0x01, 2	; 1
+	DDRA &= ~_BV(SW2);
+ 106:	0b 98       	cbi	0x01, 3	; 1
+	
+	/* Set the LED pin as an output. */
+	DDRA |= _BV(LED_H);
+ 108:	0f 9a       	sbi	0x01, 7	; 1
+	DDRA |= _BV(LED_V);
+ 10a:	0e 9a       	sbi	0x01, 6	; 1
+	DDRA |= _BV(LED_U);
+ 10c:	0d 9a       	sbi	0x01, 5	; 1
+	DDRA |= _BV(LED_N);
+ 10e:	0c 9a       	sbi	0x01, 4	; 1
+	
+    while(1)
+    {
+	        if (adc_read(X_AXIS) > ADC_THRESHOLDH){
+ 110:	80 e0       	ldi	r24, 0x00	; 0
+ 112:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 116:	23 e0       	ldi	r18, 0x03	; 3
+ 118:	81 30       	cpi	r24, 0x01	; 1
+ 11a:	92 07       	cpc	r25, r18
+ 11c:	10 f0       	brcs	.+4      	; 0x122 <main+0x28>
+		        PORTA |= _BV(LED_H);
+ 11e:	17 9a       	sbi	0x02, 7	; 2
+ 120:	0b c0       	rjmp	.+22     	; 0x138 <main+0x3e>
+	        }
+	        else if (adc_read(X_AXIS) < ADC_THRESHOLDL){
+ 122:	80 e0       	ldi	r24, 0x00	; 0
+ 124:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 128:	8f 3f       	cpi	r24, 0xFF	; 255
+ 12a:	91 05       	cpc	r25, r1
+ 12c:	09 f0       	breq	.+2      	; 0x130 <main+0x36>
+ 12e:	10 f4       	brcc	.+4      	; 0x134 <main+0x3a>
+		        PORTA |= _BV(LED_V);
+ 130:	16 9a       	sbi	0x02, 6	; 2
+ 132:	02 c0       	rjmp	.+4      	; 0x138 <main+0x3e>
+	        }
+	        else{
+		        PORTA &= ~_BV(LED_H);
+ 134:	17 98       	cbi	0x02, 7	; 2
+		        PORTA &= ~_BV(LED_V);
+ 136:	16 98       	cbi	0x02, 6	; 2
+			}
+			
+			if (adc_read(Y_AXIS) > ADC_THRESHOLDH){
+ 138:	81 e0       	ldi	r24, 0x01	; 1
+ 13a:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 13e:	23 e0       	ldi	r18, 0x03	; 3
+ 140:	81 30       	cpi	r24, 0x01	; 1
+ 142:	92 07       	cpc	r25, r18
+ 144:	10 f0       	brcs	.+4      	; 0x14a <main+0x50>
+				PORTA |= _BV(LED_N);
+ 146:	14 9a       	sbi	0x02, 4	; 2
+ 148:	0b c0       	rjmp	.+22     	; 0x160 <main+0x66>
+			}
+			else if (adc_read(Y_AXIS) < ADC_THRESHOLDL){
+ 14a:	81 e0       	ldi	r24, 0x01	; 1
+ 14c:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 150:	8f 3f       	cpi	r24, 0xFF	; 255
+ 152:	91 05       	cpc	r25, r1
+ 154:	09 f0       	breq	.+2      	; 0x158 <main+0x5e>
+ 156:	10 f4       	brcc	.+4      	; 0x15c <main+0x62>
+				PORTA |= _BV(LED_U);
+ 158:	15 9a       	sbi	0x02, 5	; 2
+ 15a:	02 c0       	rjmp	.+4      	; 0x160 <main+0x66>
+			}
+			else{
+				PORTA &= ~_BV(LED_U);
+ 15c:	15 98       	cbi	0x02, 5	; 2
+				PORTA &= ~_BV(LED_N);
+ 15e:	14 98       	cbi	0x02, 4	; 2
+			}
+			
+			if ((PORTA & 0b00000100) == 0)
+ 160:	12 99       	sbic	0x02, 2	; 2
+ 162:	d6 cf       	rjmp	.-84     	; 0x110 <main+0x16>
+			{
+				PORTA |= _BV(LED_H);
+ 164:	17 9a       	sbi	0x02, 7	; 2
+				PORTA |= _BV(LED_V);
+ 166:	16 9a       	sbi	0x02, 6	; 2
+ 168:	d3 cf       	rjmp	.-90     	; 0x110 <main+0x16>
+
+0000016a <_exit>:
+ 16a:	f8 94       	cli
+
+0000016c <__stop_program>:
+ 16c:	ff cf       	rjmp	.-2      	; 0x16c <__stop_program>
