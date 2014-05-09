@@ -21,5 +21,11 @@
 *.i*86
 *.x86_64
 *.hex
+<<<<<<< HEAD
 *.atsuo
 fordon/fordon.atsln
+=======
+
+# Ignore specific files here
+fordon/fordon.atsuo
+>>>>>>> ed69c3bb50f55639e6d2442a0897b8d13f91d48d
