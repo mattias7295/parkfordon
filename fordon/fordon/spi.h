@@ -10,7 +10,7 @@
 #define SPI_H_
 
 void SPI_MasterInit(void);
-uint8_t SPI_MasterTransmit(char cData);
+void SPI_MasterTransmit(char cData);
 
 
 

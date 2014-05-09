@@ -18,9 +18,10 @@ int main(void)
 	USART_Init(MYUBRR);
 	SPI_MasterInit();
 	adc_init();
+	char cdata;
     while(1)
     {
-		USART_Transmit();
+		SPI_MasterTransmit(41);
 		_delay_ms(100);
         
     }
