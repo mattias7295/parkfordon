@@ -38,6 +38,7 @@ C_SRCS +=  \
 ../adc.c \
 ../fordon.c \
 ../pwm.c \
+../spi.c \
 ../usart.c
 
 
@@ -51,6 +52,7 @@ OBJS +=  \
 adc.o \
 fordon.o \
 pwm.o \
+spi.o \
 usart.o
 
 
@@ -58,6 +60,7 @@ OBJS_AS_ARGS +=  \
 adc.o \
 fordon.o \
 pwm.o \
+spi.o \
 usart.o
 
 
@@ -65,6 +68,7 @@ C_DEPS +=  \
 adc.d \
 fordon.d \
 pwm.d \
+spi.d \
 usart.d
 
 
@@ -72,6 +76,7 @@ C_DEPS_AS_ARGS +=  \
 adc.d \
 fordon.d \
 pwm.d \
+spi.d \
 usart.d
 
 
@@ -84,6 +89,8 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR32/GNU C Compiler
+
+
 
 
 

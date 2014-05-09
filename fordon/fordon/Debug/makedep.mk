@@ -8,5 +8,7 @@ fordon.c
 
 pwm.c
 
+spi.c
+
 usart.c
 

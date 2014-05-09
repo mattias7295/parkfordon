@@ -11,6 +11,7 @@
 #include "usart.h"
 #include "adc.h"
 #include "pwm.h"
+#include "spi.h"
 
 int main(void)
 {

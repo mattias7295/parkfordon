@@ -99,6 +99,12 @@
     <Compile Include="pwm.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="spi.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="spi.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="usart.c">
       <SubType>compile</SubType>
     </Compile>
