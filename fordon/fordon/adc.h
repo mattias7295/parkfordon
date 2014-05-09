@@ -11,7 +11,6 @@
 #define ADC_H_
 
 #define ADC_PIN			5
-#define ADC_THRESHOLD	512
 
 uint8_t adc_read(uint8_t adcx);
 
