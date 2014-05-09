@@ -19,13 +19,13 @@ void compas_update()
 	//Send address
 	TWDR = 0x42;
 	TWCR = (1<<TWINT) | (1<<TWEN);
-	while (!(TWCR & (1<<TWINT)))
+	while (!(TWCR & (1<<TWINT)));
 	
 	
 	//Send Data
 	TWDR = 0x41;
 	TWCR = (1<<TWINT) | (1<<TWEN);
-	while (!(TWCR & (1<<TWINT)))
+	while (!(TWCR & (1<<TWINT)));
 	
 	//Stop
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);	
@@ -39,7 +39,7 @@ void compas_update()
 	//Send address
 	TWDR = 0x43;
 	TWCR = (1<<TWINT) | (1<<TWEN);
-	while (!(TWCR & (1<<TWINT)))
+	while (!(TWCR & (1<<TWINT)));
 	
 	//Read data
 	TWCR = (1<<TWINT) | (1<<TWEA);

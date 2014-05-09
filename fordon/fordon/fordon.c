@@ -18,7 +18,7 @@ int main(void)
 	USART_Init(MYUBRR);
 	adc_init();
 	char cdata;
-	twi_init();
+	PORTC |= (1<<PC0)|(1<<PC1);
     while(1)
     {
 		compas_update();
