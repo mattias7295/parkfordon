@@ -16,12 +16,12 @@
 int main(void)
 {
 	USART_Init(MYUBRR);
-	SPI_MasterInit();
 	adc_init();
 	char cdata;
+	twi_init();
     while(1)
     {
-		SPI_MasterTransmit(0x41);
+		compas_update();
 		_delay_ms(100);
         
     }

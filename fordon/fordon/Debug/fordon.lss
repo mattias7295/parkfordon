@@ -3,9 +3,9 @@ fordon.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  00000224  00000298  2**0
+  0 .data         00000000  00800100  00000222  00000296  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000224  00000000  00000000  00000074  2**1
+  1 .text         00000222  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   2 .stab         000006cc  00000000  00000000  00000298  2**2
                   CONTENTS, READONLY, DEBUGGING
@@ -21,9 +21,9 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   8 .debug_frame  00000170  00000000  00000000  00001df4  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00000215  00000000  00000000  00001f64  2**0
+  9 .debug_str    0000023e  00000000  00000000  00001f64  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    0000006b  00000000  00000000  00002179  2**0
+ 10 .debug_loc    0000006b  00000000  00000000  000021a2  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -77,7 +77,7 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	e4 e2       	ldi	r30, 0x24	; 36
+  9e:	e2 e2       	ldi	r30, 0x22	; 34
   a0:	f2 e0       	ldi	r31, 0x02	; 2
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
@@ -103,62 +103,41 @@ Disassembly of section .text:
   c0:	b1 07       	cpc	r27, r17
   c2:	e1 f7       	brne	.-8      	; 0xbc <.do_clear_bss_loop>
   c4:	0e 94 86 00 	call	0x10c	; 0x10c <main>
-  c8:	0c 94 10 01 	jmp	0x220	; 0x220 <_exit>
+  c8:	0c 94 0f 01 	jmp	0x21e	; 0x21e <_exit>
 
 000000cc <__bad_interrupt>:
   cc:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000d0 <adc_init>:
-#include "adc.h"
-
-void adc_init() {
-	
-	/* Enable the ADC */
-	ADCSRA |= _BV(ADEN);
   d0:	ea e7       	ldi	r30, 0x7A	; 122
   d2:	f0 e0       	ldi	r31, 0x00	; 0
   d4:	80 81       	ld	r24, Z
   d6:	80 68       	ori	r24, 0x80	; 128
   d8:	80 83       	st	Z, r24
-}
   da:	08 95       	ret
 
 000000dc <adc_read>:
-
-uint8_t adc_read(uint8_t adcx) {
-	
-	ADMUX	&=	0xf0;
   dc:	ec e7       	ldi	r30, 0x7C	; 124
   de:	f0 e0       	ldi	r31, 0x00	; 0
   e0:	90 81       	ld	r25, Z
   e2:	90 7f       	andi	r25, 0xF0	; 240
   e4:	90 83       	st	Z, r25
-	ADMUX	|=	adcx;
   e6:	90 81       	ld	r25, Z
   e8:	89 2b       	or	r24, r25
   ea:	80 83       	st	Z, r24
-	
-	
-	ADCSRA |= _BV(ADSC);
   ec:	ea e7       	ldi	r30, 0x7A	; 122
   ee:	f0 e0       	ldi	r31, 0x00	; 0
   f0:	80 81       	ld	r24, Z
   f2:	80 64       	ori	r24, 0x40	; 64
   f4:	80 83       	st	Z, r24
-	
-	
-	while ( (ADCSRA & _BV(ADSC)) );
   f6:	80 81       	ld	r24, Z
   f8:	86 fd       	sbrc	r24, 6
   fa:	fd cf       	rjmp	.-6      	; 0xf6 <adc_read+0x1a>
-	
-	ADMUX |= (1 << ADLAR);
   fc:	ec e7       	ldi	r30, 0x7C	; 124
   fe:	f0 e0       	ldi	r31, 0x00	; 0
  100:	80 81       	ld	r24, Z
  102:	80 62       	ori	r24, 0x20	; 32
  104:	80 83       	st	Z, r24
-	return ADCH;
  106:	80 91 79 00 	lds	r24, 0x0079
  10a:	08 95       	ret
 
@@ -171,264 +150,177 @@ int main(void)
 	USART_Init(MYUBRR);
  10c:	8c e0       	ldi	r24, 0x0C	; 12
  10e:	90 e0       	ldi	r25, 0x00	; 0
- 110:	0e 94 f4 00 	call	0x1e8	; 0x1e8 <USART_Init>
-	SPI_MasterInit();
- 114:	0e 94 b7 00 	call	0x16e	; 0x16e <SPI_MasterInit>
+ 110:	0e 94 f3 00 	call	0x1e6	; 0x1e6 <USART_Init>
 	adc_init();
- 118:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_init>
+ 114:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_init>
 	char cdata;
+	twi_init();
+ 118:	0e 94 cb 00 	call	0x196	; 0x196 <twi_init>
     while(1)
     {
-		SPI_MasterTransmit(0x41);
- 11c:	81 e4       	ldi	r24, 0x41	; 65
- 11e:	0e 94 bc 00 	call	0x178	; 0x178 <SPI_MasterTransmit>
+		compas_update();
+ 11c:	0e 94 cf 00 	call	0x19e	; 0x19e <compas_update>
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 122:	87 ea       	ldi	r24, 0xA7	; 167
- 124:	91 e6       	ldi	r25, 0x61	; 97
- 126:	01 97       	sbiw	r24, 0x01	; 1
- 128:	f1 f7       	brne	.-4      	; 0x126 <main+0x1a>
- 12a:	00 c0       	rjmp	.+0      	; 0x12c <main+0x20>
- 12c:	00 00       	nop
- 12e:	f6 cf       	rjmp	.-20     	; 0x11c <main+0x10>
+ 120:	87 ea       	ldi	r24, 0xA7	; 167
+ 122:	91 e6       	ldi	r25, 0x61	; 97
+ 124:	01 97       	sbiw	r24, 0x01	; 1
+ 126:	f1 f7       	brne	.-4      	; 0x124 <main+0x18>
+ 128:	00 c0       	rjmp	.+0      	; 0x12a <main+0x1e>
+ 12a:	00 00       	nop
+ 12c:	f7 cf       	rjmp	.-18     	; 0x11c <main+0x10>
 
-00000130 <init_pwm>:
+0000012e <init_pwm>:
+ 12e:	81 e0       	ldi	r24, 0x01	; 1
+ 130:	85 bd       	out	0x25, r24	; 37
+ 132:	80 93 b1 00 	sts	0x00B1, r24
+ 136:	84 b1       	in	r24, 0x04	; 4
+ 138:	88 61       	ori	r24, 0x18	; 24
+ 13a:	84 b9       	out	0x04, r24	; 4
+ 13c:	8a b1       	in	r24, 0x0a	; 10
+ 13e:	80 6c       	ori	r24, 0xC0	; 192
+ 140:	8a b9       	out	0x0a, r24	; 10
+ 142:	08 95       	ret
 
-#include "pwm.h"
+00000144 <initEngineRightForward>:
+ 144:	91 ec       	ldi	r25, 0xC1	; 193
+ 146:	94 bd       	out	0x24, r25	; 36
+ 148:	87 bd       	out	0x27, r24	; 39
+ 14a:	08 95       	ret
 
-void init_pwm() {
-	//turn on two 8-bit timers
-	TCCR0B = (1<<CS00);
- 130:	81 e0       	ldi	r24, 0x01	; 1
- 132:	85 bd       	out	0x25, r24	; 37
-	TCCR2B = (1<<CS20);
- 134:	80 93 b1 00 	sts	0x00B1, r24
-	
-	//set OC0A and 0C0B as outputs
-	DDRB |= (1<<PB3) | (1<<PB4);
- 138:	84 b1       	in	r24, 0x04	; 4
- 13a:	88 61       	ori	r24, 0x18	; 24
- 13c:	84 b9       	out	0x04, r24	; 4
-	
-	//set OC2A and 0C2B as outputs
-	DDRD |= (1<<PD6) | (1<<PD7);
- 13e:	8a b1       	in	r24, 0x0a	; 10
- 140:	80 6c       	ori	r24, 0xC0	; 192
- 142:	8a b9       	out	0x0a, r24	; 10
-}
- 144:	08 95       	ret
+0000014c <initEngineRightBackward>:
+ 14c:	91 e3       	ldi	r25, 0x31	; 49
+ 14e:	94 bd       	out	0x24, r25	; 36
+ 150:	88 bd       	out	0x28, r24	; 40
+ 152:	08 95       	ret
 
-00000146 <initEngineRightForward>:
+00000154 <initEngineLeftForward>:
+ 154:	91 ec       	ldi	r25, 0xC1	; 193
+ 156:	90 93 b0 00 	sts	0x00B0, r25
+ 15a:	80 93 b3 00 	sts	0x00B3, r24
+ 15e:	08 95       	ret
 
+00000160 <initEngineLeftBackward>:
+ 160:	91 e3       	ldi	r25, 0x31	; 49
+ 162:	90 93 b0 00 	sts	0x00B0, r25
+ 166:	80 93 b4 00 	sts	0x00B4, r24
+ 16a:	08 95       	ret
 
-void initEngineRightForward(unsigned char speed) {
-	TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
- 146:	91 ec       	ldi	r25, 0xC1	; 193
- 148:	94 bd       	out	0x24, r25	; 36
-	OCR0A = speed;
- 14a:	87 bd       	out	0x27, r24	; 39
-}
- 14c:	08 95       	ret
+0000016c <SPI_MasterInit>:
+ 16c:	80 ea       	ldi	r24, 0xA0	; 160
+ 16e:	84 b9       	out	0x04, r24	; 4
+ 170:	81 e5       	ldi	r24, 0x51	; 81
+ 172:	8c bd       	out	0x2c, r24	; 44
+ 174:	08 95       	ret
 
-0000014e <initEngineRightBackward>:
+00000176 <SPI_MasterTransmit>:
+ 176:	cf 93       	push	r28
+ 178:	8e bd       	out	0x2e, r24	; 46
+ 17a:	0d b4       	in	r0, 0x2d	; 45
+ 17c:	07 fe       	sbrs	r0, 7
+ 17e:	fd cf       	rjmp	.-6      	; 0x17a <SPI_MasterTransmit+0x4>
+ 180:	ce b5       	in	r28, 0x2e	; 46
+ 182:	80 e0       	ldi	r24, 0x00	; 0
+ 184:	90 e0       	ldi	r25, 0x00	; 0
+ 186:	0e 94 ff 00 	call	0x1fe	; 0x1fe <USART_Transmit>
+ 18a:	8c 2f       	mov	r24, r28
+ 18c:	90 e0       	ldi	r25, 0x00	; 0
+ 18e:	0e 94 ff 00 	call	0x1fe	; 0x1fe <USART_Transmit>
+ 192:	cf 91       	pop	r28
+ 194:	08 95       	ret
 
-void initEngineRightBackward(unsigned char speed) {
-	TCCR0A = (1<<COM0B0)|(1<<COM0B1)|(1<<WGM00);
- 14e:	91 e3       	ldi	r25, 0x31	; 49
- 150:	94 bd       	out	0x24, r25	; 36
-	OCR0B = speed;
- 152:	88 bd       	out	0x28, r24	; 40
-}
- 154:	08 95       	ret
-
-00000156 <initEngineLeftForward>:
-
-void initEngineLeftForward(unsigned char speed) {
-	TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
- 156:	91 ec       	ldi	r25, 0xC1	; 193
- 158:	90 93 b0 00 	sts	0x00B0, r25
-	OCR2A = speed;
- 15c:	80 93 b3 00 	sts	0x00B3, r24
-}
- 160:	08 95       	ret
-
-00000162 <initEngineLeftBackward>:
-
-void initEngineLeftBackward(unsigned char speed) {
-	TCCR2A = (1<<COM2B0)|(1<<COM2B1)|(1<<WGM20);
- 162:	91 e3       	ldi	r25, 0x31	; 49
- 164:	90 93 b0 00 	sts	0x00B0, r25
-	OCR2B = speed;
- 168:	80 93 b4 00 	sts	0x00B4, r24
- 16c:	08 95       	ret
-
-0000016e <SPI_MasterInit>:
-#include <avr/io.h>
-
-void SPI_MasterInit(void)
-{
-	/* Set MOSI and SCK output, all others input */
-	DDRB = (1<<PB5)|(1<<PB7);
- 16e:	80 ea       	ldi	r24, 0xA0	; 160
- 170:	84 b9       	out	0x04, r24	; 4
-	/* Enable SPI, Master, set clock rate fck/16 */
-	SPCR = (1<<SPE)|(1<<MSTR)|(1<<SPR0);
- 172:	81 e5       	ldi	r24, 0x51	; 81
- 174:	8c bd       	out	0x2c, r24	; 44
-}
- 176:	08 95       	ret
-
-00000178 <SPI_MasterTransmit>:
-void SPI_MasterTransmit(char cData)
-{
- 178:	cf 93       	push	r28
-	/* Start transmission */
-	SPDR = cData;
- 17a:	8e bd       	out	0x2e, r24	; 46
-	/* Wait for transmission complete */
-	while(!(SPSR & (1<<SPIF)))
- 17c:	0d b4       	in	r0, 0x2d	; 45
- 17e:	07 fe       	sbrs	r0, 7
- 180:	fd cf       	rjmp	.-6      	; 0x17c <SPI_MasterTransmit+0x4>
-	;
-	cData = SPDR;
- 182:	ce b5       	in	r28, 0x2e	; 46
-	
-	USART_Transmit(cData >> 8);
- 184:	80 e0       	ldi	r24, 0x00	; 0
- 186:	90 e0       	ldi	r25, 0x00	; 0
- 188:	0e 94 00 01 	call	0x200	; 0x200 <USART_Transmit>
-	USART_Transmit(cData);
- 18c:	8c 2f       	mov	r24, r28
- 18e:	90 e0       	ldi	r25, 0x00	; 0
- 190:	0e 94 00 01 	call	0x200	; 0x200 <USART_Transmit>
-	
- 194:	cf 91       	pop	r28
- 196:	08 95       	ret
-
-00000198 <twi_init>:
+00000196 <twi_init>:
  */ 
 #include<avr/io.h> 
 #include "twi.h"
 void twi_init()
 {
 	TWBR=72;
- 198:	88 e4       	ldi	r24, 0x48	; 72
- 19a:	80 93 b8 00 	sts	0x00B8, r24
+ 196:	88 e4       	ldi	r24, 0x48	; 72
+ 198:	80 93 b8 00 	sts	0x00B8, r24
 }
- 19e:	08 95       	ret
+ 19c:	08 95       	ret
 
-000001a0 <compas_update>:
+0000019e <compas_update>:
 
 void compas_update()
 {
 	TWCR=(1<<TWINT)|(1<<TWEN)|(1<<TWSTA);
- 1a0:	84 ea       	ldi	r24, 0xA4	; 164
- 1a2:	80 93 bc 00 	sts	0x00BC, r24
+ 19e:	84 ea       	ldi	r24, 0xA4	; 164
+ 1a0:	80 93 bc 00 	sts	0x00BC, r24
 	while(!((TWCR)&(1<<TWINT)));
- 1a6:	ec eb       	ldi	r30, 0xBC	; 188
- 1a8:	f0 e0       	ldi	r31, 0x00	; 0
- 1aa:	80 81       	ld	r24, Z
- 1ac:	88 23       	and	r24, r24
- 1ae:	ec f7       	brge	.-6      	; 0x1aa <compas_update+0xa>
+ 1a4:	ec eb       	ldi	r30, 0xBC	; 188
+ 1a6:	f0 e0       	ldi	r31, 0x00	; 0
+ 1a8:	80 81       	ld	r24, Z
+ 1aa:	88 23       	and	r24, r24
+ 1ac:	ec f7       	brge	.-6      	; 0x1a8 <compas_update+0xa>
 	
 	TWDR=0x42; 
- 1b0:	82 e4       	ldi	r24, 0x42	; 66
- 1b2:	80 93 bb 00 	sts	0x00BB, r24
+ 1ae:	82 e4       	ldi	r24, 0x42	; 66
+ 1b0:	80 93 bb 00 	sts	0x00BB, r24
 	
 	TWCR=(1<<TWINT)|(1<<TWEN);
- 1b6:	84 e8       	ldi	r24, 0x84	; 132
- 1b8:	80 93 bc 00 	sts	0x00BC, r24
+ 1b4:	84 e8       	ldi	r24, 0x84	; 132
+ 1b6:	80 93 bc 00 	sts	0x00BC, r24
 	while(!((TWCR)&(1<<TWINT)));
- 1bc:	ec eb       	ldi	r30, 0xBC	; 188
- 1be:	f0 e0       	ldi	r31, 0x00	; 0
- 1c0:	80 81       	ld	r24, Z
- 1c2:	88 23       	and	r24, r24
- 1c4:	ec f7       	brge	.-6      	; 0x1c0 <compas_update+0x20>
+ 1ba:	ec eb       	ldi	r30, 0xBC	; 188
+ 1bc:	f0 e0       	ldi	r31, 0x00	; 0
+ 1be:	80 81       	ld	r24, Z
+ 1c0:	88 23       	and	r24, r24
+ 1c2:	ec f7       	brge	.-6      	; 0x1be <compas_update+0x20>
 	
 	TWDR=0x41;
- 1c6:	81 e4       	ldi	r24, 0x41	; 65
- 1c8:	80 93 bb 00 	sts	0x00BB, r24
+ 1c4:	81 e4       	ldi	r24, 0x41	; 65
+ 1c6:	80 93 bb 00 	sts	0x00BB, r24
 	TWCR=(1<<TWINT)|(1<<TWEN);
- 1cc:	84 e8       	ldi	r24, 0x84	; 132
- 1ce:	80 93 bc 00 	sts	0x00BC, r24
+ 1ca:	84 e8       	ldi	r24, 0x84	; 132
+ 1cc:	80 93 bc 00 	sts	0x00BC, r24
 	while(!((TWCR)&(1<<TWINT)));
- 1d2:	ec eb       	ldi	r30, 0xBC	; 188
- 1d4:	f0 e0       	ldi	r31, 0x00	; 0
- 1d6:	80 81       	ld	r24, Z
- 1d8:	88 23       	and	r24, r24
- 1da:	ec f7       	brge	.-6      	; 0x1d6 <compas_update+0x36>
+ 1d0:	ec eb       	ldi	r30, 0xBC	; 188
+ 1d2:	f0 e0       	ldi	r31, 0x00	; 0
+ 1d4:	80 81       	ld	r24, Z
+ 1d6:	88 23       	and	r24, r24
+ 1d8:	ec f7       	brge	.-6      	; 0x1d4 <compas_update+0x36>
 	USART_Transmit(TWDR);
- 1dc:	80 91 bb 00 	lds	r24, 0x00BB
- 1e0:	90 e0       	ldi	r25, 0x00	; 0
- 1e2:	0e 94 00 01 	call	0x200	; 0x200 <USART_Transmit>
- 1e6:	08 95       	ret
+ 1da:	80 91 bb 00 	lds	r24, 0x00BB
+ 1de:	90 e0       	ldi	r25, 0x00	; 0
+ 1e0:	0e 94 ff 00 	call	0x1fe	; 0x1fe <USART_Transmit>
+ 1e4:	08 95       	ret
 
-000001e8 <USART_Init>:
+000001e6 <USART_Init>:
+ 1e6:	51 9a       	sbi	0x0a, 1	; 10
+ 1e8:	90 93 c5 00 	sts	0x00C5, r25
+ 1ec:	80 93 c4 00 	sts	0x00C4, r24
+ 1f0:	88 e1       	ldi	r24, 0x18	; 24
+ 1f2:	80 93 c1 00 	sts	0x00C1, r24
+ 1f6:	8e e0       	ldi	r24, 0x0E	; 14
+ 1f8:	80 93 c2 00 	sts	0x00C2, r24
+ 1fc:	08 95       	ret
 
-#include "usart.h"
+000001fe <USART_Transmit>:
+ 1fe:	e0 ec       	ldi	r30, 0xC0	; 192
+ 200:	f0 e0       	ldi	r31, 0x00	; 0
+ 202:	90 81       	ld	r25, Z
+ 204:	95 ff       	sbrs	r25, 5
+ 206:	fd cf       	rjmp	.-6      	; 0x202 <USART_Transmit+0x4>
+ 208:	80 93 c6 00 	sts	0x00C6, r24
+ 20c:	08 95       	ret
 
-void USART_Init( unsigned int baud )
-{
-	DDRD |= (1<<PD1);
- 1e8:	51 9a       	sbi	0x0a, 1	; 10
-	/* Set baud rate */
-	UBRR0H = (unsigned char)(baud>>8);
- 1ea:	90 93 c5 00 	sts	0x00C5, r25
-	UBRR0L = (unsigned char)baud;
- 1ee:	80 93 c4 00 	sts	0x00C4, r24
-	/* Enable receiver and transmitter */
-	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
- 1f2:	88 e1       	ldi	r24, 0x18	; 24
- 1f4:	80 93 c1 00 	sts	0x00C1, r24
-	/* Set frame format: 8data, 2stop bit */
-	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
- 1f8:	8e e0       	ldi	r24, 0x0E	; 14
- 1fa:	80 93 c2 00 	sts	0x00C2, r24
-}
- 1fe:	08 95       	ret
+0000020e <USART_Receive>:
+ 20e:	e0 ec       	ldi	r30, 0xC0	; 192
+ 210:	f0 e0       	ldi	r31, 0x00	; 0
+ 212:	80 81       	ld	r24, Z
+ 214:	88 23       	and	r24, r24
+ 216:	ec f7       	brge	.-6      	; 0x212 <USART_Receive+0x4>
+ 218:	80 91 c6 00 	lds	r24, 0x00C6
+ 21c:	08 95       	ret
 
-00000200 <USART_Transmit>:
+0000021e <_exit>:
+ 21e:	f8 94       	cli
 
-void USART_Transmit( uint8_t data )
-{
-	/* Wait for empty transmit buffer */
-	while ( !( UCSR0A & (1<<UDRE0)) )
- 200:	e0 ec       	ldi	r30, 0xC0	; 192
- 202:	f0 e0       	ldi	r31, 0x00	; 0
- 204:	90 81       	ld	r25, Z
- 206:	95 ff       	sbrs	r25, 5
- 208:	fd cf       	rjmp	.-6      	; 0x204 <USART_Transmit+0x4>
-	;
-	/* Put data into buffer, sends the data */
-	UDR0 = data;
- 20a:	80 93 c6 00 	sts	0x00C6, r24
-}
- 20e:	08 95       	ret
-
-00000210 <USART_Receive>:
-
-unsigned char USART_Receive( void )
-{
-	/* Wait for data to be received */
-	while ( !(UCSR0A & (1<<RXC0)) )
- 210:	e0 ec       	ldi	r30, 0xC0	; 192
- 212:	f0 e0       	ldi	r31, 0x00	; 0
- 214:	80 81       	ld	r24, Z
- 216:	88 23       	and	r24, r24
- 218:	ec f7       	brge	.-6      	; 0x214 <USART_Receive+0x4>
-	;
-	/* Get and return received data from buffer */
-	return UDR0;
- 21a:	80 91 c6 00 	lds	r24, 0x00C6
- 21e:	08 95       	ret
-
-00000220 <_exit>:
- 220:	f8 94       	cli
-
-00000222 <__stop_program>:
- 222:	ff cf       	rjmp	.-2      	; 0x222 <__stop_program>
+00000220 <__stop_program>:
+ 220:	ff cf       	rjmp	.-2      	; 0x220 <__stop_program>
