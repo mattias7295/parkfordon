@@ -42,28 +42,11 @@ void compas_update()
 	while (!(TWCR & (1<<TWINT)));
 		
 	//Read data
-	TWCR = (1<<TWINT) | (1<<TWEA);
-	while(!(TWCR & (1<<TWINT)));
-	uint16_t high = TWDR;
-	USART_Transmit(high);
-		
-	//Start
-	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
-	while (!(TWCR & (1<<TWINT)));
-		
-		
-	//Send address
-	TWDR = 0x43;
-	TWCR = (1<<TWINT) | (1<<TWEN);
-	while (!(TWCR & (1<<TWINT)));
-		
-	//Read data
 	TWCR = (1<<TWINT) | (1<<TWEN);
 	while(!(TWCR & (1<<TWINT)));
-	high = TWDR;
-	high = TWDR;
+	uint8_t high = TWDR;
 	USART_Transmit(high);
-		
+			
 
 	//Stop
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
