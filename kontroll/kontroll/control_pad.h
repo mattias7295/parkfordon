@@ -52,16 +52,6 @@
 #define ADC_THRESHOLDL6 128
 #define ADC_THRESHOLDL7 64
 
-/* PI. */
-#define PI 3.14159265
-
-/* Global joystick position variables. */
-extern int x_value;
-extern int y_value;
-
-/* Global timer counter variable. */
-extern int timer_counter;
-
 /* Direction enum. */
 typedef enum {FORWARD, BACKWARD} direction;
 
@@ -72,6 +62,23 @@ typedef struct  {
 	double left_engine_throttle;
 	double right_engine_throttle;
 } engine_data;
+
+/* Power mode enum. */
+typedef enum {ON, OFF} power_mode;
+
+/* Steer mode enum. */
+typedef enum {MAN, AUTO} steer_mode;
+
+/* PI. */
+#define PI 3.14159265
+
+/* Global joystick position variables. */
+extern int x_value;
+extern int y_value;
+
+/* Global steer and power on/off flags. */
+extern power_mode power;
+extern steer_mode steer;
 
 /* Function declarations. See control-pad.c for further information. */
 void init();
@@ -84,3 +91,4 @@ int getYValue();
 void setDirections(engine_data *edata, const double angle);
 void setThrottles(engine_data *edata, const double angle, const int x_value, const int y_value);
 unsigned char compactData(engine_data *edata);
+void sleepMode();

@@ -67,10 +67,16 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="kontroll.c">
+    <Compile Include="switch_interrupt.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="kontroll.h">
+    <Compile Include="switch_interrupt.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="control_pad.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="control_pad.h">
       <SubType>compile</SubType>
     </Compile>
   </ItemGroup>

@@ -5,7 +5,7 @@
  *  Author: masc0058
  */ 
 
-#include "kontroll.h"
+#include "control_pad.h"
 
 /* Function declarations. */
 void USART_Init(unsigned int ubrr);
@@ -17,18 +17,23 @@ int getYValue();
 void setDirections(engine_data *edata, const double angle);
 void setThrottles(engine_data *edata, const double angle, const int x_value, const int y_value);
 unsigned char compactData(engine_data *edata);
+void sleepMode();
 
 /* Global joystick coordinate variables. */
 int x_value;
 int y_value;
 
-/*Define testlights*/
+/* Global steer and power on/off flags. */
+power_mode power;
+steer_mode steer;
+
+/*Define test lights. */
 #define LED_H PA7
 #define LED_V PA6
 #define LED_U PA5
 #define LED_N PA4
 
-/*Define testbuttons*/
+/*Define test buttons. */
 #define SW1 PA2
 #define SW2 PA3
 
@@ -113,6 +118,14 @@ int main(void) {
 			PORTA &= ~_BV(LED_U);
 			PORTA &= ~_BV(LED_N);
 		}
+		
+		
+		/* Check if sleep mode is to be activated. */
+		if (/*timer_counter >= 30*/0) {
+			
+			/* Enter sleep mode. */
+			sleepMode();
+		}
 				
 	}
 }
@@ -142,6 +155,10 @@ void init() {
 	
 	/* Initialize the interrupts */
 	
+	
+	/* Initialize global flags. */
+	power = ON;
+	steer = MAN;
 }
 
 /*
@@ -481,4 +498,51 @@ unsigned char compactData(engine_data *edata) {
 	}
 	
 	return send_data;
+}
+
+/* 
+* Function: sleepMode
+* Input:	-
+* Output:	-
+* Description: Enters sleep mode.
+*/
+void sleepMode() {
+	
+	/* Clear global interrupt flag and stop timer. */
+	cli();
+			
+	/* Turn off power to voltage regulator that powers 
+	 * OLED and bluetooth unit. */
+	PORTB &= ~_BV(POWER_CONTROL);
+	
+	/* Set leds to input in order to save more power. */
+/*	DDRD &= ~_BV(LED_PIN8);
+	DDRC &= ~_BV(LED_PIN7);
+	DDRC &= ~_BV(LED_PIN6);
+	DDRC &= ~_BV(LED_PIN5);
+	DDRC &= ~_BV(LED_PIN4);
+	DDRD &= ~_BV(LED_PIN3);
+	DDRD &= ~_BV(LED_PIN2);
+	DDRD &= ~_BV(LED_PIN1);
+*/
+
+	/* Set sleep mode and enable sleep setup. */
+	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+	sleep_enable();
+	
+	/* Disable ADC, watchdog and BOD. */
+	ADCSRA = 0;
+	wdt_disable();
+	sleep_bod_disable();
+	
+	/* Set global interrupt flag to allow waking signals from
+	 * the external interrupt and power down MCU. */
+	sei();
+	sleep_cpu();
+	
+	/* Wake up here and disable sleep setup mode. */
+	sleep_disable();
+	
+	/* Re-initialize. */
+	init();
 }

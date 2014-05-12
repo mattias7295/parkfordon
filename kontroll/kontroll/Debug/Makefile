@@ -35,7 +35,8 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
-../kontroll.c
+../switch_interrupt.c \
+../control_pad.c
 
 
 PREPROCESSING_SRCS += 
@@ -45,19 +46,23 @@ ASM_SRCS +=
 
 
 OBJS +=  \
-kontroll.o
+switch_interrupt.o \
+control_pad.o
 
 
 OBJS_AS_ARGS +=  \
-kontroll.o
+switch_interrupt.o \
+control_pad.o
 
 
 C_DEPS +=  \
-kontroll.d
+switch_interrupt.d \
+control_pad.d
 
 
 C_DEPS_AS_ARGS +=  \
-kontroll.d
+switch_interrupt.d \
+control_pad.d
 
 
 OUTPUT_FILE_PATH +=kontroll.elf
@@ -69,6 +74,8 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR32/GNU C Compiler
+
+
 
 
 
