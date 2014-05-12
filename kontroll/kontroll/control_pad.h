@@ -9,9 +9,9 @@
 #include <stdint.h>
 #include <math.h>
 #include <stdlib.h>
-#include <avr/interrupt.h>
 #include <avr/sleep.h>
 #include <avr/wdt.h>
+#include "switch_interrupt.h"
 
 /* USART definitions. */
 #define FOSC 8000000 // Clock Speed
@@ -20,13 +20,9 @@
 
 /* Which analog pin we want to read from. The pins are labeled "ADC0"
 * "ADC1" etc on the pinout in the data sheet. In this case X_AXIS
-* being 0 means we want to use ADC0. On the ATmega328P this is also
-* the same as pin PC0 */
+* being 0 means we want to use ADC0. */
 #define X_AXIS PA0
 #define Y_AXIS PA1
-
-/* Joystick trigger. */
-#define JOY_TRIGGER PD2
 
 /* Power control. */
 #define POWER_CONTROL PB0
@@ -63,22 +59,12 @@ typedef struct  {
 	double right_engine_throttle;
 } engine_data;
 
-/* Power mode enum. */
-typedef enum {ON, OFF} power_mode;
-
-/* Steer mode enum. */
-typedef enum {MAN, AUTO} steer_mode;
-
 /* PI. */
 #define PI 3.14159265
 
 /* Global joystick position variables. */
 extern int x_value;
 extern int y_value;
-
-/* Global steer and power on/off flags. */
-extern power_mode power;
-extern steer_mode steer;
 
 /* Function declarations. See control-pad.c for further information. */
 void init();

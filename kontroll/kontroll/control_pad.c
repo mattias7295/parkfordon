@@ -23,10 +23,6 @@ void sleepMode();
 int x_value;
 int y_value;
 
-/* Global steer and power on/off flags. */
-power_mode power;
-steer_mode steer;
-
 /*Define test lights. */
 #define LED_H PA7
 #define LED_V PA6
@@ -64,13 +60,13 @@ int main(void) {
 		setThrottles(edata, angle, x_value, y_value);
 		
 		/* Compact all engine data into one 8-bit char. */
-//		send_data = compactData(edata);
+		send_data = compactData(edata);
 		
 		/* Start data transfer signal. */
 //		USART_Transmit(255);
 		
 		/* Send data via bluetooth. */
-//		USART_Transmit(send_data);
+		USART_Transmit(send_data);
 
 		/*Set buttons as input*/
 		DDRA &= ~_BV(SW1);
@@ -121,9 +117,7 @@ int main(void) {
 		
 		
 		/* Check if sleep mode is to be activated. */
-		if (/*timer_counter >= 30*/0) {
-			
-			/* Enter sleep mode. */
+		if (power == OFF) {
 			sleepMode();
 		}
 				
@@ -143,9 +137,11 @@ void init() {
 	DDRB |= _BV(POWER_CONTROL);
 	PORTB |= _BV(POWER_CONTROL);
 	
-	/* Set joystick trigger as input with pull up resistance. */
-	DDRD &= ~_BV(JOY_TRIGGER);
-	PORTD |= _BV(JOY_TRIGGER);
+	/* Set switches as inputs with pull up resistance. */
+	DDRD &= ~_BV(ON_OFF_SWITCH);
+	DDRD &= ~_BV(STEER_SWITCH);
+	PORTD |= _BV(ON_OFF_SWITCH);
+	PORTD |= _BV(STEER_SWITCH);
 
 	/* Enable the ADC. */
 	ADCSRA |= _BV(ADEN);
@@ -153,12 +149,16 @@ void init() {
 	/* Initialize the USART. */
 	USART_Init(MYUBRR);
 	
-	/* Initialize the interrupts */
-	
-	
 	/* Initialize global flags. */
 	power = ON;
 	steer = MAN;
+	
+	/* Initialize the interrupts. */
+	initOffInterrupt();
+	initSteerInterrupt();
+	
+	/* Set global interrupt flag. */
+	sei();
 }
 
 /*
@@ -508,9 +508,12 @@ unsigned char compactData(engine_data *edata) {
 */
 void sleepMode() {
 	
-	/* Clear global interrupt flag and stop timer. */
+	/* Clear global interrupt flag. */
 	cli();
-			
+	
+	/* Initialize low interrupt on INT0 in order for the MCU to be awoken. */
+	initOnInterrupt();
+	
 	/* Turn off power to voltage regulator that powers 
 	 * OLED and bluetooth unit. */
 	PORTB &= ~_BV(POWER_CONTROL);
