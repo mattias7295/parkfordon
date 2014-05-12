@@ -20,39 +20,43 @@ void compas_update()
 	TWDR = 0x42;
 	TWCR = (1<<TWINT) | (1<<TWEN);
 	while (!(TWCR & (1<<TWINT)));
-	
-	
+		
+		
 	//Send Data
 	TWDR = 0x41;
 	TWCR = (1<<TWINT) | (1<<TWEN);
 	while (!(TWCR & (1<<TWINT)));
-	
+		
 	//Stop
-	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);	
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
 	_delay_ms(70);
-	
+		
 	//Start
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
 	while (!(TWCR & (1<<TWINT)));
-	
-	
+		
+		
 	//Send address
 	TWDR = 0x43;
 	TWCR = (1<<TWINT) | (1<<TWEN);
 	while (!(TWCR & (1<<TWINT)));
+		
+	//Read data
+	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);
+	while(!(TWCR & (1<<TWINT)));
+	uint8_t high = TWDR;
+	
 	
 	//Read data
 	TWCR = (1<<TWINT) | (1<<TWEN);
 	while(!(TWCR & (1<<TWINT)));
-	uint8_t  high = TWDR;
-	USART_Transmit(high);
-	
-	TWCR = (1<<TWINT);
-	while(!(TWCR & (1<<TWINT)));
 	uint8_t low = TWDR;
-	USART_Transmit(low);
 	
+	uint16_t total = (high>>4) + (low>>4);
 	
+	USART_Transmit(total);
+			
+
 	//Stop
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
 }
