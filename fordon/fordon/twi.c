@@ -27,6 +27,9 @@ void compas_update()
 	uint16_t high = TWDR;
 	USART_Transmit(high);
 	
+	//Stop
+	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
+	
 	//Start
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
 	while (!(TWCR & (1<<TWINT)));
