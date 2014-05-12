@@ -53,7 +53,8 @@ void initSteerInterrupt() {
 * Output:	-
 * Description:	Interrupt routine for an external interrupt
 *				on port INT0, does nothing but waking the MCU
-*				up after entering sleep mode.
+*				up after entering sleep mode and changing the
+*				power mode flag correctly.
 */
 ISR(INT0_vect) {
 	
