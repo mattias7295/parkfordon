@@ -45,13 +45,16 @@ void compas_update()
 	TWCR = (1<<TWINT) | (1<<TWEN) | (1<<TWEA);
 	while(!(TWCR & (1<<TWINT)));
 	uint8_t high = TWDR;
-	USART_Transmit(high);
+	
 	
 	//Read data
 	TWCR = (1<<TWINT) | (1<<TWEN);
 	while(!(TWCR & (1<<TWINT)));
-	high = TWDR;
-	USART_Transmit(high);
+	uint8_t low = TWDR;
+	
+	uint16_t total = (high>>4) + (low>>4);
+	
+	USART_Transmit(total);
 			
 
 	//Stop
