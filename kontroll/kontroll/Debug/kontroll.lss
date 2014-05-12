@@ -3,27 +3,27 @@ kontroll.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000000  00800100  0000016e  000001e2  2**0
+  0 .data         00000000  00800100  0000017a  000001ee  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         0000016e  00000000  00000000  00000074  2**1
+  1 .text         0000017a  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .stab         000006cc  00000000  00000000  000001e4  2**2
+  2 .stab         000006cc  00000000  00000000  000001f0  2**2
                   CONTENTS, READONLY, DEBUGGING
-  3 .stabstr      00000085  00000000  00000000  000008b0  2**0
+  3 .stabstr      00000085  00000000  00000000  000008bc  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_aranges 00000080  00000000  00000000  00000938  2**3
+  4 .debug_aranges 00000080  00000000  00000000  00000948  2**3
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   00000354  00000000  00000000  000009b8  2**0
+  5 .debug_info   00000354  00000000  00000000  000009c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 000000b2  00000000  00000000  00000d0c  2**0
+  6 .debug_abbrev 000000b2  00000000  00000000  00000d1c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000002a6  00000000  00000000  00000dbe  2**0
+  7 .debug_line   000002a9  00000000  00000000  00000dce  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000034  00000000  00000000  00001064  2**2
+  8 .debug_frame  00000034  00000000  00000000  00001078  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    000000a0  00000000  00000000  00001098  2**0
+  9 .debug_str    000000a0  00000000  00000000  000010ac  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    00000013  00000000  00000000  00001138  2**0
+ 10 .debug_loc    00000013  00000000  00000000  0000114c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -77,7 +77,7 @@ Disassembly of section .text:
   98:	11 e0       	ldi	r17, 0x01	; 1
   9a:	a0 e0       	ldi	r26, 0x00	; 0
   9c:	b1 e0       	ldi	r27, 0x01	; 1
-  9e:	ee e6       	ldi	r30, 0x6E	; 110
+  9e:	ea e7       	ldi	r30, 0x7A	; 122
   a0:	f1 e0       	ldi	r31, 0x01	; 1
   a2:	00 e0       	ldi	r16, 0x00	; 0
   a4:	0b bf       	out	0x3b, r16	; 59
@@ -103,22 +103,22 @@ Disassembly of section .text:
   c0:	b1 07       	cpc	r27, r17
   c2:	e1 f7       	brne	.-8      	; 0xbc <.do_clear_bss_loop>
   c4:	0e 94 7d 00 	call	0xfa	; 0xfa <main>
-  c8:	0c 94 b5 00 	jmp	0x16a	; 0x16a <_exit>
+  c8:	0c 94 bb 00 	jmp	0x176	; 0x176 <_exit>
 
 000000cc <__bad_interrupt>:
   cc:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
 
 000000d0 <adc_read>:
-	/* adcx is the analog pin we want to use. ADMUX's first few bits are
 	* the binary representations of the numbers of the pins so we can
 	* just 'OR' the pin's number with ADMUX to select that pin.
 	* We first zero the four bits by setting ADMUX equal to its higher
 	* four bits. */
-	ADMUX &= 0xf0;
+	//ADMUX &= 0xf0;
+	ADMUX &= 0b01100000; 
   d0:	ec e7       	ldi	r30, 0x7C	; 124
   d2:	f0 e0       	ldi	r31, 0x00	; 0
   d4:	90 81       	ld	r25, Z
-  d6:	90 7f       	andi	r25, 0xF0	; 240
+  d6:	90 76       	andi	r25, 0x60	; 96
   d8:	90 83       	st	Z, r25
 	ADMUX |= adcx;
   da:	90 81       	ld	r25, Z
@@ -177,78 +177,93 @@ int main(void)
 	DDRA |= _BV(LED_N);
  10e:	0c 9a       	sbi	0x01, 4	; 1
 	
-    while(1)
-    {
-	        if (adc_read(X_AXIS) > ADC_THRESHOLDH){
- 110:	80 e0       	ldi	r24, 0x00	; 0
- 112:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
- 116:	23 e0       	ldi	r18, 0x03	; 3
- 118:	81 30       	cpi	r24, 0x01	; 1
- 11a:	92 07       	cpc	r25, r18
- 11c:	10 f0       	brcs	.+4      	; 0x122 <main+0x28>
-		        PORTA |= _BV(LED_H);
- 11e:	17 9a       	sbi	0x02, 7	; 2
- 120:	0b c0       	rjmp	.+22     	; 0x138 <main+0x3e>
-	        }
-	        else if (adc_read(X_AXIS) < ADC_THRESHOLDL){
- 122:	80 e0       	ldi	r24, 0x00	; 0
- 124:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
- 128:	8f 3f       	cpi	r24, 0xFF	; 255
- 12a:	91 05       	cpc	r25, r1
- 12c:	09 f0       	breq	.+2      	; 0x130 <main+0x36>
- 12e:	10 f4       	brcc	.+4      	; 0x134 <main+0x3a>
-		        PORTA |= _BV(LED_V);
- 130:	16 9a       	sbi	0x02, 6	; 2
- 132:	02 c0       	rjmp	.+4      	; 0x138 <main+0x3e>
-	        }
-	        else{
-		        PORTA &= ~_BV(LED_H);
- 134:	17 98       	cbi	0x02, 7	; 2
-		        PORTA &= ~_BV(LED_V);
- 136:	16 98       	cbi	0x02, 6	; 2
-			}
+    while(1) {
+		
+		if ((PINA & _BV(SW1))){
+ 110:	02 9b       	sbis	0x00, 2	; 0
+ 112:	03 c0       	rjmp	.+6      	; 0x11a <main+0x20>
 			
-			if (adc_read(Y_AXIS) > ADC_THRESHOLDH){
- 138:	81 e0       	ldi	r24, 0x01	; 1
- 13a:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
- 13e:	23 e0       	ldi	r18, 0x03	; 3
- 140:	81 30       	cpi	r24, 0x01	; 1
- 142:	92 07       	cpc	r25, r18
- 144:	10 f0       	brcs	.+4      	; 0x14a <main+0x50>
-				PORTA |= _BV(LED_N);
- 146:	14 9a       	sbi	0x02, 4	; 2
- 148:	0b c0       	rjmp	.+22     	; 0x160 <main+0x66>
-			}
-			else if (adc_read(Y_AXIS) < ADC_THRESHOLDL){
- 14a:	81 e0       	ldi	r24, 0x01	; 1
- 14c:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
- 150:	8f 3f       	cpi	r24, 0xFF	; 255
- 152:	91 05       	cpc	r25, r1
- 154:	09 f0       	breq	.+2      	; 0x158 <main+0x5e>
- 156:	10 f4       	brcc	.+4      	; 0x15c <main+0x62>
-				PORTA |= _BV(LED_U);
- 158:	15 9a       	sbi	0x02, 5	; 2
- 15a:	02 c0       	rjmp	.+4      	; 0x160 <main+0x66>
-			}
-			else{
-				PORTA &= ~_BV(LED_U);
- 15c:	15 98       	cbi	0x02, 5	; 2
-				PORTA &= ~_BV(LED_N);
- 15e:	14 98       	cbi	0x02, 4	; 2
-			}
+			PORTA |= _BV(LED_H);
+ 114:	17 9a       	sbi	0x02, 7	; 2
+			PORTA |= _BV(LED_V);
+ 116:	16 9a       	sbi	0x02, 6	; 2
+ 118:	14 c0       	rjmp	.+40     	; 0x142 <main+0x48>
+		}
+	    else if (adc_read(X_AXIS) > ADC_THRESHOLDH) {
+ 11a:	80 e0       	ldi	r24, 0x00	; 0
+ 11c:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 120:	23 e0       	ldi	r18, 0x03	; 3
+ 122:	81 30       	cpi	r24, 0x01	; 1
+ 124:	92 07       	cpc	r25, r18
+ 126:	10 f0       	brcs	.+4      	; 0x12c <main+0x32>
 			
-			if ((PORTA & 0b00000100) == 0)
- 160:	12 99       	sbic	0x02, 2	; 2
- 162:	d6 cf       	rjmp	.-84     	; 0x110 <main+0x16>
-			{
-				PORTA |= _BV(LED_H);
- 164:	17 9a       	sbi	0x02, 7	; 2
-				PORTA |= _BV(LED_V);
- 166:	16 9a       	sbi	0x02, 6	; 2
- 168:	d3 cf       	rjmp	.-90     	; 0x110 <main+0x16>
+		    PORTA |= _BV(LED_H);
+ 128:	17 9a       	sbi	0x02, 7	; 2
+ 12a:	0b c0       	rjmp	.+22     	; 0x142 <main+0x48>
+	    } else if (adc_read(X_AXIS) < ADC_THRESHOLDL) {
+ 12c:	80 e0       	ldi	r24, 0x00	; 0
+ 12e:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 132:	8f 3f       	cpi	r24, 0xFF	; 255
+ 134:	91 05       	cpc	r25, r1
+ 136:	09 f0       	breq	.+2      	; 0x13a <main+0x40>
+ 138:	10 f4       	brcc	.+4      	; 0x13e <main+0x44>
+			
+		    PORTA |= _BV(LED_V);
+ 13a:	16 9a       	sbi	0x02, 6	; 2
+ 13c:	02 c0       	rjmp	.+4      	; 0x142 <main+0x48>
+	    }
+		else{
+			
+			PORTA &= ~_BV(LED_H);
+ 13e:	17 98       	cbi	0x02, 7	; 2
+			PORTA &= ~_BV(LED_V);
+ 140:	16 98       	cbi	0x02, 6	; 2
+		}			
+	    
+		
+		if ((PINA & _BV(SW2))){
+ 142:	03 9b       	sbis	0x00, 3	; 0
+ 144:	03 c0       	rjmp	.+6      	; 0x14c <main+0x52>
+			
+			PORTA |= _BV(LED_U);
+ 146:	15 9a       	sbi	0x02, 5	; 2
+			PORTA |= _BV(LED_N);
+ 148:	14 9a       	sbi	0x02, 4	; 2
+ 14a:	e2 cf       	rjmp	.-60     	; 0x110 <main+0x16>
+		}
+		else if (adc_read(Y_AXIS) > ADC_THRESHOLDH) {
+ 14c:	81 e0       	ldi	r24, 0x01	; 1
+ 14e:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 152:	23 e0       	ldi	r18, 0x03	; 3
+ 154:	81 30       	cpi	r24, 0x01	; 1
+ 156:	92 07       	cpc	r25, r18
+ 158:	10 f0       	brcs	.+4      	; 0x15e <main+0x64>
+			
+			PORTA |= _BV(LED_N);
+ 15a:	14 9a       	sbi	0x02, 4	; 2
+ 15c:	d9 cf       	rjmp	.-78     	; 0x110 <main+0x16>
+		} else if (adc_read(Y_AXIS) < ADC_THRESHOLDL) {
+ 15e:	81 e0       	ldi	r24, 0x01	; 1
+ 160:	0e 94 68 00 	call	0xd0	; 0xd0 <adc_read>
+ 164:	8f 3f       	cpi	r24, 0xFF	; 255
+ 166:	91 05       	cpc	r25, r1
+ 168:	09 f0       	breq	.+2      	; 0x16c <main+0x72>
+ 16a:	10 f4       	brcc	.+4      	; 0x170 <main+0x76>
+			
+			PORTA |= _BV(LED_U);
+ 16c:	15 9a       	sbi	0x02, 5	; 2
+ 16e:	d0 cf       	rjmp	.-96     	; 0x110 <main+0x16>
+		}
+		else{
+			
+			PORTA &= ~_BV(LED_U);
+ 170:	15 98       	cbi	0x02, 5	; 2
+			PORTA &= ~_BV(LED_N);
+ 172:	14 98       	cbi	0x02, 4	; 2
+ 174:	cd cf       	rjmp	.-102    	; 0x110 <main+0x16>
 
-0000016a <_exit>:
- 16a:	f8 94       	cli
+00000176 <_exit>:
+ 176:	f8 94       	cli
 
-0000016c <__stop_program>:
- 16c:	ff cf       	rjmp	.-2      	; 0x16c <__stop_program>
+00000178 <__stop_program>:
+ 178:	ff cf       	rjmp	.-2      	; 0x178 <__stop_program>

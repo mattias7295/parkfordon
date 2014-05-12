@@ -25,43 +25,46 @@ int main(void)
 	DDRA |= _BV(LED_U);
 	DDRA |= _BV(LED_N);
 	
-    while(1)
-    {
-	        if (adc_read(X_AXIS) > ADC_THRESHOLDH){
-		        PORTA |= _BV(LED_H);
-	        }
-	        else if (adc_read(X_AXIS) < ADC_THRESHOLDL){
-		        PORTA |= _BV(LED_V);
-	        }
-	        else{
-		        PORTA &= ~_BV(LED_H);
-		        PORTA &= ~_BV(LED_V);
-			}
+    while(1) {
+		
+		if ((PINA & _BV(SW1))){
 			
-			if (adc_read(Y_AXIS) > ADC_THRESHOLDH){
-				PORTA |= _BV(LED_N);
-			}
-			else if (adc_read(Y_AXIS) < ADC_THRESHOLDL){
-				PORTA |= _BV(LED_U);
-			}
-			else{
-				PORTA &= ~_BV(LED_U);
-				PORTA &= ~_BV(LED_N);
-			}
+			PORTA |= _BV(LED_H);
+			PORTA |= _BV(LED_V);
+		}
+	    else if (adc_read(X_AXIS) > ADC_THRESHOLDH) {
 			
-			if ((PORTA & 0b00000100) == 0)
-			{
-				PORTA |= _BV(LED_H);
-				PORTA |= _BV(LED_V);
-			} 
-			/*
-			if (PORTA & (0000000 << _BV(SW2)))
-			{
-				PORTA = _BV(LED_U);
-				PORTA &= _BV(LED_N);
-			}
-				*/	
-    }
+		    PORTA |= _BV(LED_H);
+	    } else if (adc_read(X_AXIS) < ADC_THRESHOLDL) {
+			
+		    PORTA |= _BV(LED_V);
+	    }
+		else{
+			
+			PORTA &= ~_BV(LED_H);
+			PORTA &= ~_BV(LED_V);
+		}			
+	    
+		
+		if ((PINA & _BV(SW2))){
+			
+			PORTA |= _BV(LED_U);
+			PORTA |= _BV(LED_N);
+		}
+		else if (adc_read(Y_AXIS) > ADC_THRESHOLDH) {
+			
+			PORTA |= _BV(LED_N);
+		} else if (adc_read(Y_AXIS) < ADC_THRESHOLDL) {
+			
+			PORTA |= _BV(LED_U);
+		}
+		else{
+			
+			PORTA &= ~_BV(LED_U);
+			PORTA &= ~_BV(LED_N);
+		}			
+						
+	}    
 }
 
 uint16_t adc_read(uint8_t adcx) {
@@ -70,7 +73,8 @@ uint16_t adc_read(uint8_t adcx) {
 	* just 'OR' the pin's number with ADMUX to select that pin.
 	* We first zero the four bits by setting ADMUX equal to its higher
 	* four bits. */
-	ADMUX &= 0xf0;
+	//ADMUX &= 0xf0;
+	ADMUX &= 0b01100000; 
 	ADMUX |= adcx;
 
 	/* This starts the conversion. */
