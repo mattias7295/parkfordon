@@ -16,17 +16,21 @@
 
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 
+void parseBluetooth(unsigned char command);
+
 int main(void)
 {
+	DDRB |= (1<<PB0);
+	PORTB |= (1<<PB0);
 	USART_Init(MYUBRR);
 	init_pwm();
-	adc_init();
-
+	//adc_init();
 	PORTC |= (1<<PC0)|(1<<PC1);
     while(1)
     {
-		compas_update();
-		_delay_ms(100);
+		parseBluetooth(USART_Receive());
+		//compas_update();
+		//_delay_ms(100);
         
     }
 }
