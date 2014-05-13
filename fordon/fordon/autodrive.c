@@ -57,6 +57,7 @@ void calcHeading(double latPerson, double lonPerson) {
 	
 }
 
+//Haversine formula
 int checkDistance(double latPerson, double lonPerson) {
 	double latVehicle;
 	double lonVehicle;
