@@ -13,27 +13,33 @@
 #include "pwm.h"
 #include "spi.h"
 #include "twi.h"
+#include "GPSparser.h"
 
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 
 void parseBluetooth(unsigned char command);
 
+
 int main(void)
 {
 	DDRB |= (1<<PB0);
 	PORTB |= (1<<PB0);
-	USART_Init(MYUBRR);
+	USART_Init(51);
 	init_pwm();
+	setupGpsParser(51);
 	//adc_init();
 	PORTC |= (1<<PC0)|(1<<PC1);
     while(1)
     {
-		parseBluetooth(0b11100101);
+		parseGPS();
+		//_delay_ms(1000);
+		//parseBluetooth(0b11100101);
 		//compas_update();
 		//_delay_ms(100);
         
     }
 }
+
 
 void parseBluetooth(unsigned char command) {
 
