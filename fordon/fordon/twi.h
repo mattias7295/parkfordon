@@ -9,7 +9,7 @@
 #ifndef TWI_H_
 #define TWI_H_
 
-void compas_update();
+uint16_t compas_update();
 
 
 

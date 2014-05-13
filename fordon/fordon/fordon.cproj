@@ -90,6 +90,12 @@
     <Compile Include="adc.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="autodrive.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="autodrive.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="fordon.c">
       <SubType>compile</SubType>
     </Compile>
