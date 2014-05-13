@@ -14,10 +14,10 @@ steer_mode steer;
 void initOnInterrupt() {
 	
 	/* Disable the external interrupt on port INT0. */
-	EIMSK &= (0<<ON_OFF_SWITCH);
+	EIMSK &= ~(1<<ON_OFF_SWITCH);
 	
 	/* Low level generates interrupt. */
-	EICRA &= (0<<ISC00)|(0<<ISC01);
+	EICRA &= ~(1<<ISC00)|(1<<ISC01);
 	
 	/* Enable the external interrupt on port INT0. */
 	EIMSK |= (1<<ON_OFF_SWITCH);
@@ -29,7 +29,7 @@ void initOnInterrupt() {
 void initOffInterrupt() {
 	
 	/* Disable the external interrupt on port INT0. */
-	EIMSK &= (0<<ON_OFF_SWITCH);
+	EIMSK &= ~(1<<ON_OFF_SWITCH);
 	
 	/* Rising edge generates interrupt. */
 	EICRA |= (1<<ISC00)|(1<<ISC01);
@@ -44,11 +44,11 @@ void initOffInterrupt() {
 void initSteerInterrupt() {
 	
 	/* Disable the external interrupt on port INT1. */
-	EIMSK &= (0<<STEER_SWITCH);
+	EIMSK &= ~(1<<STEER_SWITCH);
 	
 	/* Any edge generates interrupt. */
 	EICRA |= (1<<ISC10);
-	EICRA &= (0<<ISC11);
+	EICRA &= ~(1<<ISC11);
 	
 	/* Enable the external interrupt on port INT1. */
 	EIMSK |= (1<<STEER_SWITCH);
@@ -71,10 +71,10 @@ ISR(INT0_vect) {
 	/* Change power mode flag. */
 	if (power == OFF) {
 		power = ON;
-		PORTB |= _BV(POWER_CONTROL);
+//		PORTB |= _BV(POWER_CONTROL);
 	} else {
 		power = OFF;
-		PORTB &= ~_BV(POWER_CONTROL);
+//		PORTB &= ~_BV(POWER_CONTROL);
 	}
 }
 

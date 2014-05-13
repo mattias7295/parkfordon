@@ -8,6 +8,7 @@
 #include "control_pad.h"
 
 /* Function declarations. */
+void init();
 void USART_Init(unsigned int ubrr);
 void USART_Transmit(unsigned char data);
 unsigned char USART_Receive();
@@ -38,25 +39,31 @@ int main(void) {
 	/* Main loop. */
 	while (1) {
 		
-		/* Get coordinates. */
-		x_value = getXValue();
-		y_value = getYValue();
+		if (steer == MAN) {
+			
+			/* Get coordinates. */
+			x_value = getXValue();
+			y_value = getYValue();
 		
-		/* Calculate angle of the position in a coordinate system. */
-		double angle = atan2((double)y_value, (double)x_value);
+			/* Calculate angle of the position in a coordinate system. */
+			double angle = atan2((double)y_value, (double)x_value);
 		
-		/* Set all info in edata. */
-		setDirections(edata, angle);
-		setThrottles(edata, angle, x_value, y_value);
+			/* Set all info in edata. */
+			setDirections(edata, angle);
+			setThrottles(edata, angle, x_value, y_value);
 		
-		/* Compact all engine data into one 8-bit char. */
-		send_data = compactData(edata);
+			/* Compact all engine data into one 8-bit char. */
+			send_data = compactData(edata);
 		
-		/* Start data transfer signal. */
-//		USART_Transmit(255);
+			/* Start data transfer signal. */
+			//USART_Transmit(255);
+			
+			/* Send data via bluetooth. */
+			USART_Transmit(send_data);
 		
-		/* Send data via bluetooth. */
-//		USART_Transmit(send_data);
+		} else {
+			// Get steering info from GPS unit
+		}
 		
 		/* Check if sleep mode is to be activated. */
 		if (power == OFF) {
@@ -105,7 +112,8 @@ void init() {
 		PORTB |= _BV(STEER_CONTROL);
 	}
 	
-	/* Initialize the interrupts. */
+	/* Initialize the interrupts for turning off the control pad and
+	 * changing the steering mode. */
 	initOffInterrupt();
 	initSteerInterrupt();
 	
@@ -173,7 +181,7 @@ uint16_t adc_read(uint8_t adcx) {
 	
 	/* Takes voltage levels from Aref and sets which analog pin we want
 	 * to read from. */
-	ADMUX &= 0b01100000;
+	ADMUX &= (1<<REFS0)|(1<<ADLAR);
 	ADMUX |= adcx;
 
 	/* This starts the conversion. */
