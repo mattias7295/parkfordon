@@ -38,22 +38,18 @@ int main(void)
 void parseBluetooth(unsigned char command) {
 
 	uint8_t speed = 0;
-	if (CHECK_BIT(command, 7))
-	{
+	if{
 		speed = (command >> 4) & 0x7;
-		if (speed == 0)
-		{
+		if (speed == 0|| speed = 1)	{
 			speed = 0xff;
 		}
 		else {
 			speed = 255-(speed * 36);		
 		}
 		initEngineLeftForward((unsigned char)speed);
-	}
-	else {
+	}else {
 		speed = (command >> 4) & 0x7;
-		if (speed == 0)
-		{
+		if (speed == 0|| speed = 1){
 			speed = 0xff;
 		}
 		else {
@@ -61,21 +57,20 @@ void parseBluetooth(unsigned char command) {
 		}
 		initEngineLeftBackward((unsigned char)speed);
 	}
+	
+	
 	if (CHECK_BIT(command, 3)) {
 		speed = command & 0x7;
-		if (speed == 0)
-		{
+		if (speed == 0|| speed = 1)	{
 			speed = 0xff;
 		}
 		else {
 			speed = 255-(speed * 36);
 		}
 		initEngineRightForward((unsigned char)speed);
-	}
-	else {
+	}else {
 		speed = command & 0x7;
-		if (speed == 0)
-		{
+		if (speed == 0|| speed = 1) {
 			speed = 0xff;
 		}
 		else {
