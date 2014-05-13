@@ -28,7 +28,7 @@ int main(void)
 	PORTC |= (1<<PC0)|(1<<PC1);
     while(1)
     {
-		parseBluetooth(USART_Receive());
+		parseBluetooth(0b11100101);
 		//compas_update();
 		//_delay_ms(100);
         
@@ -38,9 +38,9 @@ int main(void)
 void parseBluetooth(unsigned char command) {
 
 	uint8_t speed = 0;
-	if{
+	if(CHECK_BIT(command,7)){
 		speed = (command >> 4) & 0x7;
-		if (speed == 0|| speed = 1)	{
+		if (speed == 0 || speed == 1)	{
 			speed = 0xff;
 		}
 		else {
@@ -49,7 +49,7 @@ void parseBluetooth(unsigned char command) {
 		initEngineLeftForward((unsigned char)speed);
 	}else {
 		speed = (command >> 4) & 0x7;
-		if (speed == 0|| speed = 1){
+		if (speed == 0 || speed == 1){
 			speed = 0xff;
 		}
 		else {
@@ -61,7 +61,7 @@ void parseBluetooth(unsigned char command) {
 	
 	if (CHECK_BIT(command, 3)) {
 		speed = command & 0x7;
-		if (speed == 0|| speed = 1)	{
+		if (speed == 0 || speed == 1)	{
 			speed = 0xff;
 		}
 		else {
@@ -70,7 +70,7 @@ void parseBluetooth(unsigned char command) {
 		initEngineRightForward((unsigned char)speed);
 	}else {
 		speed = command & 0x7;
-		if (speed == 0|| speed = 1) {
+		if (speed == 0 || speed == 1) {
 			speed = 0xff;
 		}
 		else {
