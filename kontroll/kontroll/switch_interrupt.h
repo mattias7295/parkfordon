@@ -7,9 +7,16 @@
 
 #include <avr/interrupt.h>
 
-/* Define switch ports. */
+/* Define switch interrupt ports. */
 #define ON_OFF_SWITCH INT0
 #define STEER_SWITCH INT1
+
+/* Define steer switch input port for checking. */
+#define STEER_SWITCH_IN PD3
+
+/* Power and steer control lights. */
+#define POWER_CONTROL PB0
+#define STEER_CONTROL PB1
 
 /* Power mode enum. */
 typedef enum {ON, OFF} power_mode;

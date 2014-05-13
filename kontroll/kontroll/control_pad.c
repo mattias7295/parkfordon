@@ -23,16 +23,6 @@ void sleepMode();
 int x_value;
 int y_value;
 
-/*Define test lights. */
-#define LED_H PA7
-#define LED_V PA6
-#define LED_U PA5
-#define LED_N PA4
-
-/*Define test buttons. */
-#define SW1 PA2
-#define SW2 PA3
-
 int main(void) {
 	
 	/* Data to be sent via bluetooth. */
@@ -66,55 +56,7 @@ int main(void) {
 //		USART_Transmit(255);
 		
 		/* Send data via bluetooth. */
-		USART_Transmit(send_data);
-
-		/*Set buttons as input*/
-		DDRA &= ~_BV(SW1);
-		DDRA &= ~_BV(SW2);
-		
-		/* Set the LED pin as an output. */
-		DDRA |= _BV(LED_H);
-		DDRA |= _BV(LED_V);
-		DDRA |= _BV(LED_U);
-		DDRA |= _BV(LED_N);
-
-		if ((PINA & _BV(SW1))){
-			
-			PORTA |= _BV(LED_H);
-			PORTA |= _BV(LED_V);
-		}
-		else if (adc_read(X_AXIS) > ADC_THRESHOLDH3) {
-			
-			PORTA |= _BV(LED_H);
-		} else if (adc_read(X_AXIS) < ADC_THRESHOLDL3) {
-			
-			PORTA |= _BV(LED_V);
-		}
-		else{
-			
-			PORTA &= ~_BV(LED_H);
-			PORTA &= ~_BV(LED_V);
-		}
-		
-		
-		if ((PINA & _BV(SW2))){
-			
-			PORTA |= _BV(LED_U);
-			PORTA |= _BV(LED_N);
-		}
-		else if (adc_read(Y_AXIS) > ADC_THRESHOLDH3) {
-			
-			PORTA |= _BV(LED_N);
-		} else if (adc_read(Y_AXIS) < ADC_THRESHOLDL3) {
-			
-			PORTA |= _BV(LED_U);
-		}
-		else{
-			
-			PORTA &= ~_BV(LED_U);
-			PORTA &= ~_BV(LED_N);
-		}
-		
+//		USART_Transmit(send_data);
 		
 		/* Check if sleep mode is to be activated. */
 		if (power == OFF) {
@@ -133,9 +75,12 @@ int main(void) {
 */
 void init() {
 	
-	/* Set power control to output and constantly high. */
+	/* Set power control to output and constantly high since we start in on mode. */
 	DDRB |= _BV(POWER_CONTROL);
 	PORTB |= _BV(POWER_CONTROL);
+	
+	/* Set steer control to output. */
+	DDRB |= _BV(STEER_CONTROL);
 	
 	/* Set switches as inputs with pull up resistance. */
 	DDRD &= ~_BV(ON_OFF_SWITCH);
@@ -149,9 +94,16 @@ void init() {
 	/* Initialize the USART. */
 	USART_Init(MYUBRR);
 	
-	/* Initialize global flags. */
+	/* Initialize global flags and indicate steering mode with LED. */	
 	power = ON;
-	steer = MAN;
+	
+	if (PIND & (1<<STEER_SWITCH_IN)) {
+		steer = MAN;
+		PORTB &= ~_BV(STEER_CONTROL);
+	} else {
+		steer = AUTO;
+		PORTB |= _BV(STEER_CONTROL);
+	}
 	
 	/* Initialize the interrupts. */
 	initOffInterrupt();
@@ -516,7 +468,10 @@ void sleepMode() {
 	
 	/* Turn off power to voltage regulator that powers 
 	 * OLED and bluetooth unit. */
+//	PORTB &= ~_BV(POWER_CONTROL);
+	
 	PORTB &= ~_BV(POWER_CONTROL);
+	PORTB &= ~_BV(STEER_CONTROL);
 	
 	/* Set leds to input in order to save more power. */
 /*	DDRD &= ~_BV(LED_PIN8);
