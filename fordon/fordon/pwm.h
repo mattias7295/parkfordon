@@ -12,10 +12,11 @@
 #include <avr/io.h>
 
 void init_pwm();
-void initEngineRightForward(unsigned char speed);
-void initEngineRightBackward(unsigned char speed);
-void initEngineLeftForward(unsigned char speed);
-void initEngineLeftBackward(unsigned char speed);
+void initEngineRightForward();
+void initEngineRightBackward();
+void initEngineLeftForward();
+void initEngineLeftBackward();
+
 
 
 #endif /* PWM_H_ */

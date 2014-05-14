@@ -17,25 +17,30 @@ void init_pwm() {
 	
 	//set OC2A and 0C2B as outputs
 	DDRD |= (1<<PD6) | (1<<PD7);
+	
+	OCR0A = 255;
+	OCR0B = 255;
+	OCR2A = 255;
+	OCR2B = 255;
 }
 
 
-void initEngineRightForward(unsigned char speed) {
+void initEngineRightForward() {
 	TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-	OCR0A = speed;
+	//OCR0A = speed;
 }
 
-void initEngineRightBackward(unsigned char speed) {
+void initEngineRightBackward() {
 	TCCR0A = (1<<COM0B0)|(1<<COM0B1)|(1<<WGM00);
-	OCR0B = speed;
+	//OCR0B = speed;
 }
 
-void initEngineLeftForward(unsigned char speed) {
+void initEngineLeftForward() {
 	TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-	OCR2A = speed;
+	//OCR2A = speed;
 }
 
-void initEngineLeftBackward(unsigned char speed) {
+void initEngineLeftBackward() {
 	TCCR2A = (1<<COM2B0)|(1<<COM2B1)|(1<<WGM20);
-	OCR2B = speed;
+	//OCR2B = speed;
 }
