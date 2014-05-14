@@ -66,6 +66,8 @@ int main(void) {
 			// Get steering info from GPS unit
 		}
 		
+		//_delay_ms(1000);
+		
 		/* Check if sleep mode is to be activated. */
 		if (power == OFF) {
 			sleepMode();

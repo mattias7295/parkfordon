@@ -19,13 +19,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   7 .debug_abbrev 000002f2  00000000  00000000  00004bf9  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   00000509  00000000  00000000  00004eeb  2**0
+  8 .debug_line   0000050b  00000000  00000000  00004eeb  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000001f4  00000000  00000000  000053f4  2**2
+  9 .debug_frame  000001f4  00000000  00000000  000053f8  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    00000252  00000000  00000000  000055e8  2**0
+ 10 .debug_str    00000252  00000000  00000000  000055ec  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000052c  00000000  00000000  0000583a  2**0
+ 11 .debug_loc    0000052c  00000000  00000000  0000583e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -350,7 +350,7 @@ void init() {
 	
 	/* Initialize the USART. */
 	USART_Init(MYUBRR);
-     1c2:	87 e6       	ldi	r24, 0x67	; 103
+     1c2:	83 e3       	ldi	r24, 0x33	; 51
      1c4:	90 e0       	ldi	r25, 0x00	; 0
      1c6:	0e 94 c8 00 	call	0x190	; 0x190 <USART_Init>
 	
@@ -1968,9 +1968,9 @@ int main(void) {
 			/* Send data via bluetooth. */
 			USART_Transmit(send_data);
      b3e:	0e 94 f7 00 	call	0x1ee	; 0x1ee <USART_Transmit>
-		} else {
-			// Get steering info from GPS unit
 		}
+		
+		//_delay_ms(1000);
 		
 		/* Check if sleep mode is to be activated. */
 		if (power == OFF) {
