@@ -15,8 +15,8 @@
 
 /* USART definitions. */
 #define FOSC 8000000 // Clock Speed
-#define BAUD 4800
-#define MYUBRR 103
+#define BAUD 9600
+#define MYUBRR 51
 
 /* Which analog pin we want to read from. The pins are labeled "ADC0"
 * "ADC1" etc on the pinout in the data sheet. In this case X_AXIS
