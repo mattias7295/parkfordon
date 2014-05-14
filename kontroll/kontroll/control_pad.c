@@ -6,6 +6,7 @@
  */ 
 
 #include "control_pad.h"
+#include <util/delay.h>
 
 /* Function declarations. */
 void init();
@@ -81,6 +82,10 @@ int main(void) {
 *				and timer.
 */
 void init() {
+	
+	/* Set power port to output and high. */
+	DDRD |= _BV(POWER_PORT);
+	PORTD |= _BV(POWER_PORT);
 	
 	/* Set power control to output and constantly high since we start in on mode. */
 	DDRB |= _BV(POWER_CONTROL);
@@ -474,14 +479,17 @@ void sleepMode() {
 	/* Initialize low interrupt on INT0 in order for the MCU to be awoken. */
 	initOnInterrupt();
 	
-	/* Turn off power to voltage regulator that powers 
-	 * OLED and bluetooth unit. */
-//	PORTB &= ~_BV(POWER_CONTROL);
+	/* Turn off power to voltage regulator that powers bluetooth unit. */
+	PORTD &= ~_BV(POWER_PORT);
 	
+	/* Turn off leds that indicate power and steering. */
 	PORTB &= ~_BV(POWER_CONTROL);
 	PORTB &= ~_BV(STEER_CONTROL);
 	
 	/* Set leds to input in order to save more power. */
+	DDRB &= ~_BV(POWER_CONTROL);
+	DDRB &= ~_BV(STEER_CONTROL);
+	
 /*	DDRD &= ~_BV(LED_PIN8);
 	DDRC &= ~_BV(LED_PIN7);
 	DDRC &= ~_BV(LED_PIN6);

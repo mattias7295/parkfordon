@@ -24,6 +24,9 @@
 #define X_AXIS PA0
 #define Y_AXIS PA1
 
+/* Power to bluetooth port. */ 
+#define POWER_PORT PD7
+
 /* The ADC value we will consider the cutoff point for turning the LED
 * on or off. The ADC we are using is 10-bits so can be a value from
 * 0 to 1023. The value 0 means that there is no voltage on the ADC pin
