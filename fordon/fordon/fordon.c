@@ -182,13 +182,15 @@ int main(void)
 	sei();
 	
 	
-	DDRB |= (1<<PB0);
-	PORTB |= (1<<PB0);
+	DDRB |= (1<<PB0); // EN enable till H-ryggorna
+	PORTB |= (1<<PB0); 
+	
+	
 	USART_Init(51);
 	init_pwm();
 	//setupGpsParser(51);
 	//adc_init();
-	PORTC |= (1<<PC0)|(1<<PC1);
+	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
     while(1)
     {
 		//parseGPS();
