@@ -6,7 +6,6 @@
  */ 
 
 #include "GPS_parser.h"
-#include <string.h>
 
 char latitude[9];
 char longitude[10];
@@ -29,40 +28,89 @@ void initGPSParser(unsigned int ubrr) {
 
 void parseGPS() {
 	
-	char temp = 'O';
+	char temp;
+	char word[6];
+	
+	for (int j = 0; j < 10; j++) {
+	
+	while (temp != '$') {
+		temp = USART_ReceiveGPS();
+	}
+	
+	for (int i = 0; i < 5; i++) {
+		word[i] = USART_ReceiveGPS();
+	}
+	
+	word[5] = '\0';
+
+	if (strcmp(word, "GPRMC") == 0) {
+		
+		USART_Transmit(word[0]);
+		USART_Transmit(word[1]);
+		USART_Transmit(word[2]);
+		USART_Transmit(word[3]);
+		USART_Transmit(word[4]);
+		
+		for (int i = 0; i < 12; i++)
+		{
+			USART_ReceiveGPS();
+		}
+		
+		for (int i = 0; i < 24; i++)
+		{
+			USART_Transmit(USART_ReceiveGPS());
+		}
+		
+		USART_Transmit(0x0D);
+	}
+	
+	}	
+	
+	//USART_Transmit(USART_ReceiveGPS());
+	
+/*	char temp = 'O';
 	char word[6];
 	char sentence[37];
 	char delim = ',';
 	char *GPSStatus;
 	
 	
-	while (temp != '$'){
-		
+	while (temp != '$') {	
 		temp = USART_ReceiveGPS();
 	}
-	for (int i = 0; i < 5; i++){
-		
+	
+	for (int i = 0; i < 5; i++) {
 		word[i] = USART_ReceiveGPS();
 	}
+	
 	word[5] = '\0';
-	if (strcmp(word,"GPRMC") == 0){
+	
+	if (strcmp(word, "GPRMC") == 0) {
 		
-		for (int i = 0; i < 36; i++){
+		for (int i = 0; i < 36; i++) {
 			sentence[i] = USART_ReceiveGPS();
 		}
 		
-		GPSStatus = strtok(sentence, &delim);
 		
-		if (*GPSStatus == 'A'){
-			
-		strtok(sentence, NULL);
-		strcpy(latitude, strtok(sentence, NULL));
-		strtok(sentence, NULL);
-		strcpy(longitude, strtok(sentence, NULL));
+		strtok(sentence, &delim);
+		GPSStatus = strtok(sentence, NULL);
+		
+		if (*GPSStatus != 'V') {
+			strtok(sentence, NULL);
+			strcpy(latitude, strtok(sentence, NULL));
+			strtok(sentence, NULL);
+			strcpy(longitude, strtok(sentence, NULL));
 		}
 
 	}
-	
+	*/
+	/*
+	latitude[0] = 'h';
+	latitude[1] = 'e';
+	latitude[2] = 'j';
+	longitude[0] = 'd';
+	longitude[1] = 'å';
+	*/
 }
 
 
