@@ -13,13 +13,13 @@ steer_mode steer;
 
 void initOnInterrupt() {
 	
-	/* Disable the external interrupt on port INT0. */
+	/* Disable the external interrupt on port INT1. */
 	EIMSK &= ~(1<<ON_OFF_SWITCH);
 	
 	/* Low level generates interrupt. */
-	EICRA &= ~(1<<ISC00)|(1<<ISC01);
+	EICRA &= ~(1<<ISC10)|(1<<ISC11);
 	
-	/* Enable the external interrupt on port INT0. */
+	/* Enable the external interrupt on port INT1. */
 	EIMSK |= (1<<ON_OFF_SWITCH);
 	
 	/* Set the global interrupt flag. */
@@ -28,13 +28,13 @@ void initOnInterrupt() {
 
 void initOffInterrupt() {
 	
-	/* Disable the external interrupt on port INT0. */
+	/* Disable the external interrupt on port INT1. */
 	EIMSK &= ~(1<<ON_OFF_SWITCH);
 	
 	/* Rising edge generates interrupt. */
-	EICRA |= (1<<ISC00)|(1<<ISC01);
+	EICRA |= (1<<ISC10)|(1<<ISC11);
 	
-	/* Enable the external interrupt on port INT0. */
+	/* Enable the external interrupt on port INT1. */
 	EIMSK |= (1<<ON_OFF_SWITCH);
 	
 	/* Set the global interrupt flag. */
@@ -43,42 +43,40 @@ void initOffInterrupt() {
 
 void initSteerInterrupt() {
 	
-	/* Disable the external interrupt on port INT1. */
+	/* Disable the external interrupt on port INT2. */
 	EIMSK &= ~(1<<STEER_SWITCH);
 	
 	/* Any edge generates interrupt. */
-	EICRA |= (1<<ISC10);
-	EICRA &= ~(1<<ISC11);
+	EICRA |= (1<<ISC20);
+	EICRA &= ~(1<<ISC21);
 	
-	/* Enable the external interrupt on port INT1. */
+	/* Enable the external interrupt on port INT2. */
 	EIMSK |= (1<<STEER_SWITCH);
 	
 	/* Set the global interrupt flag. */
-//	sei();
+	//	sei();
 }
 
 /*
 * Function: ISR
-* Input:	INT0_vect
+* Input:	INT1_vect
 * Output:	-
 * Description:	Interrupt routine for an external interrupt
-*				on port INT0, does nothing but waking the MCU
+*				on port INT1, does nothing but waking the MCU
 *				up after entering sleep mode and changing the
 *				power mode flag correctly.
 */
-ISR(INT0_vect) {
+ISR(INT1_vect) {
 	
 	/* Change power mode flag. */
 	if (power == OFF) {
 		power = ON;
-//		PORTB |= _BV(POWER_CONTROL);
 	} else {
 		power = OFF;
-//		PORTB &= ~_BV(POWER_CONTROL);
 	}
 }
 
-ISR(INT1_vect) {
+ISR(INT2_vect) {
 	
 	/* Change steering mode flag. */
 	if (steer == MAN) {
@@ -90,3 +88,5 @@ ISR(INT1_vect) {
 	}
 	
 }
+
+
