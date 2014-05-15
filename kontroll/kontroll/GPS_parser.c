@@ -51,11 +51,13 @@ void parseGPS() {
 		sentence[i] = USART_ReceiveGPS();
 	}
 	
+	//sentence[36] = '\0';
+	
 	strtok(sentence, &delim);
 	GPSStatus = strtok(sentence, NULL);
 	
 	if (*GPSStatus != 'V') {
-		strtok(sentence, NULL);
+		//strtok(sentence, NULL);
 		strcpy(latitude, strtok(sentence, NULL));
 		strtok(sentence, NULL);
 		strcpy(longitude, strtok(sentence, NULL));
