@@ -6,6 +6,8 @@
  */ 
 
 #include "control_pad.h"
+#include "GPS_parser.h"
+
 #include <util/delay.h>
 
 /* Function declarations. */
@@ -66,7 +68,7 @@ int main(void) {
 			// Get steering info from GPS unit
 		}
 		
-		//_delay_ms(1000);
+		_delay_ms(1000);
 		
 		/* Check if sleep mode is to be activated. */
 		if (power == OFF) {
@@ -85,9 +87,11 @@ int main(void) {
 */
 void init() {
 	
-	/* Set power port to output and high. */
-	DDRD |= _BV(POWER_PORT);
-	PORTD |= _BV(POWER_PORT);
+	/* Set power ports to output and high. */
+	DDRA |= _BV(POWER_PORT_3V);
+	DDRA |= _BV(POWER_PORT_5V);
+	PORTA |= _BV(POWER_PORT_3V);
+	PORTA |= _BV(POWER_PORT_5V);
 	
 	/* Set power control to output and constantly high since we start in on mode. */
 	DDRB |= _BV(POWER_CONTROL);
@@ -108,10 +112,13 @@ void init() {
 	/* Initialize the USART. */
 	USART_Init(MYUBRR);
 	
+	/* Initialize the GPS parser. */
+	initGPSParser(MYUBRR);
+	
 	/* Initialize global flags and indicate steering mode with LED. */	
 	power = ON;
 	
-	if (PIND & (1<<STEER_SWITCH_IN)) {
+	if (PINB & (1<<STEER_SWITCH_IN)) {
 		steer = MAN;
 		PORTB &= ~_BV(STEER_CONTROL);
 	} else {
@@ -121,7 +128,7 @@ void init() {
 	
 	/* Initialize the interrupts for turning off the control pad and
 	 * changing the steering mode. */
-	initOffInterrupt();
+	initOffInterrupt();	
 	initSteerInterrupt();
 	
 	/* Set global interrupt flag. */
@@ -481,14 +488,17 @@ void sleepMode() {
 	/* Initialize low interrupt on INT0 in order for the MCU to be awoken. */
 	initOnInterrupt();
 	
-	/* Turn off power to voltage regulator that powers bluetooth unit. */
-	PORTD &= ~_BV(POWER_PORT);
+	/* Turn off power to voltage regulator that powers bluetooth and GPS units. */
+	PORTA &= ~_BV(POWER_PORT_3V);
+	PORTA &= ~_BV(POWER_PORT_5V);
 	
 	/* Turn off leds that indicate power and steering. */
 	PORTB &= ~_BV(POWER_CONTROL);
 	PORTB &= ~_BV(STEER_CONTROL);
 	
-	/* Set leds to input in order to save more power. */
+	/* Set output pins to input in order to save more power. */
+	DDRA &= ~_BV(POWER_PORT_3V);
+	DDRA &= ~_BV(POWER_PORT_5V);
 	DDRB &= ~_BV(POWER_CONTROL);
 	DDRB &= ~_BV(STEER_CONTROL);
 	

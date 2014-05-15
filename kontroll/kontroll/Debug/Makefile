@@ -35,6 +35,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../GPS_parser.c \
 ../switch_interrupt.c \
 ../control_pad.c
 
@@ -46,21 +47,25 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+GPS_parser.o \
 switch_interrupt.o \
 control_pad.o
 
 
 OBJS_AS_ARGS +=  \
+GPS_parser.o \
 switch_interrupt.o \
 control_pad.o
 
 
 C_DEPS +=  \
+GPS_parser.d \
 switch_interrupt.d \
 control_pad.d
 
 
 C_DEPS_AS_ARGS +=  \
+GPS_parser.d \
 switch_interrupt.d \
 control_pad.d
 
@@ -74,6 +79,8 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR32/GNU C Compiler
+
+
 
 
 

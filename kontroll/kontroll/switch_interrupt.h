@@ -8,11 +8,11 @@
 #include <avr/interrupt.h>
 
 /* Define switch interrupt ports. */
-#define ON_OFF_SWITCH INT0
-#define STEER_SWITCH INT1
+#define ON_OFF_SWITCH INT1
+#define STEER_SWITCH INT2
 
 /* Define steer switch input port for checking. */
-#define STEER_SWITCH_IN PD3
+#define STEER_SWITCH_IN PB2
 
 /* Power and steer control lights. */
 #define POWER_CONTROL PB0
@@ -32,3 +32,5 @@ extern steer_mode steer;
 void initOnInterrupt();
 void initOffInterrupt();
 void initSteerInterrupt();
+ISR(INT1_vect);
+ISR(INT2_vect);
