@@ -29,7 +29,7 @@ uint16_t compas_update()
 		
 	//Stop
 	TWCR = (1<<TWINT)|(1<<TWEN)|(1<<TWSTO);
-	_delay_ms(70);
+	_delay_ms(560);
 		
 	//Start
 	TWCR = (1<<TWINT)|(1<<TWSTA)|(1<<TWEN);
@@ -54,7 +54,10 @@ uint16_t compas_update()
 	
 	//uint16_t total = (high<<4) + (low>>4);
 	uint16_t total = (high<<8) | low;
-	//USART_Transmit(total);
+
+	USART_Transmit(high);
+	USART_Transmit(low);
+	
 			
 
 	//Stop

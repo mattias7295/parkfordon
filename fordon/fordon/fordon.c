@@ -182,28 +182,28 @@ int main(void)
 	sei();
 	
 	
-	DDRB |= (1<<PB0); // EN enable till H-ryggorna
+	DDRB |= (1<<PB0); // EN enable till H-bryggorna
 	PORTB |= (1<<PB0); 
-	
-	
+
 	USART_Init(51);
 	init_pwm();
 	//setupGpsParser(51);
 	//adc_init();
 	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
+	TWBR = 8; // twi clock frequency
+	uint16_t compas;
     while(1)
     {
 		//parseGPS();
-		//_delay_ms(1000);
-		parseBluetooth(USART_Receive());
-		//compas_update();
-		//_delay_ms(100);
-        
+		//parseBluetooth(USART_Receive());
+		compas = compas_update();
+		_delay_ms(8000);
     }
 }
 
 
 void parseBluetooth(unsigned char command) {
+	// TODO: Check if autodrive is on
 
 	uint8_t speed1 = 0;
 	uint8_t speed2 = 0;
