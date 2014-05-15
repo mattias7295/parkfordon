@@ -10,8 +10,6 @@
 #define TO_RAD (3.1415926536 / 180)
 
 void calcHeading(double latPerson, double lonPerson) {
-	
-	
 	// Läs av position
 	double latVehicle;
 	double lonVehicle;
@@ -70,3 +68,15 @@ int checkDistance(double latPerson, double lonPerson) {
 	dy = sin(latPerson) * cos(lonPerson);
 	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;
 }
+
+/*
+Bluetooth kommunikation
+Automatisk körning
+Skicka 255 för att begära koordinater
+Starta timer
+Läs av antalet bytes som behövs
+Om antalet bytes inte nått upp till det begärda inom en viss tid, skicka 255 för att begära nya koordinater
+ 
+ 
+Manuell körning
+*/
