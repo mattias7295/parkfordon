@@ -70,13 +70,13 @@ int main(void) {
 		parseGPS();
 		
 		for (int i = 0; i < 9; i++) {
-		//	USART_Transmit(latitude[i]);
+			USART_Transmit(latitude[i]);
 		}
 				
 		_delay_ms(1000);
 		
 		for (int i = 0; i < 10; i++) {
-		//	USART_Transmit(longitude[i]);
+			USART_Transmit(longitude[i]);
 		}
 		
 		_delay_ms(1000);
