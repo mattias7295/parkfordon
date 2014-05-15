@@ -12,6 +12,7 @@
 #include <avr/sleep.h>
 #include <avr/wdt.h>
 #include "switch_interrupt.h"
+#include "GPS_parser.h"
 
 /* USART definitions. */
 #define FOSC 8000000 // Clock Speed

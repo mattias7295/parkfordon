@@ -6,7 +6,6 @@
  */ 
 
 #include "control_pad.h"
-#include "GPS_parser.h"
 
 #include <util/delay.h>
 
@@ -62,10 +61,22 @@ int main(void) {
 			//USART_Transmit(255);
 			
 			/* Send data via bluetooth. */
-			USART_Transmit(send_data);
+//			USART_Transmit(send_data);
 		
 		} else {
 			// Get steering info from GPS unit
+		}
+		
+		parseGPS();
+		
+		for (int i = 0; i < 9; i++) {
+			USART_Transmit(latitude[i]);
+		}
+				
+		_delay_ms(1000);
+		
+		for (int i = 0; i < 10; i++) {
+			USART_Transmit(longitude[i]);
 		}
 		
 		_delay_ms(1000);
