@@ -1,15 +1,19 @@
 /*
- * GPS_parser.c
+ * GPSparser.c
  *
- * Created: 2014-05-15 09:33:05
- *  Author: anjo0409
+ * Created: 2014-05-13 14:34:42
+ *  Author: masc0058
  */ 
 
 #include "GPS_parser.h"
+#include <string.h>
+
+char latitude[9];
+char longitude[10];
 
 void initGPSParser(unsigned int ubrr) {
-
-	//DDRD |= (1<<PD3);
+	
+//	DDRD |= (1<<PD3);
 
 	/* Set baud rate */
 	UBRR1H = (unsigned char)(ubrr>>8);
@@ -20,42 +24,47 @@ void initGPSParser(unsigned int ubrr) {
 
 	/* Set frame format: 8data, 2stop bit */
 	UCSR1C = (1<<USBS1)|(3<<UCSZ10);
+
 }
 
 void parseGPS() {
-
-	/*char temp;
+	
+	char temp = 'O';
 	char word[6];
-	while (temp != '$')
-	{
+	char sentence[37];
+	char delim = ',';
+	char *GPSStatus;
+	
+	
+	while (temp != '$'){
+		
 		temp = USART_ReceiveGPS();
 	}
-	for (int i = 0; i < 5; i++)
-	{
+	for (int i = 0; i < 5; i++){
+		
 		word[i] = USART_ReceiveGPS();
 	}
 	word[5] = '\0';
-	if (strcmp(word,"GPRMC") == 0)
-	{
-		USART_Transmit(word[0]);
-		USART_Transmit(word[1]);
-		USART_Transmit(word[2]);
-		USART_Transmit(word[3]);
-		USART_Transmit(word[4]);
+	if (strcmp(word,"GPRMC") == 0){
 		
-		for (int i = 0; i < 12; i++)
-		{
-			USART_ReceiveGPS();
-		}
-		for (int i = 0; i < 24; i++)
-		{
-			USART_Transmit(USART_ReceiveGPS());
+		for (int i = 0; i < 36; i++){
+			sentence[i] = USART_ReceiveGPS();
 		}
 		
-		USART_Transmit(0x0D);
-	}*/
-	//USART_Transmit(USART_ReceiveGPS());	
+		GPSStatus = strtok(sentence, &delim);
+		
+		if (*GPSStatus == 'A'){
+			
+		strtok(sentence, NULL);
+		strcpy(latitude, strtok(sentence, NULL));
+		strtok(sentence, NULL);
+		strcpy(longitude, strtok(sentence, NULL));
+		}
+
+	}
+	
 }
+
 
 unsigned char USART_ReceiveGPS(void) {
 	

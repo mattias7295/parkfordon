@@ -8,6 +8,9 @@
 #include <avr/io.h>
 #include <string.h>
 
+extern char latitude[9];
+extern char longitude[10];
+
 void initGPSParser(unsigned int ubrr);
 void parseGPS();
 unsigned char USART_ReceiveGPS(void);
