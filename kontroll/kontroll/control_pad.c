@@ -61,11 +61,11 @@ int main(void) {
 			//USART_Transmit(255);
 			
 			/* Send data via bluetooth. */
-			USART_Transmit(send_data);
+			//USART_Transmit(send_data);
 		
 		} else {
 			// Get steering info from GPS unit
-		}/*
+		}
 		
 		parseGPS();
 		
@@ -80,7 +80,7 @@ int main(void) {
 		}
 		
 		_delay_ms(1000);
-		*/
+		
 		/* Check if sleep mode is to be activated. */
 		if (power == OFF) {
 			sleepMode();

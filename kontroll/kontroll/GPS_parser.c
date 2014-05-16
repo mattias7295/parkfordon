@@ -7,8 +7,8 @@
 
 #include "GPS_parser.h"
 
-char latitude[9];
-char longitude[10];
+char *latitude;
+char *longitude;
 
 void initGPSParser(unsigned int ubrr) {
 	
@@ -30,7 +30,7 @@ void parseGPS() {
 		
 	char temp = 'O';
 	char word[6];
-	char sentence[37];
+	char sentence[45];
 	char delim = ',';
 	char *GPSStatus;
 	
@@ -47,20 +47,19 @@ void parseGPS() {
 		word[5] = '\0';
 	}
 		
-	for (int i = 0; i < 36; i++) {
+	for (int i = 0; i < 45; i++) {
 		sentence[i] = USART_ReceiveGPS();
 	}
 	
-	//sentence[36] = '\0';
+	sentence[44] = '\0';
 	
 	strtok(sentence, &delim);
 	GPSStatus = strtok(NULL, &delim);
 	
 	if (*GPSStatus != 'V') {
-		//strtok(sentence, NULL);
-		strcpy(latitude, strtok(NULL, &delim));
+		latitude = strtok(NULL, &delim);
 		strtok(NULL, &delim);
-		strcpy(longitude, strtok(NULL, &delim));
+		longitude = strtok(NULL, &delim);
 	}
 }
 
