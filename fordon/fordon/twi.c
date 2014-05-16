@@ -55,8 +55,8 @@ uint16_t compas_update()
 	//uint16_t total = (high<<4) + (low>>4);
 	uint16_t total = (high<<8) | low;
 
-	USART_Transmit(high);
-	USART_Transmit(low);
+	//USART_Transmit(high);
+	//USART_Transmit(low);
 	
 			
 
