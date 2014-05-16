@@ -234,13 +234,27 @@ void parseBluetooth(unsigned char command) {
 		{
 			forwardRight = true;
 		}
-		prevSpeedR = speed1;
+		if(adc_read(FORWARDADC)>120)
+		{
+			prevSpeedR = 255;
+		}
+		else
+		{
+			prevSpeedR = speed1;
+		}
 	}else {	
 		if (!doNotChangeDirection)
 		{
 			forwardRight = false;
 		}
-		prevSpeedR = speed1;
+		if(adc_read(BACKWARDADC)>120)
+		{
+			prevSpeedR = 255;
+		}
+		else
+		{
+			prevSpeedR = speed1;
+		}
 	}
 	
 	
@@ -249,13 +263,28 @@ void parseBluetooth(unsigned char command) {
 		{
 			forwardLeft = true;
 		}
-		prevSpeedL = speed2;
+		if(adc_read(FORWARDADC)>120)
+		{
+			prevSpeedL = 255;
+		}
+		else
+		{
+			prevSpeedL = speed2;
+		}
+		
 	}else {
 
 		if (!doNotChangeDirection)
 		{
 			forwardLeft = false;
 		}
-		prevSpeedL = speed2;
+		if(adc_read(BACKWARDADC)>120)
+		{
+			prevSpeedL = 255;
+		}
+		else
+		{
+			prevSpeedL = speed2;
+		}
 	}
 }
