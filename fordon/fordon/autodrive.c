@@ -10,6 +10,20 @@
 #define TO_RAD (3.1415926536 / 180)
 
 void calcHeading(double latPerson, double lonPerson) {
+	
+	char latitude[11];
+	char longitude[12]
+	USART_Transmit(0xFF);
+	for(int i = 0;i<11;i++) {
+		latitude[i] = USART_Receive();
+	}
+	USART_Transmit(0xFF);
+	for(i = 0;i<12;i++) {
+		longitude[i] = USART_Receive();
+	}
+	
+	int deg = Integer.Parse
+	
 	// Läs av position
 	double latVehicle;
 	double lonVehicle;
@@ -73,10 +87,12 @@ int checkDistance(double latPerson, double lonPerson) {
 /*
 Bluetooth kommunikation
 Automatisk körning
-Skicka 255 för att begära koordinater
-Starta timer
-Läs av antalet bytes som behövs
-Om antalet bytes inte nått upp till det begärda inom en viss tid, skicka 255 för att begära nya koordinater
+
+Transmit
+Receive 10 bytes
+Transmit
+Receive 11 bytes
+
  
  
 Manuell körning
