@@ -19,7 +19,8 @@ void calcHeading(double latPerson, double lonPerson) {
 	// Om cos av vinkeln mellan riktningarna är positiv: vrid åt höger, Annars vänster
 	if(cos(angle)<0) {	
 		// Läs av riktning
-		uint16_t dir = compas_update();
+		double dir = (double)compas_update();
+		dir = dir/10;
 		//Vänd åt vänster	
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
 			dir = compas_update();

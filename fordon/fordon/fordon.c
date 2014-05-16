@@ -16,6 +16,8 @@
 #include "twi.h"
 #include "GPSparser.h"
 
+#define FORWARDADC	1
+#define BACKWARDADC 0
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 typedef int bool;
 #define true 1
