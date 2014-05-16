@@ -194,9 +194,15 @@ int main(void)
 	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
 	TWBR = 8; // twi clock frequency
 	uint16_t compas;
+	while (!PINB1)
+	{
+		
+	}
+	_delay_ms(8000);
     while(1)
     {
 		//parseGPS();
+		USART_Transmit(0xff);
 		parseBluetooth(USART_Receive());
 		//compas = compas_update();
 		//USART_Transmit(adc_read(FORWARDADC));
@@ -207,7 +213,6 @@ int main(void)
 
 void parseBluetooth(unsigned char command) {
 	// TODO: Check if autodrive is on
-
 	uint8_t speed1 = 0;
 	uint8_t speed2 = 0;
 	speed1 = (command >> 4) & 0x7;

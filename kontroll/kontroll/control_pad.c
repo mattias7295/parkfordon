@@ -26,6 +26,7 @@ void sleepMode();
 int x_value;
 int y_value;
 
+
 int main(void) {
 	
 	/* Data to be sent via bluetooth. */
@@ -61,6 +62,7 @@ int main(void) {
 			//USART_Transmit(255);
 			
 			/* Send data via bluetooth. */
+			USART_Receive();
 			USART_Transmit(send_data);
 		
 		} else {
