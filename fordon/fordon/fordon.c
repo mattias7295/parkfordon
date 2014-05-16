@@ -190,16 +190,17 @@ int main(void)
 	USART_Init(51);
 	init_pwm();
 	//setupGpsParser(51);
-	//adc_init();
+	adc_init();
 	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
 	TWBR = 8; // twi clock frequency
 	uint16_t compas;
     while(1)
     {
 		//parseGPS();
-		//parseBluetooth(USART_Receive());
-		compas = compas_update();
-		_delay_ms(8000);
+		parseBluetooth(USART_Receive());
+		//compas = compas_update();
+		//USART_Transmit(adc_read(FORWARDADC));
+		//_delay_ms(8000);
     }
 }
 
@@ -234,9 +235,9 @@ void parseBluetooth(unsigned char command) {
 		{
 			forwardRight = true;
 		}
-		if(adc_read(FORWARDADC)>120)
+		if(adc_read(FORWARDADC)>20)
 		{
-			prevSpeedR = 255;
+			prevSpeedR = 130;
 		}
 		else
 		{
@@ -247,9 +248,9 @@ void parseBluetooth(unsigned char command) {
 		{
 			forwardRight = false;
 		}
-		if(adc_read(BACKWARDADC)>120)
+		if(adc_read(BACKWARDADC)>20)
 		{
-			prevSpeedR = 255;
+			prevSpeedR = 130;
 		}
 		else
 		{
@@ -263,9 +264,9 @@ void parseBluetooth(unsigned char command) {
 		{
 			forwardLeft = true;
 		}
-		if(adc_read(FORWARDADC)>120)
+		if(adc_read(FORWARDADC)>20)
 		{
-			prevSpeedL = 255;
+			prevSpeedL = 130;
 		}
 		else
 		{
@@ -278,9 +279,9 @@ void parseBluetooth(unsigned char command) {
 		{
 			forwardLeft = false;
 		}
-		if(adc_read(BACKWARDADC)>120)
+		if(adc_read(BACKWARDADC)>20)
 		{
-			prevSpeedL = 255;
+			prevSpeedL = 130;
 		}
 		else
 		{
