@@ -54,13 +54,13 @@ void parseGPS() {
 	//sentence[36] = '\0';
 	
 	strtok(sentence, &delim);
-	GPSStatus = strtok(sentence, NULL);
+	GPSStatus = strtok(NULL, &delim);
 	
 	if (*GPSStatus != 'V') {
 		//strtok(sentence, NULL);
-		strcpy(latitude, strtok(sentence, NULL));
-		strtok(sentence, NULL);
-		strcpy(longitude, strtok(sentence, NULL));
+		strcpy(latitude, strtok(NULL, &delim));
+		strtok(NULL, &delim);
+		strcpy(longitude, strtok(NULL, &delim));
 	}
 }
 
