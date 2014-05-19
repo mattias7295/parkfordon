@@ -16,6 +16,7 @@
 #include "spi.h"
 #include "twi.h"
 #include "GPSparser.h"
+#include "autodrive.h"
 
 #define FORWARDADC	1
 #define BACKWARDADC 0
@@ -209,8 +210,9 @@ int main(void)
     while(1)
     {
 		//parseGPS();
-		USART_Transmit(0xff);
-		parseBluetooth(USART_Receive());
+		//USART_Transmit(0xff);
+		//parseBluetooth(USART_Receive());
+		calcHeading();
 		//compas = compas_update();
 		//USART_Transmit(adc_read(FORWARDADC));
 		//_delay_ms(8000);
