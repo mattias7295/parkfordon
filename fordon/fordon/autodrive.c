@@ -10,20 +10,24 @@
 #define TO_RAD (3.1415926536 / 180)
 
 
-void calcHeading() {
-	stdout = &mystdout;
-	printf("Hello world\n\r");
+int calcHeading() {
 	double latPerson;
 	double lonPerson;
 	char latitude[10];
 	char longitude[11];
-	USART_Transmit(0xFF);
+	/*USART_Transmit(0xFF);
 	for(int i = 0;i<10;i++) {
 		latitude[i] = USART_Receive();
+		if(latitude[i] == 0x00) {
+			return 1;
+		}
 	}
 	USART_Transmit(0xFF);
 	for(int i = 0;i<11;i++) {
 		longitude[i] = USART_Receive();
+		if(longitude[i] == 0x00) {
+			return 1;
+		}
 	}
 	
 	char degA[3];
@@ -65,13 +69,14 @@ void calcHeading() {
 	minO[7] = '\0';
 	
 	minutes = atof(minO);
-	lonPerson = deg + minutes/60;
+	lonPerson = deg + minutes/60;*/
 	
 	double *lat;
 	double *lon;
 	
 	parseGPS(lat, lon);
-	
+	latPerson = 63.821367;
+	lonPerson = 20.309551;
 	
 	// Läs av position
 	double latVehicle = *lat;
@@ -86,43 +91,44 @@ void calcHeading() {
 		dir = dir/10;
 		//Vänd åt vänster	
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
-			dir = compas_update();
-			
+			dir = (double)compas_update();
+			dir = dir/10;
 			initEngineLeftBackward(64);
 			initEngineRightForward(64);
 			_delay_ms(500);	
 		}
-		// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
-		while(!checkDistance(latPerson,lonPerson)){
-			initEngineLeftForward(128);
-			initEngineRightForward(128);
-			_delay_ms(500);
-		}
 		
 	} else {
-		uint16_t dir = compas_update();
+		double dir = (double)compas_update();
+		dir = dir/10;
 		//Vänd åt höger
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
-			dir = compas_update();
-			
+			dir = (double)compas_update();
+			dir = dir/10;
 			initEngineRightBackward(64);
 			initEngineLeftForward(64);
 			_delay_ms(500);
 		}
-		// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
-		while(!checkDistance(latPerson,lonPerson)){
-			initEngineLeftForward(128);
-			initEngineRightForward(128);
-			_delay_ms(500);
-		}
-	}		
+		
+	}
+	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
+	while(!checkDistance(latPerson,lonPerson)){
+		initEngineLeftForward(128);
+		initEngineRightForward(128);
+		_delay_ms(500);
+		
+	}
+	return 0;		
 	
 }
 
 //Haversine formula
 int checkDistance(double latPerson, double lonPerson) {
-	double latVehicle;
-	double lonVehicle;
+	double *lat;
+	double *lon;
+	parseGPS(lat, lon);
+	double latVehicle = *lat;
+	double lonVehicle = *lon;
 	double dx, dy, dz;
 	latPerson -= lonVehicle;
 	latPerson *= TO_RAD, lonPerson *= TO_RAD, lonVehicle *= TO_RAD;

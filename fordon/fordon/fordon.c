@@ -209,19 +209,27 @@ int main(void)
 	_delay_ms(8000);
     while(1)
     {
-		//parseGPS();
 		//USART_Transmit(0xff);
 		//parseBluetooth(USART_Receive());
-		calcHeading();
-		//compas = compas_update();
-		//USART_Transmit(adc_read(FORWARDADC));
-		//_delay_ms(8000);
+		calcHeading();		
     }
 }
 
 
 void parseBluetooth(unsigned char command) {
-	// TODO: Check if autodrive is on
+	// Change to auto
+	if(command==0){
+		USART_Transmit(0xff);
+		if(USART_Receive()==0xff){
+			USART_Transmit(0xff);
+			if(USART_Receive() == 0) {
+				calcHeading();
+			}
+		}
+		return;
+	}
+	
+	
 	uint8_t speed1 = 0;
 	uint8_t speed2 = 0;
 	speed1 = (command >> 4) & 0x7;
