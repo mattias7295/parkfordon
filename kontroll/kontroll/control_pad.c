@@ -6,7 +6,7 @@
  */ 
 
 #include "control_pad.h"
-
+#include <stdio.h>
 #include <util/delay.h>
 
 /* Function declarations. */
@@ -22,13 +22,18 @@ void setThrottles(engine_data *edata, const double angle, const int x_value, con
 unsigned char compactData(engine_data *edata);
 void sleepMode();
 
+static void put_char(uint8_t c, FILE* stream);
+static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
+
+
 /* Global joystick coordinate variables. */
 int x_value;
 int y_value;
 
 
+
 int main(void) {
-	
+	stdout = &mystdout;
 	/* Data to be sent via bluetooth. */
 	unsigned char send_data;
 	
@@ -43,7 +48,6 @@ int main(void) {
 	while (1) {
 		
 		if (steer == MAN) {
-			
 			/* Get coordinates. */
 			x_value = getXValue();
 			y_value = getYValue();
@@ -70,19 +74,15 @@ int main(void) {
 
 		
 		} else {
-			
 			USART_Receive();
 			
 			parseGPS();
-			
 			for (int i = 0; i < 9; i++) {
 				USART_Transmit(latitude[i]);
 				_delay_ms(1);
 			}
-			
 			USART_Receive();
-			//_delay_ms(1000);
-			
+			_delay_ms(1000);
 			for (int i = 0; i < 10; i++) {
 				USART_Transmit(longitude[i]);
 				_delay_ms(1);
@@ -98,6 +98,15 @@ int main(void) {
 				
 	}
 }
+
+static void put_char(uint8_t c, FILE* stream)
+{
+	if (c == '\n') put_char('\r', stream);
+	while(!(UCSR0A & (1 << UDRE0)));
+	UDR0 = c;
+}
+
+
 
 /*
 * Function:	init

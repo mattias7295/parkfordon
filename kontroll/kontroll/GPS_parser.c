@@ -7,8 +7,10 @@
 
 #include "GPS_parser.h"
 
-char *latitude;
-char *longitude;
+char latitude[10];
+char longitude[11];
+
+static void put_char(uint8_t c, FILE* stream);
 
 void initGPSParser(unsigned int ubrr) {
 	
@@ -29,7 +31,7 @@ void initGPSParser(unsigned int ubrr) {
 void parseGPS() {
 		
 	char temp = 'O';
-	char word[6];
+	char word[6] = "";
 	char sentence[45];
 	char delim = ',';
 	char *GPSStatus;
@@ -46,9 +48,10 @@ void parseGPS() {
 		
 		word[5] = '\0';
 	}
+	
 		
 	for (int i = 0; i < 45; i++) {
-		sentence[i] = USART_ReceiveGPS();
+		sentence[i] = USART_ReceiveGPS();	
 	}
 	
 	sentence[44] = '\0';
@@ -57,10 +60,17 @@ void parseGPS() {
 	GPSStatus = strtok(NULL, &delim);
 	
 	if (*GPSStatus != 'V') {
-		latitude = strtok(NULL, &delim);
+		strncpy(latitude,strtok(NULL, &delim),10);
 		strtok(NULL, &delim);
-		longitude = strtok(NULL, &delim);
+		strncpy(longitude, strtok(NULL, &delim), 11);
 	}
+}
+
+static void put_char(uint8_t c, FILE* stream)
+{
+	if (c == '\n') put_char('\r', stream);
+	while(!(UCSR0A & (1 << UDRE0)));
+	UDR0 = c;
 }
 
 

@@ -27,7 +27,7 @@ void parseGPS(double *lat, double *lon)
 {
 	
 	char temp = 'O';
-	char word[6];
+	char word[6] = "";
 	char sentence[45];
 	char delim = ',';
 	char *GPSStatus;
