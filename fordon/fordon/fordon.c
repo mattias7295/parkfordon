@@ -9,6 +9,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdio.h>
 #include "usart.h"
 #include "adc.h"
 #include "pwm.h"
@@ -19,6 +20,7 @@
 #define FORWARDADC	1
 #define BACKWARDADC 0
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
+
 typedef int bool;
 #define true 1
 #define false 0
@@ -31,6 +33,7 @@ double latitudeVehile;
 double longitudeVehicle;
 
 void parseBluetooth(unsigned char command);
+
 
 uint8_t prevSpeedR = 130;
 uint8_t prevSpeedL = 130;
@@ -179,6 +182,7 @@ ISR(TIMER1_OVF_vect)
 
 int main(void)
 {
+	//stdout = &mystdout;
 	// Setup 16-bit timer for acceleration
 	OCR1A = 1600;
 	TIMSK1 = (1<<TOIE1);

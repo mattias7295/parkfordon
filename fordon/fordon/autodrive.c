@@ -64,9 +64,15 @@ void calcHeading() {
 	minutes = atof(minO);
 	lonPerson = deg + minutes/60;
 	
+	double *lat;
+	double *lon;
+	
+	parseGPS(lat, lon);
+	
+	
 	// Läs av position
-	double latVehicle;
-	double lonVehicle;
+	double latVehicle = *lat;
+	double lonVehicle = *lon;
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
 	int angle = atan2( lonPerson-lonVehicle, latPerson-latVehicle);
 	

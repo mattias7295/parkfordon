@@ -10,9 +10,13 @@
 #define GPSPARSER_H_
 
 #include <avr/io.h>
+#include <stdio.h>
+//static void put_char(uint8_t c, FILE* stream);
+//static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
+
 
 void setupGpsParser(unsigned int baud);
-void parseGPS();
+void parseGPS(double *lat, double *lon);
 unsigned char USART_ReceiveGPS( void );
 
 #endif /* GPSPARSER_H_ */
