@@ -10,3 +10,6 @@ kontroll/kontroll.atsuo
 kontroll/kontroll.atsln
 TcfTransactionLog.csv
 
+
+# cproj files
+*.cproj
