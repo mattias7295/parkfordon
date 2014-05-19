@@ -9,16 +9,19 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdio.h>
 #include "usart.h"
 #include "adc.h"
 #include "pwm.h"
 #include "spi.h"
 #include "twi.h"
 #include "GPSparser.h"
+#include "autodrive.h"
 
 #define FORWARDADC	1
 #define BACKWARDADC 0
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
+
 typedef int bool;
 #define true 1
 #define false 0
@@ -205,8 +208,9 @@ int main(void)
     while(1)
     {
 		//parseGPS();
-		USART_Transmit(0xff);
-		parseBluetooth(USART_Receive());
+		//USART_Transmit(0xff);
+		//parseBluetooth(USART_Receive());
+		calcHeading();
 		//compas = compas_update();
 		//USART_Transmit(adc_read(FORWARDADC));
 		//_delay_ms(8000);

@@ -69,3 +69,4 @@ unsigned char USART_ReceiveGPS( void )
 	/* Get and return received data from buffer */
 	return UDR1;
 }
+

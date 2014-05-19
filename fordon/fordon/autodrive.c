@@ -9,7 +9,10 @@
 #define R 6371
 #define TO_RAD (3.1415926536 / 180)
 
+
 void calcHeading() {
+	stdout = &mystdout;
+	printf("Hello world\n\r");
 	double latPerson;
 	double lonPerson;
 	char latitude[10];
@@ -122,6 +125,13 @@ int checkDistance(double latPerson, double lonPerson) {
 	dx = cos(latPerson) * cos(lonPerson) - cos(lonVehicle);
 	dy = sin(latPerson) * cos(lonPerson);
 	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;
+}
+
+static void put_char(uint8_t c, FILE* stream)
+{
+	if (c == '\n') put_char('\r', stream);
+	while(!(UCSR0A & (1 << UDRE0)));
+	UDR0 = c;
 }
 
 /*
