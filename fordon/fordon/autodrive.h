@@ -19,8 +19,7 @@
 
 int calcHeading();
 int checkDistance(double latPerson, double lonPerson);
-static void put_char(uint8_t c, FILE* stream);
-static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
+
 
 
 #endif /* AUTODRIVE_H_ */

@@ -34,8 +34,8 @@ double latitudeVehile;
 double longitudeVehicle;
 
 void parseBluetooth(unsigned char command);
-
-
+static void put_char(uint8_t c, FILE* stream);
+static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 uint8_t prevSpeedR = 130;
 uint8_t prevSpeedL = 130;
 
@@ -183,7 +183,7 @@ ISR(TIMER1_OVF_vect)
 
 int main(void)
 {
-	//stdout = &mystdout;
+	stdout = &mystdout;
 	// Setup 16-bit timer for acceleration
 	OCR1A = 1600;
 	TIMSK1 = (1<<TOIE1);
@@ -197,7 +197,7 @@ int main(void)
 
 	USART_Init(51);
 	init_pwm();
-	//setupGpsParser(51);
+	setupGpsParser(51);
 	adc_init();
 	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
 	TWBR = 8; // twi clock frequency
@@ -213,6 +213,13 @@ int main(void)
 		//parseBluetooth(USART_Receive());
 		calcHeading();		
     }
+}
+
+static void put_char(uint8_t c, FILE* stream)
+{
+	if (c == '\n') put_char('\r', stream);
+	while(!(UCSR0A & (1 << UDRE0)));
+	UDR0 = c;
 }
 
 

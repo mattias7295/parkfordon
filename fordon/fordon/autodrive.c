@@ -9,6 +9,7 @@
 #define R 6371
 #define TO_RAD (3.1415926536 / 180)
 
+static void put_char(uint8_t c, FILE* stream);
 
 int calcHeading() {
 	double latPerson;
@@ -70,17 +71,19 @@ int calcHeading() {
 	
 	minutes = atof(minO);
 	lonPerson = deg + minutes/60;*/
-	
+
 	double *lat;
 	double *lon;
 	
 	parseGPS(lat, lon);
 	latPerson = 63.821367;
 	lonPerson = 20.309551;
-	
+
 	// Läs av position
 	double latVehicle = *lat;
 	double lonVehicle = *lon;
+	printf("latVehicle:%f\n", latVehicle);
+	printf("%f\n", lonVehicle);
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
 	int angle = atan2( lonPerson-lonVehicle, latPerson-latVehicle);
 	
@@ -91,6 +94,7 @@ int calcHeading() {
 		dir = dir/10;
 		//Vänd åt vänster	
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
+			printf("calcheading\n");
 			dir = (double)compas_update();
 			dir = dir/10;
 			initEngineLeftBackward(64);

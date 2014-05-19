@@ -64,6 +64,8 @@ void parseGPS() {
 		strtok(NULL, &delim);
 		strncpy(longitude, strtok(NULL, &delim), 11);
 	}
+	printf("\nLatitude:%s\n",latitude);
+	printf("Longitude:%s",longitude);
 }
 
 static void put_char(uint8_t c, FILE* stream)

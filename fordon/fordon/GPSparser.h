@@ -11,8 +11,7 @@
 
 #include <avr/io.h>
 #include <stdio.h>
-//static void put_char(uint8_t c, FILE* stream);
-//static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
+#include <stdlib.h>
 
 
 void setupGpsParser(unsigned int baud);
