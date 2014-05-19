@@ -70,22 +70,26 @@ int main(void) {
 
 		
 		} else {
-			// Get steering info from GPS unit
+			
+			USART_Receive();
+			
+			parseGPS();
+			
+			for (int i = 0; i < 9; i++) {
+				USART_Transmit(latitude[i]);
+				_delay_ms(1);
+			}
+			
+			USART_Receive();
+			//_delay_ms(1000);
+			
+			for (int i = 0; i < 10; i++) {
+				USART_Transmit(longitude[i]);
+				_delay_ms(1);
+			}
+			
+			//_delay_ms(1000);
 		}
-		
-		parseGPS();
-		
-		for (int i = 0; i < 9; i++) {
-			USART_Transmit(latitude[i]);
-		}
-				
-		_delay_ms(1000);
-		
-		for (int i = 0; i < 10; i++) {
-			USART_Transmit(longitude[i]);
-		}
-		
-		_delay_ms(1000);
 		
 		/* Check if sleep mode is to be activated. */
 		if (power == OFF) {
