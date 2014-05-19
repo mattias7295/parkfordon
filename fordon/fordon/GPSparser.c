@@ -91,7 +91,7 @@ void parseGPS(double *lat, double *lon)
 	char minO[8];
 	minO[0] = longitude[3];
 	minO[1] = longitude[4];
-	minO[2] = longitude[5];
+	minO[2] = longitude[5]; 
 	minO[3] = longitude[6];
 	minO[4] = longitude[7];
 	minO[5] = longitude[8];
