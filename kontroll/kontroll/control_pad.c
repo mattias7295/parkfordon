@@ -62,12 +62,12 @@ int main(void) {
 			//USART_Transmit(255);
 			
 			/* Send data via bluetooth. */
-<<<<<<< HEAD
+
 			//USART_Transmit(send_data);
-=======
+
 			USART_Receive();
 			USART_Transmit(send_data);
->>>>>>> 3e2bbbeb97fd6930df9efb969cb605ed987be216
+
 		
 		} else {
 			// Get steering info from GPS unit
