@@ -1,8 +1,12 @@
 # Debug files
 fordon/fordon/Debug/
+kontroll/kontroll/Debug/
 
 
 # Ignore specific files here
 fordon/fordon.atsuo
 fordon/fordon.atsln
-fordon/fordon/Debug/Makefile
+kontroll/kontroll.atsuo
+kontroll/kontroll.atsln
+TcfTransactionLog.csv
+
