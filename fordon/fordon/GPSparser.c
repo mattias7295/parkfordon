@@ -24,38 +24,40 @@ void setupGpsParser(unsigned int baud)
 
 void parseGPS()
 {
-	/*char temp;
+	char temp = 'O';
 	char word[6];
-	while (temp != '$')
-	{
-		temp = USART_ReceiveGPS();
-	}
-	for (int i = 0; i < 5; i++)
-	{
-		word[i] = USART_ReceiveGPS();
-	}
-	word[5] = '\0';
-	if (strcmp(word,"GPRMC") == 0)
-	{
-		USART_Transmit(word[0]);
-		USART_Transmit(word[1]);
-		USART_Transmit(word[2]);
-		USART_Transmit(word[3]);
-		USART_Transmit(word[4]);
+	char sentence[45];
+	char delim = ',';
+	char *GPSStatus;
+	char *latitude;
+	char *longitude;
+	while (strcmp(word, "GPRMC") != 0) {
 		
-		for (int i = 0; i < 12; i++)
-		{
-			USART_ReceiveGPS();
-		}
-		for (int i = 0; i < 24; i++)
-		{
-			USART_Transmit(USART_ReceiveGPS());
+		do {
+			temp = USART_ReceiveGPS();
+		} while (temp != '$');
+		
+		for (int i = 0; i < 5; i++) {
+			word[i] = USART_ReceiveGPS();
 		}
 		
-		USART_Transmit(0x0D);
-	}*/
-	//USART_Transmit(USART_ReceiveGPS());
+		word[5] = '\0';
+	}
 	
+	for (int i = 0; i < 45; i++) {
+		sentence[i] = USART_ReceiveGPS();
+	}
+	
+	sentence[44] = '\0';
+	
+	strtok(sentence, &delim);
+	GPSStatus = strtok(NULL, &delim);
+	
+	if (*GPSStatus != 'V') {
+		latitude = strtok(NULL, &delim);
+		strtok(NULL, &delim);
+		longitude = strtok(NULL, &delim);
+	}
 }
 
 

@@ -27,6 +27,9 @@ bool forwardRight;
 bool forwardLeft;
 bool doNotChangeDirection = false;
 
+double latitudeVehile;
+double longitudeVehicle;
+
 void parseBluetooth(unsigned char command);
 
 uint8_t prevSpeedR = 130;

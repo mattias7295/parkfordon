@@ -16,7 +16,7 @@
 #include "pwm.h"
 
 
-void calcHeading(double latPerson, double lonPerson);
+void calcHeading();
 int checkDistance(double latPerson, double lonPerson);
 
 

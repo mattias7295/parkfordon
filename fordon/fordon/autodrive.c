@@ -9,20 +9,60 @@
 #define R 6371
 #define TO_RAD (3.1415926536 / 180)
 
-void calcHeading(double latPerson, double lonPerson) {
-	
-	char latitude[11];
-	char longitude[12]
+void calcHeading() {
+	double latPerson;
+	double lonPerson;
+	char latitude[10];
+	char longitude[11];
 	USART_Transmit(0xFF);
-	for(int i = 0;i<11;i++) {
+	for(int i = 0;i<10;i++) {
 		latitude[i] = USART_Receive();
 	}
 	USART_Transmit(0xFF);
-	for(i = 0;i<12;i++) {
+	for(int i = 0;i<11;i++) {
 		longitude[i] = USART_Receive();
 	}
 	
-	int deg = Integer.Parse
+	char degA[3];
+	degA[0] = latitude[0];
+	degA[1] = latitude[1];
+	degA[2] = '\0';
+	
+	double deg = atof(degA);
+	
+	char minA[8];
+	minA[0] = latitude[2];
+	minA[1] = latitude[3];
+	minA[2] = latitude[4];
+	minA[3] = latitude[5];
+	minA[4] = latitude[6];
+	minA[5] = latitude[7];
+	minA[6] = latitude[8];
+	minA[7] = '\0';
+	
+	double minutes = atof(minA);
+	latPerson = deg + minutes/60;
+	
+	char degO[4];
+	degO[0] = longitude[0];
+	degO[1] = longitude[1];
+	degO[2] = longitude[2];
+	degO[3] = '\0';
+	
+	deg  = atof(degO);
+	
+	char minO[8];
+	minO[0] = longitude[3];
+	minO[1] = longitude[4];
+	minO[2] = longitude[5];
+	minO[3] = longitude[6];
+	minO[4] = longitude[7];
+	minO[5] = longitude[8];
+	minO[6] = longitude[9];
+	minO[7] = '\0';
+	
+	minutes = atof(minO);
+	lonPerson = deg + minutes/60;
 	
 	// Läs av position
 	double latVehicle;
