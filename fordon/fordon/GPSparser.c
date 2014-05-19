@@ -11,7 +11,7 @@
 
 void setupGpsParser(unsigned int baud)
 {
-	DDRD |= (1<<PD3);
+	//DDRD |= (1<<PD3);
 	/* Set baud rate */
 	UBRR1H = (unsigned char)(baud>>8);
 	UBRR1L = (unsigned char)baud;
