@@ -208,13 +208,12 @@ int main(void)
 	}
 	_delay_ms(8000);
 
-	calcHeading();
+	//calcHeading();
     while(1)
     {
-		
 		//USART_Transmit(0xff);
 		//parseBluetooth(USART_Receive());
-		//calcHeading();		
+		calcHeading();		
     }
 
 }

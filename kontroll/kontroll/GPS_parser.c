@@ -32,38 +32,35 @@ void parseGPS() {
 		
 	char temp = 'O';
 	char word[6] = "";
-	char sentence[45];
+	char sentence[45] = "";
 	char delim = ',';
-	char *GPSStatus;
-	
+	char GPSStatus[2] = "";
+
 	while (strcmp(word, "GPRMC") != 0) {
-		
 		do {
 			temp = USART_ReceiveGPS();
 		} while (temp != '$');
-		
 		for (int i = 0; i < 5; i++) {
 			word[i] = USART_ReceiveGPS();
 		}
 		
 		word[5] = '\0';
 	}
-	
-		
 	for (int i = 0; i < 45; i++) {
-		sentence[i] = USART_ReceiveGPS();	
+		sentence[i] = USART_ReceiveGPS();
 	}
 	
 	sentence[44] = '\0';
 	
 	strtok(sentence, &delim);
-	GPSStatus = strtok(NULL, &delim);
-	
-	if (*GPSStatus != 'V') {
+	strncpy(GPSStatus,strtok(NULL, &delim),1);
+	GPSStatus[1] = '\0';
+	if (strcmp(GPSStatus,"V")) {
 		strncpy(latitude,strtok(NULL, &delim),10);
 		strtok(NULL, &delim);
-		strncpy(longitude, strtok(NULL, &delim), 11);
+		strncpy(longitude,strtok(NULL, &delim),11);
 	}
+	
 	printf("\nLatitude:%s\n",latitude);
 	printf("Longitude:%s",longitude);
 }
