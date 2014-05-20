@@ -6,6 +6,3 @@ kontroll/kontroll/Debug/
 # Ignore specific files here
 TcfTransactionLog.csv
 
-
-# cproj files
-*.cproj
