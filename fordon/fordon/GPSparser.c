@@ -76,9 +76,9 @@ void parseGPS(double *lat, double *lon)
 	double minutes = atof(minA);
 	*lat = deg + minutes/60;
 	printf("cphora2\n");
-	char degO[4];
-	strncpy(degO,longitude,3);
-	degO[3] = '\0';
+	char degO[3];
+	strncpy(degO,longitude+1,2);
+	degO[2] = '\0';
 	printf("\ndegO:%s\n",degO);
 	deg  = atof(degO);
 	printf("cphora3\n");
