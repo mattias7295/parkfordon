@@ -100,7 +100,7 @@ void parseGPS(double *lat, double *lon)
 	minO[5] = longitude[8];
 	minO[6] = longitude[9];
 	minO[7] = '\0';
-
+	printf("hej\n");
 	minutes = atof(minO);
 	*lon = deg + minutes/60;
 printf("cphora4\n");
