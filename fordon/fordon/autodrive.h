@@ -18,10 +18,13 @@
 #include "GPSparser.h"
 
 
-int calcHeading();
-int checkDistance(double latPerson, double lonPerson);
+//int calcHeading();
+//int checkDistance(double latPerson, double lonPerson);
 
 extern double lat;
 extern double lon;
+
+extern uint8_t prevSpeedR;
+extern uint8_t prevSpeedL;
 
 #endif /* AUTODRIVE_H_ */

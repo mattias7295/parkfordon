@@ -7,6 +7,9 @@
 
 #include "pwm.h"
 
+uint8_t prevSpeedR = 130;
+uint8_t prevSpeedL = 130;
+
 void init_pwm() {
 	//turn on two 8-bit timers
 	TCCR0B = (1<<CS00);

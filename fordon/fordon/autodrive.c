@@ -11,11 +11,13 @@
 
 static void put_char(uint8_t c, FILE* stream);
 
-int calcHeading() {
+
+
+/*int calcHeading() {
 	double latPerson;
 	double lonPerson;
 	char latitude[10];
-	char longitude[11];
+	char longitude[11];*/
 	/*USART_Transmit(0xFF);
 	for(int i = 0;i<10;i++) {
 		latitude[i] = USART_Receive();
@@ -73,14 +75,14 @@ int calcHeading() {
 	lonPerson = deg + minutes/60;*/
 
 	
-	parseGPS();
+	/*parseGPS();
 	latPerson = 63.821367;
 	lonPerson = 20.309551;
 
-	printf("Lat: %lf \n Lon: %lf \n", lat, lon);
+	printf("Lat: %lf \nLon: %lf \n", lat, lon);
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
 	int angle = atan2( lonPerson-lon, latPerson-lat);
-	
+
 	// Om cos av vinkeln mellan riktningarna är positiv: vrid åt höger, Annars vänster
 	if(cos(angle)<0) {	
 		// Läs av riktning
@@ -111,8 +113,10 @@ int calcHeading() {
 	}
 	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
 	while(!checkDistance(latPerson,lonPerson)){
-		initEngineLeftForward(128);
-		initEngineRightForward(128);
+		//initEngineLeftForward(128);
+		//initEngineRightForward(128);
+		prevSpeedL = 120;
+		prevSpeedR = 120;
 		_delay_ms(500);
 		
 	}

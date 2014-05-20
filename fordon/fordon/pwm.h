@@ -17,6 +17,7 @@ void initEngineRightBackward();
 void initEngineLeftForward();
 void initEngineLeftBackward();
 
-
+extern uint8_t prevSpeedR;
+extern uint8_t prevSpeedL;
 
 #endif /* PWM_H_ */
