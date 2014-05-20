@@ -72,20 +72,14 @@ int calcHeading() {
 	minutes = atof(minO);
 	lonPerson = deg + minutes/60;*/
 
-	double *lat;
-	double *lon;
 	
-	parseGPS(lat, lon);
+	parseGPS();
 	latPerson = 63.821367;
 	lonPerson = 20.309551;
 
-	// Läs av position
-	double latVehicle = *lat;
-	double lonVehicle = *lon;
-	printf("latVehicle:%f\n", latVehicle);
-	printf("%f\n", lonVehicle);
+	printf("Lat: %lf \n Lon: %lf \n", lat, lon);
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
-	int angle = atan2( lonPerson-lonVehicle, latPerson-latVehicle);
+	int angle = atan2( lonPerson-lon, latPerson-lat);
 	
 	// Om cos av vinkeln mellan riktningarna är positiv: vrid åt höger, Annars vänster
 	if(cos(angle)<0) {	
@@ -128,17 +122,15 @@ int calcHeading() {
 
 //Haversine formula
 int checkDistance(double latPerson, double lonPerson) {
-	double *lat;
-	double *lon;
-	parseGPS(lat, lon);
-	double latVehicle = *lat;
-	double lonVehicle = *lon;
-	double dx, dy, dz;
-	latPerson -= lonVehicle;
-	latPerson *= TO_RAD, lonPerson *= TO_RAD, lonVehicle *= TO_RAD;
+
+	parseGPS();
 	
-	dz = sin(lonPerson) - sin(lonVehicle);
-	dx = cos(latPerson) * cos(lonPerson) - cos(lonVehicle);
+	double dx, dy, dz;
+	latPerson -= lon;
+	latPerson *= TO_RAD, lonPerson *= TO_RAD, lon *= TO_RAD;
+	
+	dz = sin(lonPerson) - sin(lon);
+	dx = cos(latPerson) * cos(lonPerson) - cos(lon);
 	dy = sin(latPerson) * cos(lonPerson);
 	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;
 }

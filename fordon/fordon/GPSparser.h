@@ -13,9 +13,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern double lat;
+extern double lon;
+
 
 void setupGpsParser(unsigned int baud);
-void parseGPS(double *lat, double *lon);
+void parseGPS();
 unsigned char USART_ReceiveGPS( void );
 
 #endif /* GPSPARSER_H_ */

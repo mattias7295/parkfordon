@@ -207,12 +207,16 @@ int main(void)
 		
 	}
 	_delay_ms(8000);
+
+	calcHeading();
     while(1)
     {
+		
 		//USART_Transmit(0xff);
 		//parseBluetooth(USART_Receive());
-		calcHeading();		
+		//calcHeading();		
     }
+
 }
 
 static void put_char(uint8_t c, FILE* stream)

@@ -14,6 +14,9 @@ static void put_char(uint8_t c, FILE* stream);
 char latitude[10];
 char longitude[11];
 
+double lat;
+double lon;
+
 void setupGpsParser(unsigned int baud)
 {
 	//stdout = &mystdout;
@@ -28,7 +31,7 @@ void setupGpsParser(unsigned int baud)
 
 }
 
-void parseGPS(double *lat, double *lon)
+void parseGPS()
 {
 	char temp = 'O';
 	char word[6] = "";
@@ -62,34 +65,41 @@ void parseGPS(double *lat, double *lon)
 		strncpy(longitude,strtok(NULL, &delim),11);
 	}
 	printf("\n\nLatitude:%s\n", latitude);
-	printf("Longitude:%s", longitude);
+	printf("Longitude:%s\n", longitude);
+	
 	char degA[3];
 	strncpy(degA, latitude,2);
 	degA[2] = '\0';
 
-	double deg = atof(degA);
-	printf("%d\n",(int)deg);
 	char minA[8];
 	strncpy(minA,latitude+2,7);
 	minA[7] = '\0';
-	printf("\nminA:%s\n",minA);
-	double minutes = atof(minA);
-	*lat = deg + minutes/60;
-	printf("cphora2\n");
-	char degO[3];
-	strncpy(degO,longitude+1,2);
-	degO[2] = '\0';
-	printf("\ndegO:%s\n",degO);
-	deg  = atof(degO);
-	printf("cphora3\n");
-	char minO[8];
-	strncpy(minO, longitude+3,7);
-	minO[7] = '\0';
-	printf("hej\n"); 
-	minutes = atof(minO);
-	*lon = deg + minutes/60;
-printf("cphora4\n");
+
+
 	
+	double d,e;
+	d = strtod(degA,NULL);
+	e = strtod(minA,NULL);
+	printf("degA:%lf minA:%lf\n",d,e);
+	lat = (d + e/60);
+	
+	strncpy(degA,longitude+1,2);
+	degA[2] = '\0';
+	strncpy(minA, longitude+3,7);
+	minA[7] = '\0';
+	d = strtod(degA,NULL);
+	e = strtod(minA,NULL);
+	printf("degO:%lf minO:%lf\n",d,e);
+	lon = (d + e/60);
+	
+	
+}
+
+static void put_char(uint8_t c, FILE* stream)
+{
+	if (c == '\n') put_char('\r', stream);
+	while(!(UCSR0A & (1 << UDRE0)));
+	UDR0 = c;
 }
 
 

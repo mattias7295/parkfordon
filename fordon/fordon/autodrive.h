@@ -15,11 +15,13 @@
 #include <stdio.h>
 #include "twi.h"
 #include "pwm.h"
+#include "GPSparser.h"
 
 
 int calcHeading();
 int checkDistance(double latPerson, double lonPerson);
 
-
+extern double lat;
+extern double lon;
 
 #endif /* AUTODRIVE_H_ */
