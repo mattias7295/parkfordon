@@ -49,7 +49,19 @@ int main(void) {
 	
 	bool changeToAuto = true;
 	bool changeToMan = true;
-	
+	int x;
+	while(x<5)
+	{
+		if(!(PINB & _BV(PB2)))
+		{
+			x++;
+		}
+		else
+		{
+			x = 0;
+		}
+		_delay_ms(4000);
+	}
 	/* Main loop. */
 	while (1) {
 		
@@ -92,13 +104,13 @@ int main(void) {
 			if(changeToAuto) 
 			{
 				USART_Transmit(0);
-				_delay_ms(1);
+				
 				USART_Receive();
 				USART_Transmit(255);
-				_delay_ms(1);
+				
 				USART_Receive();
 				USART_Transmit(0);
-				_delay_ms(1);
+				
 				changeToAuto = false;
 			}
 			USART_Receive();
