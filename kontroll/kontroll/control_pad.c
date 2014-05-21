@@ -85,7 +85,7 @@ int main(void) {
 			if(changeToMan)
 			{
 				USART_Receive();
-				USART_Transmit(0);
+				USART_Transmit(1);
 				changeToMan = false;
 			}
 			
@@ -105,7 +105,7 @@ int main(void) {
 			if(changeToAuto) 
 			{
 				USART_Receive();
-				USART_Transmit(0);
+				USART_Transmit(1);
 				changeToAuto = false;
 			}
 			USART_Receive();

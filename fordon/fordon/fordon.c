@@ -230,7 +230,7 @@ int main(void)
     {
 		USART_Transmit(0xff);
 		unsigned char command = USART_Receive();
-		if(command == 0)
+		if(command == 1)
 		{
 			if(autoDrive==true)
 			{
@@ -252,11 +252,6 @@ int main(void)
 				parseBluetooth(command);
 			}
 		}
-		
-		
-		//printf("Kompass:%d\n",compas_update());
-		// Wait for fix
-		//calcHeading();
 	
     }
 
