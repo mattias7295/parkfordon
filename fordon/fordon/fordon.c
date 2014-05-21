@@ -228,7 +228,7 @@ int main(void)
 	bool autoDrive = false;
     while(1)
     {
-		USART_Transmit(0xff);
+		USART_Transmit(1);
 		unsigned char command = USART_Receive();
 		if(command == 1)
 		{
@@ -266,7 +266,7 @@ int calcHeading(unsigned char command) {
 	for(int i = 1;i<9;i++) {
 		latitude[i] = USART_Receive();
 	}
-	USART_Transmit(0xFF);
+	USART_Transmit(2);
 	for(int i = 0;i<10;i++) {
 		longitude[i] = USART_Receive();
 	}
@@ -293,7 +293,7 @@ int calcHeading(unsigned char command) {
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
 	lonPerson = (d + e/60);
-	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
+	//printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
 	parseGPS();
 	//latPerson = 63.820374;
