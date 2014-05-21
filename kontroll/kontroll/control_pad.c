@@ -84,6 +84,7 @@ int main(void) {
 			/* Start data transfer signal. */
 			if(changeToMan)
 			{
+				USART_Receive();
 				USART_Transmit(0);
 				changeToMan = false;
 			}
@@ -119,8 +120,8 @@ int main(void) {
 				USART_Transmit(latitude[i]);
 				_delay_ms(1);
 			}
-			//USART_Receive();
-			_delay_ms(1000);
+			USART_Receive();
+			
 			for (int i = 0; i < 10; i++) {
 				USART_Transmit(longitude[i]);
 				_delay_ms(1);
