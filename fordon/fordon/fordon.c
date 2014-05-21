@@ -333,9 +333,9 @@ void spin(double latPerson, double lonPerson)
 			printf("calcheading\n");
 			dir = (double)compas_update();
 			dir = dir/10;
-			forwardRight = true;
+			forwardRight = false;
 			prevSpeedR = 100;
-			forwardLeft = false;
+			forwardLeft = true;
 			prevSpeedL = 100;
 			//_delay_ms(500);
 		}
@@ -347,10 +347,11 @@ void spin(double latPerson, double lonPerson)
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
 			dir = (double)compas_update();
 			dir = dir/10;
-			forwardRight = false;
+			forwardRight = true;
 			prevSpeedR = 100;
-			forwardLeft = true;
+			forwardLeft = false;
 			prevSpeedL = 100;
+			
 			//_delay_ms(500);
 		}
 		
