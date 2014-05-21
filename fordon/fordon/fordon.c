@@ -38,7 +38,7 @@ double longitudeVehicle;
 int parseBluetooth(unsigned char command);
 static void put_char(uint8_t c, FILE* stream);
 void spin(double latPerson, double lonPerson);
-int calcHeading();
+int calcHeading(unsigned char command);
 static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 
 extern uint8_t prevSpeedR;
@@ -225,10 +225,35 @@ int main(void)
 		_delay_ms(4000);
 	}*/
 	_delay_ms(8000);
+	bool autoDrive = false;
     while(1)
     {
 		USART_Transmit(0xff);
-		parseBluetooth(USART_Receive());
+		unsigned char command = USART_Receive();
+		if(command == 0)
+		{
+			if(autoDrive==true)
+			{
+				autoDrive = false;
+			}
+			else
+			{
+				autoDrive = true;
+			}
+		}
+		else
+		{
+			if(autoDrive==true)
+			{
+				calcHeading(command);
+			}
+			else
+			{
+				parseBluetooth(command);
+			}
+		}
+		
+		
 		//printf("Kompass:%d\n",compas_update());
 		// Wait for fix
 		//calcHeading();
@@ -238,24 +263,18 @@ int main(void)
 
 }
 
-int calcHeading() {
+int calcHeading(unsigned char command) {
 	double latPerson;
 	double lonPerson;
 	char latitude[10];
 	char longitude[11];
-	USART_Transmit(0xFF);
-	for(int i = 0;i<9;i++) {
+	latitude[0] = command;
+	for(int i = 1;i<9;i++) {
 		latitude[i] = USART_Receive();
-		if(latitude[i] == 0x00) {
-			return 1;
-		}
 	}
 	USART_Transmit(0xFF);
 	for(int i = 0;i<10;i++) {
 		longitude[i] = USART_Receive();
-		if(longitude[i] == 0x00) {
-			return 1;
-		}
 	}
 	
 	char degA[3];
@@ -363,25 +382,7 @@ static void put_char(uint8_t c, FILE* stream)
 }
 
 
-int parseBluetooth(unsigned char command) {
-	//printf("%d\n", command);
-	// Change to auto
-	if(command==0){
-		USART_Transmit(0xff);
-		printf("one\n");
-		if(USART_Receive()==0xff){
-			USART_Transmit(0xff);
-			printf("two\n");
-			if(USART_Receive() == 0) {
-				printf("three\n");
-				while (!calcHeading());
-				
-			}
-		}
-		return 1;
-	}
-	
-	
+int parseBluetooth(unsigned char command) {	
 	uint8_t speed1 = 0;
 	uint8_t speed2 = 0;
 	speed1 = (command >> 4) & 0x7;

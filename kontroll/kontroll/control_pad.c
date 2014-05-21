@@ -92,7 +92,7 @@ int main(void) {
 			
 			/* Send data via bluetooth. */
 
-			//USART_Transmit(send_data);
+			
 
 			USART_Receive();
 			USART_Transmit(send_data);
@@ -101,17 +101,11 @@ int main(void) {
 		} else {
 			
 			changeToMan = true;
-			USART_Receive();
+			
 			if(changeToAuto) 
 			{
-				USART_Transmit(0);
-				
-				USART_Receive();
-				USART_Transmit(255);
-				
 				USART_Receive();
 				USART_Transmit(0);
-				
 				changeToAuto = false;
 			}
 			USART_Receive();
