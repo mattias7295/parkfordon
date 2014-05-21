@@ -47,8 +47,8 @@ int main(void) {
 	/* Initialize setup. */
 	init();
 	
-	bool changeToAuto = true;
-	bool changeToMan = true;
+	bool changeToAuto = false;
+	bool changeToMan = false;
 	int x = 0;
 	/*while(x<5)
 	{
