@@ -312,8 +312,8 @@ int calcHeading() {
 		spin(latPerson, lonPerson);
 		forwardRight = true;
 		forwardLeft = true;
-		prevSpeedL = 120;
-		prevSpeedR = 120;
+		prevSpeedL = 100;
+		prevSpeedR = 100;
 		_delay_ms(500);
 		
 	}
@@ -335,9 +335,9 @@ void spin(double latPerson, double lonPerson)
 			dir = (double)compas_update();
 			dir = dir/10;
 			forwardRight = false;
-			prevSpeedR = 100;
+			prevSpeedR = 60;
 			forwardLeft = true;
-			prevSpeedL = 100;
+			prevSpeedL = 60;
 			//_delay_ms(500);
 		}
 		
@@ -349,9 +349,9 @@ void spin(double latPerson, double lonPerson)
 			dir = (double)compas_update();
 			dir = dir/10;
 			forwardRight = true;
-			prevSpeedR = 100;
+			prevSpeedR = 60;
 			forwardLeft = false;
-			prevSpeedL = 100;
+			prevSpeedL = 60;
 			
 			//_delay_ms(500);
 		}
