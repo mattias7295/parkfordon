@@ -51,7 +51,7 @@ void parseGPS()
 	}
 	for (int i = 0; i < 45; i++) {
 		sentence[i] = USART_ReceiveGPS();
-		printf("%c",sentence[i]);
+		//printf("%c",sentence[i]);
 	}
 	
 	sentence[44] = '\0';
@@ -64,8 +64,8 @@ void parseGPS()
 		strtok(NULL, &delim);
 		strncpy(longitude,strtok(NULL, &delim),11);
 	}
-	printf("\n\nLatitude:%s\n", latitude);
-	printf("Longitude:%s\n", longitude);
+	//printf("\n\nLatitude:%s\n", latitude);
+	//printf("Longitude:%s\n", longitude);
 	
 	char degA[3];
 	strncpy(degA, latitude,2);
@@ -80,7 +80,7 @@ void parseGPS()
 	double d,e;
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
-	printf("degA:%lf minA:%lf\n",d,e);
+	//printf("degA:%lf minA:%lf\n",d,e);
 	lat = (d + e/60);
 	
 	strncpy(degA,longitude+1,2);
@@ -89,7 +89,7 @@ void parseGPS()
 	minA[7] = '\0';
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
-	printf("degO:%lf minO:%lf\n",d,e);
+	//printf("degO:%lf minO:%lf\n",d,e);
 	lon = (d + e/60);
 	
 	

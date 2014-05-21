@@ -239,7 +239,6 @@ int main(void)
 }
 
 int calcHeading() {
-	printf("calcHeading\n");
 	double latPerson;
 	double lonPerson;
 	char latitude[10];
@@ -283,16 +282,16 @@ int calcHeading() {
 	lonPerson = (d + e/60);
 	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
-	parseGPS();
+	//parseGPS();
 	//latPerson = 63.820374;
 	//lonPerson = 20.308906;
 	
-
+	//printf("LatV: %lf \nLonV: %lf \n", latitudeVehile, longitudeVehicle);
 	
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
 	
 	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
-	while(!checkDistance(latPerson,lonPerson)){
+	/*while(!checkDistance(latPerson,lonPerson)){
 		spin(latPerson, lonPerson);
 		forwardRight = true;
 		forwardLeft = true;
@@ -300,7 +299,7 @@ int calcHeading() {
 		prevSpeedR = 100;
 		_delay_ms(500);
 		
-	}
+	}*/
 	return 0;
 	
 }
@@ -315,7 +314,6 @@ void spin(double latPerson, double lonPerson)
 		dir = dir/10;
 		//Vänd åt vänster
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
-			printf("calcheading\n");
 			dir = (double)compas_update();
 			dir = dir/10;
 			forwardRight = false;
@@ -370,9 +368,12 @@ int parseBluetooth(unsigned char command) {
 	// Change to auto
 	if(command==0){
 		USART_Transmit(0xff);
+		printf("one\n");
 		if(USART_Receive()==0xff){
 			USART_Transmit(0xff);
+			printf("two\n");
 			if(USART_Receive() == 0) {
+				printf("three\n");
 				while (!calcHeading());
 				
 			}
