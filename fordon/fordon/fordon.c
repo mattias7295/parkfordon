@@ -239,6 +239,7 @@ int main(void)
 }
 
 int calcHeading() {
+	printf("calcHeading\n");
 	double latPerson;
 	double lonPerson;
 	char latitude[10];
@@ -281,10 +282,11 @@ int calcHeading() {
 	e = strtod(minA,NULL);
 	lonPerson = (d + e/60);
 	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
-	/*parseGPS();
-	latPerson = 63.820374;
-	lonPerson = 20.308906;
-
+	
+	parseGPS();
+	//latPerson = 63.820374;
+	//lonPerson = 20.308906;
+	
 
 	
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
@@ -298,7 +300,7 @@ int calcHeading() {
 		prevSpeedR = 100;
 		_delay_ms(500);
 		
-	}*/
+	}
 	return 0;
 	
 }
@@ -364,14 +366,15 @@ static void put_char(uint8_t c, FILE* stream)
 
 
 int parseBluetooth(unsigned char command) {
-	printf("Command:%d\n", command);
+	//printf("%d\n", command);
 	// Change to auto
 	if(command==0){
 		USART_Transmit(0xff);
 		if(USART_Receive()==0xff){
 			USART_Transmit(0xff);
 			if(USART_Receive() == 0) {
-				calcHeading();
+				while (!calcHeading());
+				
 			}
 		}
 		return 1;
