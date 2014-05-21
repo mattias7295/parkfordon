@@ -257,8 +257,7 @@ int main(void)
 		//printf("Kompass:%d\n",compas_update());
 		// Wait for fix
 		//calcHeading();
-
-		_delay_ms(8000);
+	
     }
 
 }
@@ -301,7 +300,7 @@ int calcHeading(unsigned char command) {
 	lonPerson = (d + e/60);
 	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
-	//parseGPS();
+	parseGPS();
 	//latPerson = 63.820374;
 	//lonPerson = 20.308906;
 	
@@ -310,7 +309,7 @@ int calcHeading(unsigned char command) {
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
 	
 	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
-	/*while(!checkDistance(latPerson,lonPerson)){
+	while(!checkDistance(latPerson,lonPerson)){
 		spin(latPerson, lonPerson);
 		forwardRight = true;
 		forwardLeft = true;
@@ -318,7 +317,7 @@ int calcHeading(unsigned char command) {
 		prevSpeedR = 100;
 		_delay_ms(500);
 		
-	}*/
+	}
 	return 0;
 	
 }

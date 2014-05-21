@@ -50,7 +50,7 @@ int main(void) {
 	bool changeToAuto = true;
 	bool changeToMan = true;
 	int x = 0;
-	while(x<5)
+	/*while(x<5)
 	{
 		if(!(PINB & _BV(PB3)))
 		{
@@ -61,7 +61,7 @@ int main(void) {
 			x = 0;
 		}
 		_delay_ms(4000);
-	}
+	}*/
 	/* Main loop. */
 	while (1) {
 		
