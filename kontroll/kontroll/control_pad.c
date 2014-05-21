@@ -49,10 +49,10 @@ int main(void) {
 	
 	bool changeToAuto = true;
 	bool changeToMan = true;
-	int x;
+	int x = 0;
 	while(x<5)
 	{
-		if(!(PINB & _BV(PB2)))
+		if(!(PINB & _BV(PB3)))
 		{
 			x++;
 		}
