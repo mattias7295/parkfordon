@@ -237,20 +237,20 @@ int main(void)
 
 }
 
-void calcHeading() {
+int calcHeading() {
 	double latPerson;
 	double lonPerson;
 	char latitude[10];
 	char longitude[11];
 	USART_Transmit(0xFF);
-	for(int i = 0;i<10;i++) {
+	for(int i = 0;i<9;i++) {
 		latitude[i] = USART_Receive();
 		if(latitude[i] == 0x00) {
 			return 1;
 		}
 	}
 	USART_Transmit(0xFF);
-	for(int i = 0;i<11;i++) {
+	for(int i = 0;i<10;i++) {
 		longitude[i] = USART_Receive();
 		if(longitude[i] == 0x00) {
 			return 1;
@@ -298,6 +298,7 @@ void calcHeading() {
 		_delay_ms(500);
 		
 	}*/
+	return 0;
 	
 }
 void spin(double latPerson, double lonPerson) 

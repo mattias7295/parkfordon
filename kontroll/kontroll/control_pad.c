@@ -30,6 +30,9 @@ static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 int x_value;
 int y_value;
 
+typedef int bool;
+#define true 1
+#define false 0
 
 
 int main(void) {
@@ -43,11 +46,15 @@ int main(void) {
 	
 	/* Initialize setup. */
 	init();
-
+	
+	bool changeToAuto = true;
+	bool changeToMan = true;
+	
 	/* Main loop. */
 	while (1) {
 		
 		if (steer == MAN) {
+			changeToAuto = true;
 			/* Get coordinates. */
 			x_value = getXValue();
 			y_value = getYValue();
@@ -63,7 +70,12 @@ int main(void) {
 			send_data = compactData(edata);
 		
 			/* Start data transfer signal. */
-			//USART_Transmit(255);
+			if(changeToMan)
+			{
+				USART_Transmit(0);
+				changeToMan = false;
+			}
+			
 			
 			/* Send data via bluetooth. */
 
@@ -74,8 +86,22 @@ int main(void) {
 
 		
 		} else {
-			//USART_Receive();
 			
+			changeToMan = true;
+			USART_Receive();
+			if(changeToAuto) 
+			{
+				USART_Transmit(0);
+				_delay_ms(1);
+				USART_Receive();
+				USART_Transmit(255);
+				_delay_ms(1);
+				USART_Receive();
+				USART_Transmit(0);
+				_delay_ms(1);
+				changeToAuto = false;
+			}
+			USART_Receive();
 			parseGPS();
 			for (int i = 0; i < 9; i++) {
 				USART_Transmit(latitude[i]);
