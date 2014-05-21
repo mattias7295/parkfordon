@@ -35,9 +35,10 @@ bool doNotChangeDirection = false;
 double latitudeVehile;
 double longitudeVehicle;
 
-void parseBluetooth(unsigned char command);
+int parseBluetooth(unsigned char command);
 static void put_char(uint8_t c, FILE* stream);
 void spin(double latPerson, double lonPerson);
+int calcHeading();
 static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 
 extern uint8_t prevSpeedR;
@@ -362,7 +363,8 @@ static void put_char(uint8_t c, FILE* stream)
 }
 
 
-void parseBluetooth(unsigned char command) {
+int parseBluetooth(unsigned char command) {
+	printf("Command:%d\n", command);
 	// Change to auto
 	if(command==0){
 		USART_Transmit(0xff);
@@ -372,7 +374,7 @@ void parseBluetooth(unsigned char command) {
 				calcHeading();
 			}
 		}
-		return;
+		return 1;
 	}
 	
 	
@@ -456,4 +458,5 @@ void parseBluetooth(unsigned char command) {
 			prevSpeedL = speed2;
 		}
 	}
+	return 0;
 }
