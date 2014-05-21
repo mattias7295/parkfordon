@@ -300,8 +300,9 @@ int calcHeading() {
 
 	
 	parseGPS();
-	latPerson = 63.821367;
-	lonPerson = 20.309551;
+	latPerson = 63.820374;
+	lonPerson = 20.308906;
+
 
 	printf("Lat: %lf \nLon: %lf \n", lat, lon);
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
