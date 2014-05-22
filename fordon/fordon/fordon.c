@@ -379,6 +379,10 @@ int calcHeading(unsigned char command) {
 		e = strtod(minA,NULL);
 		lonPerson = (d + e/60);
 		printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
+		
+		latPerson = 63.820227;
+		lonPerson = 20.311459;
+		
 		_delay_ms(500);
 		
 	}
@@ -391,7 +395,7 @@ void spin(double latPerson, double lonPerson) {
 	
 	/* Calculate the displacement of the car compared to the position 
 	 * of the person in radians. */
-	double displacement = atan2(latPerson-lat, lonPerson-lon) * TO_DEG;
+	double displacement = atan2(latPerson-lat, lonPerson-lon);
 	
 	/* Convert the radian angle value in the unit circle to a degree value 
 	 * in the unit circle in [0, 360). */
@@ -401,7 +405,7 @@ void spin(double latPerson, double lonPerson) {
 		displacement = (2*PI + displacement) * TO_DEG; 
 	}
 	
-	printf("Angle: %lf\n", displacement);
+	printf("Displacement: %lf\n", displacement);
 	
 	/* The angle of the nose of the vehicle compared to north, that is,
 	 * 0 means north, 90 is east, 180 is south and 270 west. */
@@ -454,8 +458,7 @@ void spin(double latPerson, double lonPerson) {
 int checkDistance(double latPerson, double lonPerson) {
 
 	parseGPS();
-	latPerson = 63.820227;
-	lonPerson = 20.311459;
+	
 	/*double dx, dy, dz;
 	lonPerson -= lon;
 	lonPerson *= TO_RAD, latPerson *= TO_RAD, lat *= TO_RAD;
