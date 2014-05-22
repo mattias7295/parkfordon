@@ -49,19 +49,7 @@ int main(void) {
 	
 	bool changeToAuto = false;
 	bool changeToMan = false;
-	int x = 0;
-	while(x<5)
-	{
-		if(!(PINB & _BV(PB3)))
-		{
-			x++;
-		}
-		else
-		{
-			x = 0;
-		}
-		_delay_ms(4000);
-	}
+
 	/* Main loop. */
 	USART_Receive();
 	if(steer == MAN)
@@ -113,6 +101,19 @@ int main(void) {
 			
 			if(changeToAuto) 
 			{
+				int x = 0;
+				while(x<5)
+				{
+					if(!(PINB & _BV(PB3)))
+					{
+						x++;
+					}
+					else
+					{
+						x = 0;
+					}
+					_delay_ms(4000);
+				}
 				USART_Receive();
 				USART_Transmit(1);
 				changeToAuto = false;

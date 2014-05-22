@@ -32,8 +32,6 @@ bool forwardRight;
 bool forwardLeft;
 bool doNotChangeDirection = false;
 
-double latitudeVehile;
-double longitudeVehicle;
 
 int parseBluetooth(unsigned char command);
 static void put_char(uint8_t c, FILE* stream);
@@ -43,6 +41,8 @@ static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 
 extern uint8_t prevSpeedR;
 extern uint8_t prevSpeedL;
+extern double lat;
+extern double lon;
 bool autoDrive;
 
 ISR(TIMER1_OVF_vect)
@@ -212,19 +212,7 @@ int main(void)
 	{
 		
 	}
-	int x = 0;
-	while(x<5)
-	{
-		if(!(PINB & _BV(PB2)))
-		{
-			x++;
-		}
-		else
-		{
-			x = 0;
-		}
-		_delay_ms(4000);
-	}
+	
 	_delay_ms(8000);
 	USART_Transmit(3);
 	
@@ -256,6 +244,19 @@ int main(void)
 		{
 			if(autoDrive==true)
 			{
+				int x = 0;
+				while(x<5)
+				{
+					if(!(PINB & _BV(PB2)))
+					{
+						x++;
+					}
+					else
+					{
+						x = 0;
+					}
+					_delay_ms(4000);
+				}
 				calcHeading(command);
 			}
 			else
@@ -382,18 +383,19 @@ int calcHeading(unsigned char command) {
 }
 void spin(double latPerson, double lonPerson) 
 {
-	int angle = atan2( lonPerson-lon, latPerson-lat);
-
+	double angle = atan2(latPerson-lat,lonPerson-lon) * TO_RAD;
+	printf("Angle: %lf\n", angle);
 	// Om cos av vinkeln mellan riktningarna är positiv: vrid åt höger, Annars vänster
 	if(cos(angle)<0) {
 		// Läs av riktning
 		double dir = (double)compas_update();
 		dir = dir/10;
-		printf("Riktning: %lf\n", dir);
+		
 		//Vänd åt vänster
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
 			dir = (double)compas_update();
 			dir = dir/10;
+			printf("Riktning: %lf\n", dir);
 			forwardRight = false;
 			prevSpeedR = 60;
 			forwardLeft = true;
@@ -408,6 +410,7 @@ void spin(double latPerson, double lonPerson)
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
 			dir = (double)compas_update();
 			dir = dir/10;
+			printf("Riktning: %lf\n", dir);
 			forwardRight = true;
 			prevSpeedR = 60;
 			forwardLeft = false;
@@ -424,12 +427,12 @@ int checkDistance(double latPerson, double lonPerson) {
 	parseGPS();
 	
 	double dx, dy, dz;
-	latPerson -= lon;
-	latPerson *= TO_RAD, lonPerson *= TO_RAD, lon *= TO_RAD;
+	lonPerson -= lon;
+	lonPerson *= TO_RAD, latPerson *= TO_RAD, lat *= TO_RAD;
 	
-	dz = sin(lonPerson) - sin(lon);
-	dx = cos(latPerson) * cos(lonPerson) - cos(lon);
-	dy = sin(latPerson) * cos(lonPerson);
+	dz = sin(latPerson) - sin(lat);
+	dx = cos(lonPerson) * cos(latPerson) - cos(lat);
+	dy = sin(lonPerson) * cos(latPerson);
 	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;
 }
 
