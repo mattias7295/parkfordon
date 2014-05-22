@@ -43,6 +43,7 @@ static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 
 extern uint8_t prevSpeedR;
 extern uint8_t prevSpeedL;
+bool autoDrive;
 
 ISR(TIMER1_OVF_vect)
 {
@@ -226,7 +227,7 @@ int main(void)
 	}
 	_delay_ms(8000);
 	USART_Transmit(3);
-	bool autoDrive;
+	
 	if(USART_Receive()==255)
 	{
 		autoDrive = true;
@@ -306,8 +307,7 @@ int calcHeading(unsigned char command) {
 	//printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
 	parseGPS();
-	//latPerson = 63.820374;
-	//lonPerson = 20.308906;
+
 	
 	//printf("LatV: %lf \nLonV: %lf \n", latitudeVehile, longitudeVehicle);
 	
@@ -323,10 +323,34 @@ int calcHeading(unsigned char command) {
 		USART_Transmit(4);
 		for(int i = 0;i<9;i++) {
 			latitude[i] = USART_Receive();
+			if(latitude[i] == 1)
+			{
+				if(autoDrive)
+				{
+					autoDrive = false;
+				}
+				else
+				{
+					autoDrive = true;
+				}
+				return 1;
+			}
 		}
 		USART_Transmit(4);
 		for(int i = 0;i<10;i++) {
 			longitude[i] = USART_Receive();
+			if(longitude[i] == 1)
+			{
+				if(autoDrive)
+				{
+					autoDrive = false;
+				}
+				else
+				{
+					autoDrive = true;
+				}
+				return 1;
+			}
 		}
 		
 		char degA[3];
@@ -337,8 +361,6 @@ int calcHeading(unsigned char command) {
 		strncpy(minA,latitude+2,7);
 		minA[7] = '\0';
 
-
-		
 		double d,e;
 		d = strtod(degA,NULL);
 		e = strtod(minA,NULL);
@@ -351,6 +373,7 @@ int calcHeading(unsigned char command) {
 		d = strtod(degA,NULL);
 		e = strtod(minA,NULL);
 		lonPerson = (d + e/60);
+		printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 		_delay_ms(500);
 		
 	}
