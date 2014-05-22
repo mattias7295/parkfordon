@@ -195,7 +195,7 @@ int main(void)
 	TCNT1 = 0;
 	TCCR1B = (1<<CS10); // no prescale
 	sei();
-	
+	DDRD |= (1<<PD3);
 	
 	DDRB |= (1<<PB0); // EN enable till H-bryggorna
 	PORTB |= (1<<PB0); 
@@ -212,7 +212,7 @@ int main(void)
 		
 	}
 	int x = 0;
-	/*while(x<5)
+	while(x<5)
 	{
 		if(!(PINB & _BV(PB2)))
 		{
@@ -223,9 +223,19 @@ int main(void)
 			x = 0;
 		}
 		_delay_ms(4000);
-	}*/
+	}
 	_delay_ms(8000);
-	bool autoDrive = false;
+	USART_Transmit(3);
+	bool autoDrive;
+	if(USART_Receive()==255)
+	{
+		autoDrive = true;
+	}
+	else
+	{
+		autoDrive = false;
+	}		
+		
     while(1)
     {
 		USART_Transmit(1);
@@ -310,6 +320,37 @@ int calcHeading(unsigned char command) {
 		forwardLeft = true;
 		prevSpeedL = 100;
 		prevSpeedR = 100;
+		USART_Transmit(4);
+		for(int i = 0;i<9;i++) {
+			latitude[i] = USART_Receive();
+		}
+		USART_Transmit(4);
+		for(int i = 0;i<10;i++) {
+			longitude[i] = USART_Receive();
+		}
+		
+		char degA[3];
+		strncpy(degA, latitude,2);
+		degA[2] = '\0';
+
+		char minA[8];
+		strncpy(minA,latitude+2,7);
+		minA[7] = '\0';
+
+
+		
+		double d,e;
+		d = strtod(degA,NULL);
+		e = strtod(minA,NULL);
+		latPerson = (d + e/60);
+		
+		strncpy(degA,longitude+1,2);
+		degA[2] = '\0';
+		strncpy(minA, longitude+3,7);
+		minA[7] = '\0';
+		d = strtod(degA,NULL);
+		e = strtod(minA,NULL);
+		lonPerson = (d + e/60);
 		_delay_ms(500);
 		
 	}
@@ -325,6 +366,7 @@ void spin(double latPerson, double lonPerson)
 		// Läs av riktning
 		double dir = (double)compas_update();
 		dir = dir/10;
+		printf("Riktning: %lf\n", dir);
 		//Vänd åt vänster
 		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
 			dir = (double)compas_update();
@@ -371,8 +413,8 @@ int checkDistance(double latPerson, double lonPerson) {
 static void put_char(uint8_t c, FILE* stream)
 {
 	if (c == '\n') put_char('\r', stream);
-	while(!(UCSR0A & (1 << UDRE0)));
-	UDR0 = c;
+	while(!(UCSR1A & (1 << UDRE1)));
+	UDR1 = c;
 }
 
 
