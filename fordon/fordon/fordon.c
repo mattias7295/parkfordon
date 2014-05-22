@@ -22,7 +22,9 @@
 #define BACKWARDADC 0
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
 #define R 6371
-#define TO_RAD (3.1415926536 / 180)
+#define PI 3.1415926536
+#define TO_RAD (PI / 180)
+#define TO_DEG (180 / PI)
 
 typedef int bool;
 #define true 1
@@ -38,6 +40,7 @@ static void put_char(uint8_t c, FILE* stream);
 void spin(double latPerson, double lonPerson);
 int calcHeading(unsigned char command);
 static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
+double absDouble(double number);
 
 extern uint8_t prevSpeedR;
 extern uint8_t prevSpeedL;
@@ -378,62 +381,104 @@ int calcHeading(unsigned char command) {
 		_delay_ms(500);
 		
 	}
+	
 	return 0;
 	
 }
-void spin(double latPerson, double lonPerson) 
-{
-	double angle = atan2(latPerson-lat,lonPerson-lon) * TO_RAD;
-	printf("Angle: %lf\n", angle);
-	// Om cos av vinkeln mellan riktningarna är positiv: vrid åt höger, Annars vänster
-	if(cos(angle)<0) {
-		// Läs av riktning
-		double dir = (double)compas_update();
-		dir = dir/10;
+
+void spin(double latPerson, double lonPerson) {
+	
+	/* Calculate the displacement of the car compared to the position 
+	 * of the person in radians. */
+	double displacement = atan2(latPerson-lat, lonPerson-lon) * TO_DEG;
+	
+	/* Convert the radian angle value in the unit circle to a degree value 
+	 * in the unit circle in [0, 360). */
+	if (displacement >= 0) {
+		displacement *= TO_DEG;
+	} else {
+		displacement = (2*PI + displacement) * TO_DEG; 
+	}
+	
+	printf("Angle: %lf\n", displacement);
+	
+	/* The angle of the nose of the vehicle compared to north, that is,
+	 * 0 means north, 90 is east, 180 is south and 270 west. */
+	double currentAngle = ((double) compas_update())/10;
+	
+	/* Get new wanted angle, that is, the angle of the direction of the person. */
+	double wantedAngle = currentAngle -  displacement;
+	
+	/* Convert the wanted angle to be in the interval [0, 360). */
+	if (wantedAngle < 0) {
+		wantedAngle += 360;
+	}
+	
+	printf("wantedAngle: %lf\n", wantedAngle);
+	
+	if (displacement <= 180) {
 		
-		//Vänd åt vänster
-		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
-			dir = (double)compas_update();
-			dir = dir/10;
-			printf("Riktning: %lf\n", dir);
-			forwardRight = false;
+		/* Turn left until current angle and wanted angle match
+		 * with a 5 degree accuracy. */
+		while (absDouble(currentAngle - wantedAngle) >= 5) {
+			currentAngle = ((double) compas_update())/10;
+			printf("currentAngle: %lf\n", currentAngle);
+			
+			forwardRight = true;
 			prevSpeedR = 60;
-			forwardLeft = true;
+			
+			forwardLeft = false;
 			prevSpeedL = 60;
-			//_delay_ms(500);
 		}
 		
 	} else {
-		double dir = (double)compas_update();
-		dir = dir/10;
-		//Vänd åt höger
-		while(!(abs(dir-angle)<10 || 360 - abs(dir-angle)<10)) {
-			dir = (double)compas_update();
-			dir = dir/10;
-			printf("Riktning: %lf\n", dir);
-			forwardRight = true;
-			prevSpeedR = 60;
-			forwardLeft = false;
-			prevSpeedL = 60;
+		
+		/* Turn right until current angle and wanted angle match
+		 * with a 5 degree accuracy. */
+		while (abs((int)(currentAngle - wantedAngle)) >= 5) {
+			currentAngle = ((double) compas_update())/10;
+			printf("currentAngle: %lf\n", currentAngle);
 			
-			//_delay_ms(500);
+			forwardRight = false;
+			prevSpeedR = 60;
+			
+			forwardLeft = true;
+			prevSpeedL = 60;
 		}
 		
 	}
 }
+
 //Haversine formula
 int checkDistance(double latPerson, double lonPerson) {
 
 	parseGPS();
 	
-	double dx, dy, dz;
+	/*double dx, dy, dz;
 	lonPerson -= lon;
 	lonPerson *= TO_RAD, latPerson *= TO_RAD, lat *= TO_RAD;
 	
 	dz = sin(latPerson) - sin(lat);
 	dx = cos(lonPerson) * cos(latPerson) - cos(lat);
 	dy = sin(lonPerson) * cos(latPerson);
-	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;
+	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;*/
+	
+	/* Calculate the distance in lat and long axes. */
+	double dx = absDouble(lon - lonPerson);
+	double dy = absDouble(lat - latPerson);
+	
+	/* Return whether or not the vehicle is within ~2 meters of the person. */
+	return sqrt(dx*dx + dy*dy) < 0.00004;
+}
+
+double absDouble(double number) {
+	
+	if (number < 0) {
+		return number*(-1);
+	} else {
+		return number;
+	}
+	
 }
 
 static void put_char(uint8_t c, FILE* stream)
