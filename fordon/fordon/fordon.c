@@ -424,31 +424,31 @@ void spin(double latPerson, double lonPerson) {
 	if (displacement <= 180) {
 		
 		/* Turn left until current angle and wanted angle match
-		 * with a 5 degree accuracy. */
-		while (absDouble(currentAngle - wantedAngle) >= 5) {
+		 * with a 10 degree accuracy. */
+		while (absDouble(currentAngle - wantedAngle) >= 10) {
 			currentAngle = ((double) compas_update())/10;
 			printf("currentAngle: %lf\n", currentAngle);
 			
 			forwardRight = true;
-			prevSpeedR = 60;
+			prevSpeedR = 30;
 			
 			forwardLeft = false;
-			prevSpeedL = 60;
+			prevSpeedL = 30;
 		}
 		
 	} else {
 		
 		/* Turn right until current angle and wanted angle match
-		 * with a 5 degree accuracy. */
-		while (abs((int)(currentAngle - wantedAngle)) >= 5) {
+		 * with a 10 degree accuracy. */
+		while (absDouble(currentAngle - wantedAngle) >= 10) {
 			currentAngle = ((double) compas_update())/10;
 			printf("currentAngle: %lf\n", currentAngle);
 			
 			forwardRight = false;
-			prevSpeedR = 60;
+			prevSpeedR = 30;
 			
 			forwardLeft = true;
-			prevSpeedL = 60;
+			prevSpeedL = 30;
 		}
 		
 	}
