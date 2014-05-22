@@ -395,7 +395,7 @@ void spin(double latPerson, double lonPerson) {
 	
 	/* Calculate the displacement of the car compared to the position 
 	 * of the person in radians. */
-	double displacement = atan2(latPerson-lat, lonPerson-lon);
+	double displacement = atan2(latPerson - lat, lonPerson - lon);
 	
 	/* Convert the radian angle value in the unit circle to a degree value 
 	 * in the unit circle in [0, 360). */
@@ -412,7 +412,7 @@ void spin(double latPerson, double lonPerson) {
 	double currentAngle = ((double) compas_update())/10;
 	
 	/* Get new wanted angle, that is, the angle of the direction of the person. */
-	double wantedAngle = currentAngle -  displacement;
+	double wantedAngle = 90 -  displacement;
 	
 	/* Convert the wanted angle to be in the interval [0, 360). */
 	if (wantedAngle < 0) {
@@ -421,7 +421,8 @@ void spin(double latPerson, double lonPerson) {
 	
 	printf("wantedAngle: %lf\n", wantedAngle);
 	
-	if (displacement <= 180) {
+	if ((currentAngle > wantedAngle && (currentAngle - wantedAngle) <= 180) || 
+	(currentAngle < wantedAngle && (currentAngle + (360 - wantedAngle)) <= 180)) {
 		
 		/* Turn left until current angle and wanted angle match
 		 * with a 10 degree accuracy. */
