@@ -215,9 +215,22 @@ int main(void)
 	{
 		
 	}
+	int x = 0;
+	while(x<5)
+	{
+		if(!(PINB & _BV(PB2)))
+		{
+			x++;
+		}
+		else
+		{
+			x = 0;
+		}
+		_delay_ms(4000);
+	}
 	
 	_delay_ms(8000);
-	USART_Transmit(3);
+	/*USART_Transmit(3);
 	
 	if(USART_Receive()==255)
 	{
@@ -226,8 +239,8 @@ int main(void)
 	else
 	{
 		autoDrive = false;
-	}		
-		
+	}*/	
+		autoDrive = false;
     while(1)
     {
 		USART_Transmit(1);
@@ -247,19 +260,6 @@ int main(void)
 		{
 			if(autoDrive==true)
 			{
-				int x = 0;
-				while(x<5)
-				{
-					if(!(PINB & _BV(PB2)))
-					{
-						x++;
-					}
-					else
-					{
-						x = 0;
-					}
-					_delay_ms(4000);
-				}
 				calcHeading(command);
 			}
 			else
@@ -312,7 +312,8 @@ int calcHeading(unsigned char command) {
 	
 	parseGPS();
 
-	
+	latPerson = 63.820227;
+	lonPerson = 20.311459;
 	//printf("LatV: %lf \nLonV: %lf \n", latitudeVehile, longitudeVehicle);
 	
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
@@ -453,7 +454,8 @@ void spin(double latPerson, double lonPerson) {
 int checkDistance(double latPerson, double lonPerson) {
 
 	parseGPS();
-	
+	latPerson = 63.820227;
+	lonPerson = 20.311459;
 	/*double dx, dy, dz;
 	lonPerson -= lon;
 	lonPerson *= TO_RAD, latPerson *= TO_RAD, lat *= TO_RAD;
