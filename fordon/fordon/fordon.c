@@ -41,6 +41,7 @@ void spin(double latPerson, double lonPerson);
 int calcHeading(unsigned char command);
 static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 double absDouble(double number);
+double checkDistance(double latPerson, double lonPerson);
 
 extern uint8_t prevSpeedR;
 extern uint8_t prevSpeedL;
@@ -260,10 +261,12 @@ int main(void)
 		{
 			if(autoDrive==true)
 			{
+				TCCR1B = 0;
 				calcHeading(command);
 			}
 			else
 			{
+				TCCR1B = (1<<CS10);
 				parseBluetooth(command);
 			}
 		}
@@ -308,85 +311,46 @@ int calcHeading(unsigned char command) {
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
 	lonPerson = (d + e/60);
-	//printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
+	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
 	parseGPS();
-
-	latPerson = 63.820227;
-	lonPerson = 20.311459;
-	//printf("LatV: %lf \nLonV: %lf \n", latitudeVehile, longitudeVehicle);
+	/*lat = 63.820401;
+	lon = 20.310892;*/
+	
+	latPerson = 63.820344;
+	lonPerson = 20.311167;
+	printf("LatV: %lf \nLonV: %lf \n", lat, lon);
 	
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
-	
-	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
-	while(!checkDistance(latPerson,lonPerson)){
-		spin(latPerson, lonPerson);
-		forwardRight = true;
-		forwardLeft = true;
-		prevSpeedL = 100;
-		prevSpeedR = 100;
-		USART_Transmit(4);
-		for(int i = 0;i<9;i++) {
-			latitude[i] = USART_Receive();
-			if(latitude[i] == 1)
-			{
-				if(autoDrive)
-				{
-					autoDrive = false;
-				}
-				else
-				{
-					autoDrive = true;
-				}
-				return 1;
-			}
-		}
-		USART_Transmit(4);
-		for(int i = 0;i<10;i++) {
-			longitude[i] = USART_Receive();
-			if(longitude[i] == 1)
-			{
-				if(autoDrive)
-				{
-					autoDrive = false;
-				}
-				else
-				{
-					autoDrive = true;
-				}
-				return 1;
-			}
+	spin(latPerson, lonPerson);
+	OCR0A = 255;
+	OCR0B = 255;
+	OCR2A = 255;
+	OCR2B = 255;
+		// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
+	double dist = 0, tempDist = 0;
+	do 
+	{
+		tempDist = dist;
+		dist = checkDistance(latPerson,lonPerson);
+		
+		TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
+		OCR0A = 70;
+		TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
+		OCR2A = 70;
+		
+		printf("Vinkel: %lf\n", ((double)compas_update())/10);
+		
+		if (tempDist > dist) {
+			OCR0A = 255;
+			OCR0B = 255;
+			OCR2A = 255;
+			OCR2B = 255;
+			dist = 0;
 		}
 		
-		char degA[3];
-		strncpy(degA, latitude,2);
-		degA[2] = '\0';
+	} while(dist > 0.00004);
 
-		char minA[8];
-		strncpy(minA,latitude+2,7);
-		minA[7] = '\0';
-
-		double d,e;
-		d = strtod(degA,NULL);
-		e = strtod(minA,NULL);
-		latPerson = (d + e/60);
-		
-		strncpy(degA,longitude+1,2);
-		degA[2] = '\0';
-		strncpy(minA, longitude+3,7);
-		minA[7] = '\0';
-		d = strtod(degA,NULL);
-		e = strtod(minA,NULL);
-		lonPerson = (d + e/60);
-		printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
-		
-		latPerson = 63.820227;
-		lonPerson = 20.311459;
-		
-		_delay_ms(500);
-		
-	}
-	
 	return 0;
 	
 }
@@ -405,11 +369,12 @@ void spin(double latPerson, double lonPerson) {
 		displacement = (2*PI + displacement) * TO_DEG; 
 	}
 	
-	printf("Displacement: %lf\n", displacement);
+	
 	
 	/* The angle of the nose of the vehicle compared to north, that is,
 	 * 0 means north, 90 is east, 180 is south and 270 west. */
 	double currentAngle = ((double) compas_update())/10;
+	
 	
 	/* Get new wanted angle, that is, the angle of the direction of the person. */
 	double wantedAngle = 90 -  displacement;
@@ -419,7 +384,7 @@ void spin(double latPerson, double lonPerson) {
 		wantedAngle += 360;
 	}
 	
-	printf("wantedAngle: %lf\n", wantedAngle);
+	
 	
 	if ((currentAngle > wantedAngle && (currentAngle - wantedAngle) <= 180) || 
 	(currentAngle < wantedAngle && (currentAngle + (360 - wantedAngle)) <= 180)) {
@@ -427,38 +392,96 @@ void spin(double latPerson, double lonPerson) {
 		/* Turn left until current angle and wanted angle match
 		 * with a 10 degree accuracy. */
 		while (absDouble(currentAngle - wantedAngle) >= 10) {
-			currentAngle = ((double) compas_update())/10;
-			printf("currentAngle: %lf\n", currentAngle);
 			
-			forwardRight = true;
-			prevSpeedR = 30;
+			currentAngle = 0;
+			
+			for (int i = 0; i < 10; i++) {
+				currentAngle += ((double) compas_update())/10;
+			}
+			
+			currentAngle = currentAngle/10;
+			
+			printf("currentAngle: %lf\n", currentAngle);
+			printf("wantedAngle: %lf\n", wantedAngle);
+			printf("Displacement: %lf\n", displacement);
+			/*forwardRight = true;
+			prevSpeedR = 120;
 			
 			forwardLeft = false;
-			prevSpeedL = 30;
+			prevSpeedL = 120;*/
+			
+			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
+			OCR0A = 70;
+			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
+			OCR2A = 255;
+			//_delay_ms(1);
+			
+			for (int i = 0; i < 10; i++) {
+				printf("Poopypants turn left i=%d \n", i);
+			}
+			
+			OCR0A = 255;
+			OCR0B = 255;
+			OCR2A = 255;
+			OCR2B = 255;
+			
+			
+			for (int i = 0; i < 30; i++) {
+				printf("Stå still!!");
+			}
+			
 		}
-		
+				
 	} else {
 		
 		/* Turn right until current angle and wanted angle match
 		 * with a 10 degree accuracy. */
 		while (absDouble(currentAngle - wantedAngle) >= 10) {
-			currentAngle = ((double) compas_update())/10;
-			printf("currentAngle: %lf\n", currentAngle);
 			
-			forwardRight = false;
-			prevSpeedR = 30;
+			currentAngle = 0;
+			
+			for (int i = 0; i < 10; i++) {
+				currentAngle += ((double) compas_update())/10;
+			}			 
+			
+			currentAngle = currentAngle/10;
+			
+			printf("currentAngle: %lf\n", currentAngle);
+			printf("wantedAngle: %lf\n", wantedAngle);
+			printf("Displacement: %lf\n", displacement);
+			/*forwardRight = false;
+			prevSpeedR = 120;
 			
 			forwardLeft = true;
-			prevSpeedL = 30;
-		}
-		
+			prevSpeedL = 120;*/
+			//_delay_ms(1);
+			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
+			OCR0A = 255;
+			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
+			OCR2A = 70;
+			for (int i = 0; i < 10; i++) {
+				printf("Poopypants turn right i=%d\n", i);
+			}
+			
+			OCR0A = 255;
+			OCR0B = 255;
+			OCR2A = 255;
+			OCR2B = 255;
+			
+			
+			for (int i = 0; i < 30; i++) {
+				printf("Stå still!!");
+			}	
+		}		
 	}
 }
 
 //Haversine formula
-int checkDistance(double latPerson, double lonPerson) {
+double checkDistance(double latPerson, double lonPerson) {
 
 	parseGPS();
+	//lat = 63.820401;
+	//lon = 20.310892;
 	
 	/*double dx, dy, dz;
 	lonPerson -= lon;
@@ -474,7 +497,7 @@ int checkDistance(double latPerson, double lonPerson) {
 	double dy = absDouble(lat - latPerson);
 	
 	/* Return whether or not the vehicle is within ~2 meters of the person. */
-	return sqrt(dx*dx + dy*dy) < 0.00004;
+	return sqrt(dx*dx + dy*dy);
 }
 
 double absDouble(double number) {
