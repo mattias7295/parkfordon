@@ -41,7 +41,7 @@ void spin(double latPerson, double lonPerson);
 int calcHeading(unsigned char command);
 static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 double absDouble(double number);
-double checkDistance(double latPerson, double lonPerson);
+double checkDistance(double latPersonIn, double lonPersonIn);
 
 extern uint8_t prevSpeedR;
 extern uint8_t prevSpeedL;
@@ -191,7 +191,7 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
-int main(void)
+int main(void) 
 {
 	stdout = &mystdout;
 	// Setup 16-bit timer for acceleration
@@ -276,15 +276,21 @@ int main(void)
 }
 
 int calcHeading(unsigned char command) {
+	
 	double latPerson;
 	double lonPerson;
+	
 	char latitude[10];
 	char longitude[11];
+	
 	latitude[0] = command;
+	
 	for(int i = 1;i<9;i++) {
 		latitude[i] = USART_Receive();
 	}
+	
 	USART_Transmit(2);
+	
 	for(int i = 0;i<10;i++) {
 		longitude[i] = USART_Receive();
 	}
@@ -297,8 +303,6 @@ int calcHeading(unsigned char command) {
 	strncpy(minA,latitude+2,7);
 	minA[7] = '\0';
 
-
-	
 	double d,e;
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
@@ -306,11 +310,14 @@ int calcHeading(unsigned char command) {
 	
 	strncpy(degA,longitude+1,2);
 	degA[2] = '\0';
+
 	strncpy(minA, longitude+3,7);
 	minA[7] = '\0';
+
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
 	lonPerson = (d + e/60);
+
 	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
 	parseGPS();
@@ -319,23 +326,29 @@ int calcHeading(unsigned char command) {
 	
 	latPerson = 63.820344;
 	lonPerson = 20.311167;
+
 	printf("LatV: %lf \nLonV: %lf \n", lat, lon);
 	
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
 	spin(latPerson, lonPerson);
+
 	OCR0A = 255;
 	OCR0B = 255;
 	OCR2A = 255;
 	OCR2B = 255;
-		// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
+
+	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
 	double dist = 0, tempDist = 0;
 	
+	/* Drive forward until the vehicle is within a two metre radius from the person,
+	 * or until the distance between the two increases. */
 	do {
 		
 		/* Save earlier distance in order to know whether or not we are getting closer to the person. */
 		tempDist = dist;
 		dist = checkDistance(latPerson,lonPerson);
 		
+		/* Drive forward. */
 		TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
 		OCR0A = 70;
 		TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
@@ -343,6 +356,7 @@ int calcHeading(unsigned char command) {
 		
 		printf("Vinkel: %lf\n", ((double)compas_update())/10);
 		
+		/* If we are not getting closer to the person, stop the engines and go back to main loop. */
 		if (tempDist > dist) {
 			OCR0A = 255;
 			OCR0B = 255;
@@ -497,27 +511,25 @@ void spin(double latPerson, double lonPerson) {
 }
 
 //Haversine formula
-double checkDistance(double latPerson, double lonPerson) {
+double checkDistance(double latPersonIn, double lonPersonIn) {
 
 	parseGPS();
 	//lat = 63.820401;
 	//lon = 20.310892;
 	
-	/*double dx, dy, dz;
+	double latPerson =  latPersonIn;
+	double lonPerson = lonPersonIn;
+	
+	double dx, dy, dz;
 	lonPerson -= lon;
 	lonPerson *= TO_RAD, latPerson *= TO_RAD, lat *= TO_RAD;
 	
 	dz = sin(latPerson) - sin(lat);
 	dx = cos(lonPerson) * cos(latPerson) - cos(lat);
 	dy = sin(lonPerson) * cos(latPerson);
-	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;*/
-	
-	/* Calculate the distance in lat and long axes. */
-	double dx = absDouble(lon - lonPerson);
-	double dy = absDouble(lat - latPerson);
 	
 	/* Return the distance between the vehicle and the person. */
-	return sqrt(dx*dx + dy*dy);
+	return (asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R)<0.00002;
 }
 
 double absDouble(double number) {
