@@ -329,8 +329,10 @@ int calcHeading(unsigned char command) {
 	OCR2B = 255;
 		// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
 	double dist = 0, tempDist = 0;
-	do 
-	{
+	
+	do {
+		
+		/* Save earlier distance in order to know whether or not we are getting closer to the person. */
 		tempDist = dist;
 		dist = checkDistance(latPerson,lonPerson);
 		
@@ -369,12 +371,15 @@ void spin(double latPerson, double lonPerson) {
 		displacement = (2*PI + displacement) * TO_DEG; 
 	}
 	
-	
-	
 	/* The angle of the nose of the vehicle compared to north, that is,
 	 * 0 means north, 90 is east, 180 is south and 270 west. */
-	double currentAngle = ((double) compas_update())/10;
+	double currentAngle = 0;
 	
+	for (int i = 0; i < 10; i++) {
+		currentAngle += ((double) compas_update())/10;
+	}
+	
+	currentAngle = currentAngle/10;
 	
 	/* Get new wanted angle, that is, the angle of the direction of the person. */
 	double wantedAngle = 90 -  displacement;
@@ -384,14 +389,20 @@ void spin(double latPerson, double lonPerson) {
 		wantedAngle += 360;
 	}
 	
+	/* Calculate the difference between the angles (counterwise, neg. value indicates that 
+	 * the current angle is on the low side of zero and that the wanted angle is on the high side). */
+	double diff = currentAngle - wantedAngle;
 	
-	
-	if ((currentAngle > wantedAngle && (currentAngle - wantedAngle) <= 180) || 
-	(currentAngle < wantedAngle && (currentAngle + (360 - wantedAngle)) <= 180)) {
+	/* If the wanted angle is closest to the current angle if you turn counterwise, 
+	 * turn left until angles match. Else, turn right until they match. */
+	if ((diff > 0 && diff <= 180) || (diff < 0 && diff <= -180)) {
+		
+		/* Calculate the absolute difference between the angles. */
+		double absDiff = absDouble(currentAngle - wantedAngle);
 		
 		/* Turn left until current angle and wanted angle match
 		 * with a 10 degree accuracy. */
-		while (absDouble(currentAngle - wantedAngle) >= 10) {
+		while (absDiff > 10 && absDiff < 350) {
 			
 			currentAngle = 0;
 			
@@ -404,6 +415,7 @@ void spin(double latPerson, double lonPerson) {
 			printf("currentAngle: %lf\n", currentAngle);
 			printf("wantedAngle: %lf\n", wantedAngle);
 			printf("Displacement: %lf\n", displacement);
+			
 			/*forwardRight = true;
 			prevSpeedR = 120;
 			
@@ -416,6 +428,7 @@ void spin(double latPerson, double lonPerson) {
 			OCR2A = 255;
 			//_delay_ms(1);
 			
+			/* Turn a few degrees. */
 			for (int i = 0; i < 10; i++) {
 				printf("Poopypants turn left i=%d \n", i);
 			}
@@ -425,7 +438,7 @@ void spin(double latPerson, double lonPerson) {
 			OCR2A = 255;
 			OCR2B = 255;
 			
-			
+			/* Wait for the vehicle to stop properly in order to get better compass data. */
 			for (int i = 0; i < 30; i++) {
 				printf("Stå still!!");
 			}
@@ -434,31 +447,38 @@ void spin(double latPerson, double lonPerson) {
 				
 	} else {
 		
-		/* Turn right until current angle and wanted angle match
+		/* Calculate the absolute difference between the angles. */
+		double absDiff = absDouble(currentAngle - wantedAngle);
+		
+		/* Turn left until current angle and wanted angle match
 		 * with a 10 degree accuracy. */
-		while (absDouble(currentAngle - wantedAngle) >= 10) {
+		while (absDiff > 10 && absDiff < 350) {
 			
 			currentAngle = 0;
 			
 			for (int i = 0; i < 10; i++) {
 				currentAngle += ((double) compas_update())/10;
-			}			 
+			}
 			
 			currentAngle = currentAngle/10;
 			
 			printf("currentAngle: %lf\n", currentAngle);
 			printf("wantedAngle: %lf\n", wantedAngle);
 			printf("Displacement: %lf\n", displacement);
+			
 			/*forwardRight = false;
 			prevSpeedR = 120;
 			
 			forwardLeft = true;
 			prevSpeedL = 120;*/
 			//_delay_ms(1);
+			
 			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
 			OCR0A = 255;
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
 			OCR2A = 70;
+			
+			/* Turn a few degrees. */
 			for (int i = 0; i < 10; i++) {
 				printf("Poopypants turn right i=%d\n", i);
 			}
@@ -468,7 +488,7 @@ void spin(double latPerson, double lonPerson) {
 			OCR2A = 255;
 			OCR2B = 255;
 			
-			
+			/* Wait for the vehicle to stop properly in order to get better compass data. */
 			for (int i = 0; i < 30; i++) {
 				printf("Stå still!!");
 			}	
@@ -496,7 +516,7 @@ double checkDistance(double latPerson, double lonPerson) {
 	double dx = absDouble(lon - lonPerson);
 	double dy = absDouble(lat - latPerson);
 	
-	/* Return whether or not the vehicle is within ~2 meters of the person. */
+	/* Return the distance between the vehicle and the person. */
 	return sqrt(dx*dx + dy*dy);
 }
 
