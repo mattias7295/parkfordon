@@ -51,7 +51,7 @@ int main(void) {
 	bool changeToMan = false;
 
 	int x = 0;
-while(x<5)
+/*while(x<5)
 {
 	if(!(PINB & _BV(PB3)))
 	{
@@ -62,9 +62,9 @@ while(x<5)
 		x = 0;
 	}
 	_delay_ms(4000);
-}
+}*/
 	/* Main loop. */
-	/*USART_Receive();
+	USART_Receive();
 	if(steer == MAN)
 	{
 		USART_Transmit(0);
@@ -72,7 +72,7 @@ while(x<5)
 	else
 	{
 		USART_Transmit(255);
-	}*/
+	}
 	while (1) {
 		
 		if (steer == MAN) {
@@ -130,7 +130,15 @@ while(x<5)
 				USART_Transmit(longitude[i]);
 				_delay_ms(1);
 			}
-			
+			/*USART_Receive();
+			if(steer = MAN)
+			{
+				USART_Transmit(255);
+			}
+			else
+			{
+				USART_Transmit(0);
+			}*/
 			//_delay_ms(1000);
 		}
 		

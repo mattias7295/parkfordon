@@ -214,11 +214,12 @@ int main(void)
 
 	while (!(PINB & _BV(PB1)))
 	{
-		
+		printf("Wating for bluetooth");
 	}
 	int x = 0;
 	while(x<5)
 	{
+	
 		if(!(PINB & _BV(PB2)))
 		{
 			x++;
@@ -231,7 +232,7 @@ int main(void)
 	}
 	
 	_delay_ms(8000);
-	/*USART_Transmit(3);
+	USART_Transmit(3);
 	
 	if(USART_Receive()==255)
 	{
@@ -240,7 +241,7 @@ int main(void)
 	else
 	{
 		autoDrive = false;
-	}*/	
+	}	
 		autoDrive = false;
     while(1)
     {
@@ -417,7 +418,7 @@ void spin(double latPerson, double lonPerson) {
 		/* Turn left until current angle and wanted angle match
 		 * with a 10 degree accuracy. */
 		while (absDiff > 10 && absDiff < 350) {
-			
+			printf("Absdiff %lf \n" , absDiff);
 			currentAngle = 0;
 			
 			for (int i = 0; i < 10; i++) {
@@ -444,7 +445,7 @@ void spin(double latPerson, double lonPerson) {
 			
 			/* Turn a few degrees. */
 			for (int i = 0; i < 10; i++) {
-				printf("Poopypants turn left i=%d \n", i);
+				
 			}
 			
 			OCR0A = 255;
@@ -454,8 +455,9 @@ void spin(double latPerson, double lonPerson) {
 			
 			/* Wait for the vehicle to stop properly in order to get better compass data. */
 			for (int i = 0; i < 30; i++) {
-				printf("Stå still!!");
+				
 			}
+			absDiff = absDouble(currentAngle - wantedAngle);
 			
 		}
 				
@@ -467,7 +469,7 @@ void spin(double latPerson, double lonPerson) {
 		/* Turn left until current angle and wanted angle match
 		 * with a 10 degree accuracy. */
 		while (absDiff > 10 && absDiff < 350) {
-			
+			printf("Absdiff %lf \n" , absDiff);
 			currentAngle = 0;
 			
 			for (int i = 0; i < 10; i++) {
@@ -494,7 +496,7 @@ void spin(double latPerson, double lonPerson) {
 			
 			/* Turn a few degrees. */
 			for (int i = 0; i < 10; i++) {
-				printf("Poopypants turn right i=%d\n", i);
+				
 			}
 			
 			OCR0A = 255;
@@ -504,8 +506,9 @@ void spin(double latPerson, double lonPerson) {
 			
 			/* Wait for the vehicle to stop properly in order to get better compass data. */
 			for (int i = 0; i < 30; i++) {
-				printf("Stå still!!");
-			}	
+				
+			}
+			absDiff = absDouble(currentAngle - wantedAngle);	
 		}		
 	}
 }
