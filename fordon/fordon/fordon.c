@@ -30,17 +30,16 @@ bool autoDrive;
 bool interruptCurrentLoop = false;
 int globalint = 0;
 
-ISR(USART_RXC_vect)
+ISR(USART0_RX_vect)
 {
 	char receivedByte = UDR0;
 	globalint++;
-	//printf("Int\n");
 	
-	/*if (receivedByte == 5)
+	if (receivedByte == 5)
 	{
 		// Jump back to main by setting a boolean
 		interruptCurrentLoop = true;
-	}*/
+	}
 	
 }
 
@@ -197,6 +196,7 @@ One other thing to keep in mind is that there are actually two different interru
 
 int main(void) 
 {
+	// redirect stdout to put_char method
 	stdout = &mystdout;
 	// Setup 16-bit timer for acceleration
 	OCR1A = 1600;
@@ -204,6 +204,10 @@ int main(void)
 	TCNT1 = 0;
 	TCCR1B = (1<<CS10); // no prescale TESTA TA BORT TIMERN OCH TESTA MER, KAN STACKA 2 
 	DDRD |= (1<<PD3);
+	
+	USART_Init(51);
+	/* Set global interrupt flag. */
+	sei();
 	
 	DDRB |= (1<<PB0); // EN enable till H-bryggorna
 	PORTB |= (1<<PB0); 
@@ -215,7 +219,7 @@ int main(void)
 	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
 	TWBR = 8; // twi clock frequency
 
-	USART_Init(51);
+	
 	
 	//while (!(PINB & _BV(PB1))){}
 	

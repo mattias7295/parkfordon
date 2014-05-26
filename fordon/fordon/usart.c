@@ -23,9 +23,7 @@ void USART_Init( unsigned int baud )
 	
 	/* Set RX interrupt enable*/
 	UCSR0B |= (1<<RXCIE0);
-	
-	/* Set global interrupt flag. */
-	sei();
+
 }
 
 void USART_Transmit( uint8_t data )
