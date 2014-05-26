@@ -10,13 +10,22 @@
 void USART_Init( unsigned int baud )
 {
 	DDRD |= (1<<PD1);
+	
 	/* Set baud rate */
 	UBRR0H = (unsigned char)(baud>>8);
 	UBRR0L = (unsigned char)baud;
+	
 	/* Enable receiver and transmitter */
 	UCSR0B = (1<<RXEN0)|(1<<TXEN0);
+	
 	/* Set frame format: 8data, 2stop bit */
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+	
+	/* Set RX interrupt enable*/
+	UCSR0B |= (1<<RXCIE0);
+	
+	/* Set global interrupt flag. */
+	sei();
 }
 
 void USART_Transmit( uint8_t data )

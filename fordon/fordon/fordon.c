@@ -5,50 +5,44 @@
  *  Author: masc0058
  */ 
 
-
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-#include <stdio.h>
-#include "usart.h"
-#include "adc.h"
-#include "pwm.h"
-#include "spi.h"
-#include "twi.h"
-#include "GPSparser.h"
-//#include "autodrive.h"
-
-#define FORWARDADC	1
-#define BACKWARDADC 0
-#define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
-#define R 6371
-#define PI 3.1415926536
-#define TO_RAD (PI / 180)
-#define TO_DEG (180 / PI)
-
-typedef int bool;
-#define true 1
-#define false 0
-
-bool forwardRight;
-bool forwardLeft;
-bool doNotChangeDirection = false;
-
+#include "fordon.h"
 
 int parseBluetooth(unsigned char command);
 static void put_char(uint8_t c, FILE* stream);
 void spin(double latPerson, double lonPerson);
 int calcHeading(unsigned char command);
-static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
 double absDouble(double number);
 double checkDistance(double latPersonIn, double lonPersonIn);
+ISR(TIMER1_OVF_vect);
+ISR(USART_RXC_vect);
 
-extern uint8_t prevSpeedR;
-extern uint8_t prevSpeedL;
-extern double lat;
-extern double lon;
+static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
+
+bool forwardRight;
+bool forwardLeft;
+bool doNotChangeDirection = false;
+
+uint8_t prevSpeedR;
+uint8_t prevSpeedL;
+double lat;
+double lon;
 bool autoDrive;
 bool interruptCurrentLoop = false;
+int globalint = 0;
+
+ISR(USART_RXC_vect)
+{
+	char receivedByte = UDR0;
+	globalint++;
+	//printf("Int\n");
+	
+	/*if (receivedByte == 5)
+	{
+		// Jump back to main by setting a boolean
+		interruptCurrentLoop = true;
+	}*/
+	
+}
 
 ISR(TIMER1_OVF_vect)
 {
@@ -192,17 +186,6 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
-ISR(USART_RXC_vect)
-{
-	char receivedByte;
-	receivedByte = UDR0;
-	if (receivedByte == 0)
-	{
-		// Jump back to main by setting a boolean
-		interruptCurrentLoop = true;
-	}
-}
-
 int main(void) 
 {
 	stdout = &mystdout;
@@ -215,19 +198,20 @@ int main(void)
 	
 	DDRB |= (1<<PB0); // EN enable till H-bryggorna
 	PORTB |= (1<<PB0); 
-
-	USART_Init(51);
-	sei();
 	
 	init_pwm();
 	setupGpsParser(51);
+	
 	adc_init();
 	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
 	TWBR = 8; // twi clock frequency
 
-	while (!(PINB & _BV(PB1)))
-	{
-	}
+	USART_Init(51);
+	
+	//while (!(PINB & _BV(PB1))){}
+	
+	printf("Efter USART INIT första while\n");
+	
 	int x = 0;
 	/*while(x<5)
 	{
@@ -243,50 +227,55 @@ int main(void)
 		_delay_ms(4000);
 	}*/
 	
-	_delay_ms(8000);
-	USART_Transmit(3);
+//	_delay_ms(8000);
+//	USART_Transmit(3);
 	
-	if(USART_Receive()==255)
+	/*if(USART_Receive()==255)
 	{
 		autoDrive = true;
 	}
 	else
 	{
 		autoDrive = false;
-	}	
+	}	*/
 		autoDrive = false;
-    while(1)
-    {
-		interruptCurrentLoop = false;
-		// RX interrupt disable
-		UCSR0B &= ~(1<<RXCIE0);
-		USART_Transmit(1);
-		unsigned char command = USART_Receive();
-		if(command == 1)
-		{
-			if(autoDrive==true)
-			{
-				autoDrive = false;
-			}
-			else
-			{
-				autoDrive = true;
-			}
-		}
-		else
-		{
-			if(autoDrive==true)
-			{
-				TCCR1B = 0;
-				calcHeading(command);
-			}
-			else
-			{
-				TCCR1B = (1<<CS10);
-				parseBluetooth(command);
-			}
-		}
 	
+	while(1) {
+		
+		printf("GLOBALINT: %d\n", globalint);
+		_delay_ms(1000);
+		
+		//interruptCurrentLoop = false;
+		//// RX interrupt disable
+		////UCSR0B &= ~(1<<RXCIE0);
+		////sei();
+		//
+		//USART_Transmit(1);
+		//unsigned char command = USART_Receive();
+		//if(command == 1)
+		//{
+			//if(autoDrive==true)
+			//{
+				//autoDrive = false;
+			//}
+			//else
+			//{
+				//autoDrive = true;
+			//}
+		//}
+		//else
+		//{
+			//if(autoDrive==true)
+			//{
+				//TCCR1B = 0;
+				//calcHeading(command);
+			//}
+			//else
+			//{
+				//TCCR1B = (1<<CS10);
+				//parseBluetooth(command);
+			//}
+		//}
     }
 
 }
@@ -309,9 +298,10 @@ int calcHeading(unsigned char command) {
 	for(int i = 0;i<10;i++) {
 		longitude[i] = USART_Receive();
 	}
-	
+
 	/*Set RX interrupt enable*/
 	UCSR0B |= (1<<RXCIE0);
+	sei();
 	
 	char degA[3];
 	strncpy(degA, latitude,2);
@@ -364,6 +354,7 @@ int calcHeading(unsigned char command) {
 		if (interruptCurrentLoop)
 		{
 			// Jump out
+			printf("Interrupt\n");
 			break;
 		}
 		/* Save earlier distance in order to know whether or not we are getting closer to the person. */
@@ -442,6 +433,7 @@ void spin(double latPerson, double lonPerson) {
 			printf("Absdiff %lf \n" , absDiff);
 			if (interruptCurrentLoop)
 			{
+				printf("Interrupt\n");
 				break;
 			}
 			currentAngle = 0;
@@ -467,22 +459,23 @@ void spin(double latPerson, double lonPerson) {
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
 			OCR2A = 255;
 			//_delay_ms(1);
-			_delay_ms(2000);
+			
+			
 			/* Turn a few degrees. */
-			/*for (int i = 0; i < 10; i++) {
-				
-			}*/
+			for (int i = 0; i < 10; i++) {
+				_delay_ms(100);
+			}
 			
 			OCR0A = 255;
 			OCR0B = 255;
 			OCR2A = 255;
 			OCR2B = 255;
 			
-			_delay_ms(4000);
+			
 			/* Wait for the vehicle to stop properly in order to get better compass data. */
-			/*for (int i = 0; i < 30; i++) {
-				
-			}*/
+			for (int i = 0; i < 30; i++) {
+				_delay_ms(100);
+			}
 			absDiff = absDouble(currentAngle - wantedAngle);
 			
 		}
@@ -496,6 +489,11 @@ void spin(double latPerson, double lonPerson) {
 		 * with a 10 degree accuracy. */
 		while (absDiff > 10 && absDiff < 350) {
 			printf("Absdiff %lf \n" , absDiff);
+			if (interruptCurrentLoop)
+			{
+				printf("Interrupt\n");
+				break;
+			}
 			currentAngle = 0;
 			
 			for (int i = 0; i < 10; i++) {
@@ -522,7 +520,7 @@ void spin(double latPerson, double lonPerson) {
 			
 			/* Turn a few degrees. */
 			for (int i = 0; i < 10; i++) {
-				
+				_delay_ms(100);
 			}
 			
 			OCR0A = 255;
@@ -532,7 +530,7 @@ void spin(double latPerson, double lonPerson) {
 			
 			/* Wait for the vehicle to stop properly in order to get better compass data. */
 			for (int i = 0; i < 30; i++) {
-				
+				_delay_ms(100);
 			}
 			absDiff = absDouble(currentAngle - wantedAngle);	
 		}		

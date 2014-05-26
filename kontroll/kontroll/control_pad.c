@@ -64,7 +64,9 @@ int main(void) {
 	_delay_ms(4000);
 }*/
 	/* Main loop. */
-	USART_Receive();
+	
+	
+/*	USART_Receive();
 	if(steer == MAN)
 	{
 		USART_Transmit(0);
@@ -73,83 +75,94 @@ int main(void) {
 	{
 		USART_Transmit(255);
 	}
-	while (1) {
-		
-		if (steer == MAN) {
-			changeToAuto = true;
-			/* Get coordinates. */
-			x_value = getXValue();
-			y_value = getYValue();
-		
-			/* Calculate angle of the position in a coordinate system. */
-			double angle = atan2((double)y_value, (double)x_value);
-		
-			/* Set all info in edata. */
-			setDirections(edata, angle);
-			setThrottles(edata, angle, x_value, y_value);
-		
-			/* Compact all engine data into one 8-bit char. */
-			send_data = compactData(edata);
-		
-			/* Start data transfer signal. */
-			if(changeToMan)
-			{
-				USART_Transmit(0);
-				USART_Receive();
-				USART_Transmit(1);
-				changeToMan = false;
-			}
-			
-			
-			/* Send data via bluetooth. */
+*/	
 
-			
-
-			USART_Receive();
-			USART_Transmit(send_data);
-
-		
-		} else {
-			
-			changeToMan = true;
-			
-			if(changeToAuto) 
-			{
-				USART_Transmit(0);
-				USART_Receive();
-				USART_Transmit(1);
-				changeToAuto = false;
-			}
-			USART_Receive();
-			parseGPS();
-			for (int i = 0; i < 9; i++) {
-				USART_Transmit(latitude[i]);
-				_delay_ms(1);
-			}
-			USART_Receive();
-			
-			for (int i = 0; i < 10; i++) {
-				USART_Transmit(longitude[i]);
-				_delay_ms(1);
-			}
-			/*USART_Receive();
-			if(steer = MAN)
-			{
-				USART_Transmit(255);
-			}
-			else
-			{
-				USART_Transmit(0);
-			}*/
-			//_delay_ms(1000);
-		}
-		
-		/* Check if sleep mode is to be activated. */
-		if (power == OFF) {
-			sleepMode();
-		}
-				
+	while(1) {
+		USART_Transmit(0);
 	}
+
+	//while (1) {
+		//
+		//if (steer == MAN) {
+			//
+			//changeToAuto = true;
+			//
+			///* Get coordinates. */
+			//x_value = getXValue();
+			//y_value = getYValue();
+		//
+			///* Calculate angle of the position in a coordinate system. */
+			//double angle = atan2((double)y_value, (double)x_value);
+		//
+			///* Set all info in edata. */
+			//setDirections(edata, angle);
+			//setThrottles(edata, angle, x_value, y_value);
+		//
+			///* Compact all engine data into one 8-bit char. */
+			//send_data = compactData(edata);
+		//
+			///* Start data transfer signal. */
+			//if(changeToMan)
+			//{
+				//USART_Transmit(5);
+				//USART_Receive();
+				//USART_Transmit(1);
+				//changeToMan = false;
+			//}
+			//
+			//
+			///* Send data via bluetooth. */
+			//
+			//USART_Receive();
+			//USART_Transmit(send_data);
+//
+		//
+		//} else {
+			//
+			//changeToMan = true;
+			//
+			//if (changeToAuto) {
+				//USART_Transmit(5);
+				//USART_Receive();
+				//USART_Transmit(1);
+				//changeToAuto = false;
+			//}
+			//
+			//USART_Receive();
+			//parseGPS();
+			//
+			//for (int i = 0; i < 9; i++) {
+				//USART_Transmit(latitude[i]);
+				//_delay_ms(1);
+			//}
+			//
+			//USART_Receive();
+			//
+			//for (int i = 0; i < 10; i++) {
+				//USART_Transmit(longitude[i]);
+				//_delay_ms(1);
+			//}
+			//
+			///*USART_Receive();
+			//if(steer = MAN)
+			//{
+				//USART_Transmit(255);
+			//}
+			//else
+			//{
+				//USART_Transmit(0);
+			//}*/
+			////_delay_ms(1000);
+		//}
+		//
+		//
+		///* Check if sleep mode is to be activated. */
+		//if (power == OFF) {
+			//// Skicka signal till fordonet via bluetooth
+			//sleepMode();
+		//}
+				//
+	//} 
 }
 
 static void put_char(uint8_t c, FILE* stream)
@@ -235,6 +248,9 @@ void USART_Init(unsigned int ubrr) {
 	
 	/* Set frame format: 8data, 2stop bit */
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
+	
+	/* Wait for connection. */
+	while (!(PIND & _BV(PD6))){}
 }
 
 /*
