@@ -186,6 +186,15 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
+/*
+Interrupt hela tiden så att vi inte hinner skriva ut?! Testa lägga en delay i controlpadkoden.
+
+One other thing to keep in mind is that there are actually two different interrupt vectors associated with the USART transmitter:
+1) A "UART Data Register Empty" (UDRE) interrupt will fire continually as long as there's space in the double-buffered UDR for additional characters to be added to the hardware queue.
+
+2) A "UART Transmit Complete" (TXC) interrupt will fire once following the completion of the final queued character.
+*/
+
 int main(void) 
 {
 	stdout = &mystdout;
@@ -193,7 +202,7 @@ int main(void)
 	OCR1A = 1600;
 	TIMSK1 = (1<<TOIE1);
 	TCNT1 = 0;
-	TCCR1B = (1<<CS10); // no prescale TESTA TA BORT TIMERN
+	TCCR1B = (1<<CS10); // no prescale TESTA TA BORT TIMERN OCH TESTA MER, KAN STACKA 2 
 	DDRD |= (1<<PD3);
 	
 	DDRB |= (1<<PB0); // EN enable till H-bryggorna
