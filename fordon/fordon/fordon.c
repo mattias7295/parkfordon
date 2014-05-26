@@ -193,7 +193,7 @@ int main(void)
 	OCR1A = 1600;
 	TIMSK1 = (1<<TOIE1);
 	TCNT1 = 0;
-	TCCR1B = (1<<CS10); // no prescale
+	TCCR1B = (1<<CS10); // no prescale TESTA TA BORT TIMERN
 	DDRD |= (1<<PD3);
 	
 	DDRB |= (1<<PB0); // EN enable till H-bryggorna
