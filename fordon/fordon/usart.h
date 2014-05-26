@@ -10,6 +10,7 @@
 #define USART_H_
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #define MYUBRR 12
 

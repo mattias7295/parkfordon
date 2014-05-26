@@ -48,6 +48,7 @@ extern uint8_t prevSpeedL;
 extern double lat;
 extern double lon;
 bool autoDrive;
+bool interruptCurrentLoop = false;
 
 ISR(TIMER1_OVF_vect)
 {
@@ -191,6 +192,17 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
+ISR(USART_RXC_vect)
+{
+	char receivedByte;
+	receivedByte = UDR0;
+	if (receivedByte == 0)
+	{
+		// Jump back to main by setting a boolean
+		interruptCurrentLoop = true;
+	}
+}
+
 int main(void) 
 {
 	stdout = &mystdout;
@@ -199,13 +211,14 @@ int main(void)
 	TIMSK1 = (1<<TOIE1);
 	TCNT1 = 0;
 	TCCR1B = (1<<CS10); // no prescale
-	sei();
 	DDRD |= (1<<PD3);
 	
 	DDRB |= (1<<PB0); // EN enable till H-bryggorna
 	PORTB |= (1<<PB0); 
 
 	USART_Init(51);
+	sei();
+	
 	init_pwm();
 	setupGpsParser(51);
 	adc_init();
@@ -214,10 +227,9 @@ int main(void)
 
 	while (!(PINB & _BV(PB1)))
 	{
-		printf("Wating for bluetooth");
 	}
 	int x = 0;
-	while(x<5)
+	/*while(x<5)
 	{
 	
 		if(!(PINB & _BV(PB2)))
@@ -229,7 +241,7 @@ int main(void)
 			x = 0;
 		}
 		_delay_ms(4000);
-	}
+	}*/
 	
 	_delay_ms(8000);
 	USART_Transmit(3);
@@ -245,6 +257,9 @@ int main(void)
 		autoDrive = false;
     while(1)
     {
+		interruptCurrentLoop = false;
+		// RX interrupt disable
+		UCSR0B &= ~(1<<RXCIE0);
 		USART_Transmit(1);
 		unsigned char command = USART_Receive();
 		if(command == 1)
@@ -277,7 +292,6 @@ int main(void)
 }
 
 int calcHeading(unsigned char command) {
-	
 	double latPerson;
 	double lonPerson;
 	
@@ -295,6 +309,9 @@ int calcHeading(unsigned char command) {
 	for(int i = 0;i<10;i++) {
 		longitude[i] = USART_Receive();
 	}
+	
+	/*Set RX interrupt enable*/
+	UCSR0B |= (1<<RXCIE0);
 	
 	char degA[3];
 	strncpy(degA, latitude,2);
@@ -322,8 +339,8 @@ int calcHeading(unsigned char command) {
 	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
 	parseGPS();
-	/*lat = 63.820401;
-	lon = 20.310892;*/
+	lat = 63.820401;
+	lon = 20.310892;
 	
 	latPerson = 63.820344;
 	lonPerson = 20.311167;
@@ -344,7 +361,11 @@ int calcHeading(unsigned char command) {
 	/* Drive forward until the vehicle is within a two metre radius from the person,
 	 * or until the distance between the two increases. */
 	do {
-		
+		if (interruptCurrentLoop)
+		{
+			// Jump out
+			break;
+		}
 		/* Save earlier distance in order to know whether or not we are getting closer to the person. */
 		tempDist = dist;
 		dist = checkDistance(latPerson,lonPerson);
@@ -419,6 +440,10 @@ void spin(double latPerson, double lonPerson) {
 		 * with a 10 degree accuracy. */
 		while (absDiff > 10 && absDiff < 350) {
 			printf("Absdiff %lf \n" , absDiff);
+			if (interruptCurrentLoop)
+			{
+				break;
+			}
 			currentAngle = 0;
 			
 			for (int i = 0; i < 10; i++) {
@@ -442,21 +467,22 @@ void spin(double latPerson, double lonPerson) {
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
 			OCR2A = 255;
 			//_delay_ms(1);
-			
+			_delay_ms(2000);
 			/* Turn a few degrees. */
-			for (int i = 0; i < 10; i++) {
+			/*for (int i = 0; i < 10; i++) {
 				
-			}
+			}*/
 			
 			OCR0A = 255;
 			OCR0B = 255;
 			OCR2A = 255;
 			OCR2B = 255;
 			
+			_delay_ms(4000);
 			/* Wait for the vehicle to stop properly in order to get better compass data. */
-			for (int i = 0; i < 30; i++) {
+			/*for (int i = 0; i < 30; i++) {
 				
-			}
+			}*/
 			absDiff = absDouble(currentAngle - wantedAngle);
 			
 		}

@@ -94,6 +94,7 @@ int main(void) {
 			/* Start data transfer signal. */
 			if(changeToMan)
 			{
+				USART_Transmit(0);
 				USART_Receive();
 				USART_Transmit(1);
 				changeToMan = false;
@@ -114,6 +115,7 @@ int main(void) {
 			
 			if(changeToAuto) 
 			{
+				USART_Transmit(0);
 				USART_Receive();
 				USART_Transmit(1);
 				changeToAuto = false;
