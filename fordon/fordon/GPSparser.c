@@ -59,39 +59,42 @@ void parseGPS()
 	strtok(sentence, &delim);
 	strncpy(GPSStatus,strtok(NULL, &delim),1);
 	GPSStatus[1] = '\0';
+	
 	if (strcmp(GPSStatus,"V")) {
-		strncpy(latitude,strtok(NULL, &delim),10);
+		strncpy(latitude, strtok(NULL, &delim), 10);
 		strtok(NULL, &delim);
-		strncpy(longitude,strtok(NULL, &delim),11);
+		strncpy(longitude, strtok(NULL, &delim), 11);
+
+		//printf("\n\nLatitude:%s\n", latitude);
+		//printf("Longitude:%s\n", longitude);
+	
+		char degA[3];
+		strncpy(degA, latitude,2);
+		degA[2] = '\0';
+
+		char minA[8];
+		strncpy(minA,latitude+2,7);
+		minA[7] = '\0';
+
+		double d,e;
+		d = strtod(degA,NULL);
+		e = strtod(minA,NULL);
+		//printf("degA:%lf minA:%lf\n",d,e);
+		lat = (d + e/60);
+	
+		strncpy(degA,longitude+1,2);
+		degA[2] = '\0';
+		strncpy(minA, longitude+3,7);
+		minA[7] = '\0';
+		d = strtod(degA,NULL);
+		e = strtod(minA,NULL);
+		//printf("degO:%lf minO:%lf\n",d,e);
+		lon = (d + e/60);
+	
+	} else {
+		lat = 0;
+		lon = 0;
 	}
-	//printf("\n\nLatitude:%s\n", latitude);
-	//printf("Longitude:%s\n", longitude);
-	
-	char degA[3];
-	strncpy(degA, latitude,2);
-	degA[2] = '\0';
-
-	char minA[8];
-	strncpy(minA,latitude+2,7);
-	minA[7] = '\0';
-
-
-	
-	double d,e;
-	d = strtod(degA,NULL);
-	e = strtod(minA,NULL);
-	//printf("degA:%lf minA:%lf\n",d,e);
-	lat = (d + e/60);
-	
-	strncpy(degA,longitude+1,2);
-	degA[2] = '\0';
-	strncpy(minA, longitude+3,7);
-	minA[7] = '\0';
-	d = strtod(degA,NULL);
-	e = strtod(minA,NULL);
-	//printf("degO:%lf minO:%lf\n",d,e);
-	lon = (d + e/60);
-	
 	
 }
 

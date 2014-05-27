@@ -22,7 +22,7 @@ void USART_Init( unsigned int baud )
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
 	
 	/* Set RX interrupt enable*/
-	UCSR0B |= (1<<RXCIE0);
+//	UCSR0B |= (1<<RXCIE0);
 
 }
 

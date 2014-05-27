@@ -34,11 +34,13 @@ extern uint8_t prevSpeedL;
 extern double lat;
 extern double lon;
 
-int parseBluetooth(unsigned char command);
+void init();
+void timer_init();
+int parseBluetooth();
 static void put_char(uint8_t c, FILE* stream);
 void spin(double latPerson, double lonPerson);
-int calcHeading(unsigned char command);
+int calcHeading();
 double absDouble(double number);
 double checkDistance(double latPersonIn, double lonPersonIn);
 ISR(TIMER1_OVF_vect);
-ISR(USART_RXC_vect);
+//ISR(USART_RXC_vect);

@@ -55,13 +55,16 @@ void parseGPS() {
 	strtok(sentence, &delim);
 	strncpy(GPSStatus,strtok(NULL, &delim),1);
 	GPSStatus[1] = '\0';
+	
 	if (strcmp(GPSStatus,"V")) {
-		strncpy(latitude,strtok(NULL, &delim),10);
+		strncpy(latitude, strtok(NULL, &delim),10);
 		strtok(NULL, &delim);
-		strncpy(longitude,strtok(NULL, &delim),11);
+		strncpy(longitude, strtok(NULL, &delim),11);
+	} else {
+		strncpy(latitude, "0000.0000", 9);
+		strncpy(longitude, "00000.0000", 10);
 	}
 	
-
 }
 
 static void put_char(uint8_t c, FILE* stream)
