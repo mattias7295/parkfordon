@@ -205,7 +205,7 @@ int main(void) {
 	
 	//printf("Efter USART INIT första while\n");
 	
-/*	int x = 0;
+	int x = 0;
 
 	while(x < 5) {
 	
@@ -217,7 +217,7 @@ int main(void) {
 		
 		_delay_ms(4000);
 	}
-*/	
+	
 	//_delay_ms(8000);
 	
 	int steerData = 255;
@@ -358,12 +358,12 @@ int calcHeading() {
 	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
 	
 	parseGPS();
-	/*lat = 63.820401;
+/*	lat = 63.820401;
 	lon = 20.310892;
 	
 	latPerson = 63.820344;
-	lonPerson = 20.311167;*/
-
+	lonPerson = 20.311167;
+*/
 	printf("LatV: %lf \nLonV: %lf \n", lat, lon);
 	
 	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
@@ -418,9 +418,9 @@ int calcHeading() {
 		
 		/* Drive forward. */
 		TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-		OCR0A = 70;
+		OCR0A = 100; // 70 standard
 		TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-		OCR2A = 70;
+		OCR2A = 100;
 	}
 
 	return 0;
@@ -468,7 +468,7 @@ void spin(double latPerson, double lonPerson) {
 	
 	/* If the angle is not within a 20 degree range from the wanted
 	 * angle, turn some. */
-	if (absDiff > 10 && absDiff < 350) {
+	while (absDiff > 10 && absDiff < 350) {
 		
 		printf("Absdiff %lf \n" , absDiff);
 		
@@ -478,7 +478,7 @@ void spin(double latPerson, double lonPerson) {
 		OCR2B = 255;
 		
 		/* Wait for the vehicle to stop properly in order to get better compass data. */
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 10; i++) {
 			_delay_ms(100);
 		}
 		
@@ -514,10 +514,10 @@ void spin(double latPerson, double lonPerson) {
 		}
 		
 		/* Turn a few degrees. */
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < 20; i++) {
 			_delay_ms(100);
 		}
-		
+
 		absDiff = absDouble(currentAngle - wantedAngle);
 			
 	}
@@ -638,9 +638,9 @@ void spin(double latPerson, double lonPerson) {
 double checkDistance(double latPersonIn, double lonPersonIn) {
 
 	parseGPS();
-	//lat = 63.820401;
-	//lon = 20.310892;
-	
+/*	lat = 63.820401;
+	lon = 20.310892;
+*/	
 	double latPerson =  latPersonIn;
 	double lonPerson = lonPersonIn;
 	
