@@ -57,7 +57,7 @@ int main(void) {
 //	bool changeToAuto = false;
 //	bool changeToMan = false;
 
-/*	int x = 0;
+	int x = 0;
 	
 	while(x < 5) {
 		
@@ -69,7 +69,7 @@ int main(void) {
 		
 		_delay_ms(4000);
 	}
-*/
+
 	/* Main loop. */
 	while (1) {
 		

@@ -1,0 +1,264 @@
+LatPerson: 63.820606 
+LonPerson: 20.308878 
+LatVehicle: 63.820499 
+LonVehicle: 20.309502 
+Vinkel: 287.500000
+
+
+LatPerson: 63.820606 
+LonPerson: 20.308876 
+LatVehicle: 63.820492 
+LonVehicle: 20.309484 
+Vinkel: 286.299990
+
+
+LatPerson: 63.820606 
+LonPerson: 20.308865 
+LatVehicle: 63.820488 
+LonVehicle: 20.309490 
+Vinkel: 291.200010
+
+
+LatPerson: 63.820599 
+LonPerson: 20.308846 
+LatVehicle: 63.820442 
+LonVehicle: 20.309467 
+Vinkel: 290.500000
+
+
+LatPerson: 63.820595 
+LonPerson: 20.308826 
+LatVehicle: 63.820377 
+LonVehicle: 20.309490 
+Vinkel: 290.500000
+
+
+LatPerson: 63.820595 
+LonPerson: 20.308790 
+LatVehicle: 63.820320 
+LonVehicle: 20.309488 
+Vinkel: 275.700010
+
+
+currentAngle: 285.610020
+wantedAngle: 291.476810
+Displacement: 158.523210
+diff: -5.866791
+absDiff: 5.866791
+
+
+LatPerson: 63.820591 
+LonPerson: 20.308733 
+LatVehicle: 63.820290 
+LonVehicle: 20.309380 
+Vinkel: 291.700010
+
+
+LatPerson: 63.820591 
+LonPerson: 20.308752 
+LatVehicle: 63.820259 
+LonVehicle: 20.309357 
+Vinkel: 294.299990
+
+
+LatPerson: 63.820587 
+LonPerson: 20.308769 
+LatVehicle: 63.820313 
+LonVehicle: 20.309158 
+Vinkel: 313.299990
+
+
+currentAngle: 310.560000
+wantedAngle: 305.217590
+Displacement: 144.782410
+diff: 5.342407
+absDiff: 5.342407
+
+
+LatPerson: 63.820587 
+LonPerson: 20.308786 
+LatVehicle: 63.820385 
+LonVehicle: 20.308914 
+Vinkel: 299.000000
+
+
+currentAngle: 299.460020
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -28.244019
+absDiff: 28.244019
+
+
+currentAngle: 304.880000
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -22.824036
+absDiff: 22.824036
+
+
+currentAngle: 296.279970
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -31.424072
+absDiff: 31.424072
+
+
+currentAngle: 290.490020
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -37.214020
+absDiff: 37.214020
+
+
+currentAngle: 286.330020
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -41.374023
+absDiff: 41.374023
+
+
+currentAngle: 279.789980
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -47.914063
+absDiff: 47.914063
+
+
+currentAngle: 269.840000
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -57.864044
+absDiff: 57.864044
+
+
+currentAngle: 288.289980
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -39.414063
+absDiff: 39.414063
+
+
+currentAngle: 298.940000
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -28.764038
+absDiff: 28.764038
+
+
+currentAngle: 308.780030
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -18.924011
+absDiff: 18.924011
+
+
+currentAngle: 317.110020
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -10.594025
+absDiff: 10.594025
+
+
+currentAngle: 324.620030
+wantedAngle: 327.704040
+Displacement: 122.295970
+diff: -3.084015
+absDiff: 3.084015
+
+
+LatPerson: 63.820591 
+LonPerson: 20.308826 
+LatVehicle: 63.820488 
+LonVehicle: 20.309151 
+Vinkel: 331.000000
+
+
+currentAngle: 329.049990
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 41.427673
+absDiff: 41.427673
+
+
+currentAngle: 329.069980
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 41.447662
+absDiff: 41.447662
+
+
+currentAngle: 325.120030
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 37.497711
+absDiff: 37.497711
+
+
+currentAngle: 318.359990
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 30.737671
+absDiff: 30.737671
+
+
+currentAngle: 319.350010
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 31.727692
+absDiff: 31.727692
+
+
+currentAngle: 324.299990
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 36.677673
+absDiff: 36.677673
+
+
+currentAngle: 340.050020
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 52.427704
+absDiff: 52.427704
+
+
+currentAngle: 343.420010
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 55.797699
+absDiff: 55.797699
+
+
+currentAngle: 349.340000
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 61.717682
+absDiff: 61.717682
+
+
+currentAngle: 335.360020
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 47.737701
+absDiff: 47.737701
+
+
+currentAngle: 319.260010
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 31.637695
+absDiff: 31.637695
+
+
+currentAngle: 303.370000
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 15.747681
+absDiff: 15.747681
+
+
+currentAngle: 295.419980
+wantedAngle: 287.622310
+Displacement: 162.377700
+diff: 7.797668
+absDiff: 7.797668

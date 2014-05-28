@@ -363,8 +363,10 @@ int calcHeading() {
 /*	lat = 63.820401;
 	lon = 20.310892;
 */	
-	latPerson = 63.820344;
+/*	latPerson = 63.820344;
 	lonPerson = 20.311167;
+*/
+	printf("\n");
 
 	printf("LatPerson: %lf \nLonPerson: %lf \n", latPerson, lonPerson);
 	
@@ -401,6 +403,8 @@ int calcHeading() {
 	//} while(dist > 0.00004);
 	
 	printf("Vinkel: %lf\n", ((double)compas_update())/10);
+	
+	printf("\n");
 	
 	tempDist = dist;
 	dist = getDistance(latPerson, lonPerson);
@@ -508,6 +512,8 @@ void spin(double latPerson, double lonPerson) {
 		
 		currentAngle = currentAngle/10;
 		
+		printf("\n");
+		
 		printf("currentAngle: %lf\n", currentAngle);
 		printf("wantedAngle: %lf\n", wantedAngle);
 		printf("Displacement: %lf\n", displacement);
@@ -518,6 +524,8 @@ void spin(double latPerson, double lonPerson) {
 		
 		printf("diff: %lf\n", diff);
 		printf("absDiff: %lf\n", absDiff);
+		
+		printf("\n");
 			
 		/* If the wanted angle is closest to the current angle 
 		 * if you turn counterwise, turn left. */ 
@@ -527,13 +535,13 @@ void spin(double latPerson, double lonPerson) {
 			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
 			OCR0A = 255;
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-			OCR2A = 70;
+			OCR2A = 60;
 		
 		} else {
 		
 			/* Turn right. */
 			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-			OCR0A = 70;
+			OCR0A = 60;
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
 			OCR2A = 255;
 		}
