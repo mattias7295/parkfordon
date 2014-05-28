@@ -65,7 +65,7 @@ typedef struct  {
 } engine_data;
 
 /* PI. */
-#define PI 3.14159265
+#define PI 3.1415926535897932385
 
 /* Global joystick position variables. */
 extern int x_value;
