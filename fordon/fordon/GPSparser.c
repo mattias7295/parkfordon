@@ -40,15 +40,18 @@ void parseGPS()
 	char GPSStatus[2] = "";
 
 	while (strcmp(word, "GPRMC") != 0) {
+	
 		do {
 			temp = USART_ReceiveGPS();
 		} while (temp != '$');
+	
 		for (int i = 0; i < 5; i++) {
 			word[i] = USART_ReceiveGPS();
 		}
 		
 		word[5] = '\0';
 	}
+	
 	for (int i = 0; i < 45; i++) {
 		sentence[i] = USART_ReceiveGPS();
 		//printf("%c",sentence[i]);
@@ -57,7 +60,7 @@ void parseGPS()
 	sentence[44] = '\0';
 	
 	strtok(sentence, &delim);
-	strncpy(GPSStatus,strtok(NULL, &delim),1);
+	strncpy(GPSStatus, strtok(NULL, &delim), 1);
 	GPSStatus[1] = '\0';
 	
 	if (strcmp(GPSStatus,"V")) {

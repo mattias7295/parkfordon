@@ -14,7 +14,7 @@ static void put_char(uint8_t c, FILE* stream);
 void spin(double latPerson, double lonPerson);
 int calcHeading();
 double absDouble(double number);
-double checkDistance(double latPersonIn, double lonPersonIn);
+double getDistance(double latPerson, double lonPerson);
 ISR(TIMER1_OVF_vect);
 //ISR(USART_RXC_vect);
 
@@ -320,6 +320,9 @@ int calcHeading() {
 	char latitude[10];
 	char longitude[11];
 	
+	/* Parse the GPS values of the vehicle. */
+	parseGPS();
+	
 	USART_Transmit(5);
 	
 	for(int i = 0; i < 9; i++) {
@@ -355,19 +358,17 @@ int calcHeading() {
 	e = strtod(minA,NULL);
 	lonPerson = (d + e/60);
 
-	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
+	/* Constant test values. */
 	
-	parseGPS();
 /*	lat = 63.820401;
 	lon = 20.310892;
-	
+*/	
 	latPerson = 63.820344;
 	lonPerson = 20.311167;
-*/
-	printf("LatV: %lf \nLonV: %lf \n", lat, lon);
+
+	printf("LatPerson: %lf \nLonPerson: %lf \n", latPerson, lonPerson);
 	
-	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
-	spin(latPerson, lonPerson);
+	printf("LatVehicle: %lf \nLonVehicle: %lf \n", lat, lon);
 
 	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
 	double dist = 0, tempDist = 0;
@@ -401,12 +402,12 @@ int calcHeading() {
 	
 	printf("Vinkel: %lf\n", ((double)compas_update())/10);
 	
-	dist = checkDistance(latPerson,lonPerson);
 	tempDist = dist;
+	dist = getDistance(latPerson, lonPerson);
 	
 	/* If the vehicle is within a two metre radius from the person
-	 *  or the vehicle is getting further away from the person, stop. */
-	if (dist <= 0.00004 || tempDist > dist) {
+	 * or the vehicle is getting further away from the person, stop. */
+	if (dist <= 0.002 || tempDist > dist) {
 		
 		/* Stop. */
 		OCR0A = 255;
@@ -415,6 +416,9 @@ int calcHeading() {
 		OCR2B = 255;
 		
 	} else {
+		
+		/* Räkna ut vilken riktning fordonet ska vända sig åt av argumenten */
+		spin(latPerson, lonPerson);
 		
 		/* Drive forward. */
 		TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
@@ -429,9 +433,25 @@ int calcHeading() {
 
 void spin(double latPerson, double lonPerson) {
 	
+	/* Get the differences in X and Y position between the vehicle and person. */
+//	double deltaX = getDistance(lat, lonPerson);
+//	double deltaY = getDistance(latPerson, lon);
+	
+	/* Set the correct sign. */
+/*	if (lonPerson < lon) {
+		deltaX *= -1;
+	}
+	
+	if (latPerson < lat) {
+		deltaY *= -1;
+	}
+*/	
 	/* Calculate the displacement of the car compared to the position 
-	 * of the person in radians. */
+	 * of the person in radians. Since the distance does not matter
+	 * when calculating the angle, we use the degree values to measure
+	 * change in x and y axes where longitude is x and latitude is y. */
 	double displacement = atan2(latPerson - lat, lonPerson - lon);
+//	double displacement = atan2(deltaY, deltaX);
 	
 	/* Convert the radian angle value in the unit circle to a degree value 
 	 * in the unit circle in [0, 360). */
@@ -470,8 +490,6 @@ void spin(double latPerson, double lonPerson) {
 	 * angle, turn some. */
 	while (absDiff > 10 && absDiff < 350) {
 		
-		printf("Absdiff %lf \n" , absDiff);
-		
 		OCR0A = 255;
 		OCR0B = 255;
 		OCR2A = 255;
@@ -494,6 +512,13 @@ void spin(double latPerson, double lonPerson) {
 		printf("wantedAngle: %lf\n", wantedAngle);
 		printf("Displacement: %lf\n", displacement);
 		
+		/* Update angle difference variables. */
+		diff = currentAngle - wantedAngle;
+		absDiff = absDouble(currentAngle - wantedAngle);
+		
+		printf("diff: %lf\n", diff);
+		printf("absDiff: %lf\n", absDiff);
+			
 		/* If the wanted angle is closest to the current angle 
 		 * if you turn counterwise, turn left. */ 
 		if ((diff > 0 && diff <= 180) || (diff < 0 && diff <= -180)) {
@@ -516,10 +541,8 @@ void spin(double latPerson, double lonPerson) {
 		/* Turn a few degrees. */
 		for (int i = 0; i < 20; i++) {
 			_delay_ms(100);
-		}
-
-		absDiff = absDouble(currentAngle - wantedAngle);
-			
+		}		
+		
 	}
 	
 	///* If the wanted angle is closest to the current angle if you turn counterwise, 
@@ -635,13 +658,14 @@ void spin(double latPerson, double lonPerson) {
 }
 
 //Haversine formula
-double checkDistance(double latPersonIn, double lonPersonIn) {
+double getDistance(double latPerson, double lonPerson) {
 
-	parseGPS();
+//	parseGPS();
 /*	lat = 63.820401;
 	lon = 20.310892;
 */	
-	double latPerson =  latPersonIn;
+
+/*	double latPerson =  latPersonIn;
 	double lonPerson = lonPersonIn;
 	
 	double dx, dy, dz;
@@ -651,9 +675,22 @@ double checkDistance(double latPersonIn, double lonPersonIn) {
 	dz = sin(latPerson) - sin(lat);
 	dx = cos(lonPerson) * cos(latPerson) - cos(lat);
 	dy = sin(lonPerson) * cos(latPerson);
-	
+*/
 	/* Return the distance between the vehicle and the person. */
-	return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
+//	return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
+
+	/* Difference in latitude and longitude measured in radians. */
+	double deltaLatRad = (latPerson - lat)*TO_RAD;
+	double deltaLonRad = (lonPerson - lon)*TO_RAD;
+	
+	/* Temporary variable for the expression under the square root in the
+	 * get-distance-form of the haversine formula. */
+	double temp = sin(deltaLatRad/2) * sin(deltaLatRad/2) + 
+	cos(lat*TO_RAD) * cos(latPerson*TO_RAD) * sin(deltaLonRad/2) * sin(deltaLonRad/2);
+
+	/* Return the distance in kilometers. */
+	return 2 * R * asin(sqrt(temp));
+
 }
 
 double absDouble(double number) {
