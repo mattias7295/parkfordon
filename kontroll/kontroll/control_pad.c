@@ -51,12 +51,10 @@ int main(void) {
 	/* Initialize setup. */
 	init();
 	
-	/* Wait for bluetooth connection. */
-	while (!(PIND & _BV(BT_CONNECTION_PORT))){}
-	
 //	bool changeToAuto = false;
 //	bool changeToMan = false;
 
+	/* Wait for fix. */
 	int x = 0;
 	
 	while(x < 5) {
@@ -210,6 +208,9 @@ void init() {
 	
 	/* Set global interrupt flag. */
 	sei();
+	
+	/* Wait for bluetooth connection. */
+	while (!(PIND & _BV(BT_CONNECTION_PORT))){}
 }
 
 /*
@@ -579,16 +580,6 @@ void sleepMode() {
 	DDRA &= ~_BV(POWER_PORT_5V);
 	DDRB &= ~_BV(POWER_CONTROL);
 	DDRB &= ~_BV(STEER_CONTROL);
-	
-/*	DDRD &= ~_BV(LED_PIN8);
-	DDRC &= ~_BV(LED_PIN7);
-	DDRC &= ~_BV(LED_PIN6);
-	DDRC &= ~_BV(LED_PIN5);
-	DDRC &= ~_BV(LED_PIN4);
-	DDRD &= ~_BV(LED_PIN3);
-	DDRD &= ~_BV(LED_PIN2);
-	DDRD &= ~_BV(LED_PIN1);
-*/
 
 	/* Set sleep mode and enable sleep setup. */
 	set_sleep_mode(SLEEP_MODE_PWR_DOWN);

@@ -26,8 +26,8 @@
 #define Y_AXIS PA1
 
 /* Power to bluetooth port. */ 
-#define POWER_PORT_3V PA2
-#define POWER_PORT_5V PA3
+#define POWER_PORT_3V PA3
+#define POWER_PORT_5V PA2
 
 /* Bluetooth connection port. */
 #define BT_CONNECTION_PORT PD6
