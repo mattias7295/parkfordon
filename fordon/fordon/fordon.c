@@ -425,15 +425,12 @@ int calcHeading() {
 		spin(latPerson, lonPerson);
 		
 		/* Drive forward. */
-		if(adc_read(FORWARDADC)>20)
-		{
+		if(adc_read(FORWARDADC)>20) {
 			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
 			OCR0A = 255;
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
 			OCR2A = 255;
-		}
-		else
-		{
+		} else {
 			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
 			OCR0A = 100; // 70 standard
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
