@@ -425,10 +425,21 @@ int calcHeading() {
 		spin(latPerson, lonPerson);
 		
 		/* Drive forward. */
-		TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-		OCR0A = 100; // 70 standard
-		TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-		OCR2A = 100;
+		if(adc_read(FORWARDADC)>20)
+		{
+			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
+			OCR0A = 255;
+			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
+			OCR2A = 255;
+		}
+		else
+		{
+			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
+			OCR0A = 100; // 70 standard
+			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
+			OCR2A = 100;
+		}
+		
 	}
 
 	return 0;
