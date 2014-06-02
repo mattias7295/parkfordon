@@ -8,14 +8,23 @@
 #include "adc.h"
 
 
-
+/*
+* Function: adc_init
+* Input: -
+* Output: -
+* Description: init the adc.
+*/
 void adc_init() {
-	
 	/* Enable the ADC */
 	ADCSRA |= _BV(ADEN);
-	//printf("testing %d\n\r", i);
 }
 
+/*
+* Function: adc_read
+* Input: adcx: uint8_t - read from this pin
+* Output: ADCH: uint8_t - the digital value converted from analog
+* Description: convert analog to digital value from a port.
+*/
 uint8_t adc_read(uint8_t adcx) {
 	
 	ADMUX	&=	0xf0;

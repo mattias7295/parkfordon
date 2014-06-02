@@ -43,4 +43,3 @@ int calcHeading();
 double absDouble(double number);
 double checkDistance(double latPersonIn, double lonPersonIn);
 ISR(TIMER1_OVF_vect);
-//ISR(USART_RXC_vect);

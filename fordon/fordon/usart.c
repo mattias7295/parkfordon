@@ -7,6 +7,12 @@
 
 #include "usart.h"
 
+/*
+* Function: USART_Init
+* Input: baud: unsigned int  - UBBR value
+* Output: -
+* Description: init the first uart
+*/
 void USART_Init( unsigned int baud )
 {
 	DDRD |= (1<<PD1);
@@ -20,12 +26,14 @@ void USART_Init( unsigned int baud )
 	
 	/* Set frame format: 8data, 2stop bit */
 	UCSR0C = (1<<USBS0)|(3<<UCSZ00);
-	
-	/* Set RX interrupt enable*/
-//	UCSR0B |= (1<<RXCIE0);
-
 }
 
+/*
+* Function: USART_Transmit
+* Input: data: uint8_t - data to send with bluetooth.
+* Output: -
+* Description: Send a byte of data with bluetooth.
+*/
 void USART_Transmit( uint8_t data )
 {
 	/* Wait for empty transmit buffer */
@@ -35,6 +43,12 @@ void USART_Transmit( uint8_t data )
 	UDR0 = data;
 }
 
+/*
+* Function: USART_Receive
+* Input: -
+* Output: UDR0: unsigned char - buffer
+* Description: Get and return received data from buffer.
+*/
 unsigned char USART_Receive( void )
 {
 	/* Wait for data to be received */

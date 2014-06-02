@@ -9,8 +9,6 @@
 #ifndef TWI_H_
 #define TWI_H_
 
-uint16_t compas_update();
-
-
+uint16_t compass_update();
 
 #endif /* TWI_H_ */

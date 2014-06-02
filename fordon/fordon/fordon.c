@@ -7,19 +7,6 @@
 
 #include "fordon.h"
 
-void init();
-void timer_init();
-int parseBluetooth();
-static void put_char(uint8_t c, FILE* stream);
-void spin(double latPerson, double lonPerson);
-int calcHeading();
-double absDouble(double number);
-double checkDistance(double latPersonIn, double lonPersonIn);
-ISR(TIMER1_OVF_vect);
-//ISR(USART_RXC_vect);
-
-static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
-
 bool forwardRight;
 bool forwardLeft;
 bool doNotChangeDirection = false;
@@ -32,45 +19,45 @@ bool autoDrive;
 bool interruptCurrentLoop = false;
 
 /*
-ISR(USART0_RX_vect)
-{
-	char receivedByte = UDR0;
-
-	if (receivedByte == 5)
-	{
-		// Jump back to main by setting a boolean
-		interruptCurrentLoop = true;
-	}
-	
-}
+* Function: ISR timer interrupt routin
+* Input: Timer interrupt vector
+* Output: -
+* Description: accelerate to the value we store in prevSpeedR/prevSpeedL
 */
-
 ISR(TIMER1_OVF_vect)
 {
+	/* Should we go forward on the engines on the right side */
 	if(forwardRight)
 	{
+		/* Stop going backward before we can go forward */
 		if (OCR0B == 255)
 		{
+			/* Skip to ~50% duty cycle because 0%-49% duty cycle
+			 is not enough*/
 			if (OCR0A == 255)
 			{
 				OCR0A = 130;
 			}
 			if (OCR0A > prevSpeedR)
 			{
+				// decrease speed
 				OCR0A--;
 			}
 			else if (OCR0A < prevSpeedR)
 			{
+				// increase speed
 				OCR0A++;
 			}
 			else if (OCR0A == prevSpeedR && prevSpeedR == 130)
 			{
+				// Set back to 255 when we stop.
 				OCR0A = 255;
 			}
 			initEngineRightForward();
 		}		
 		else
 		{
+			// decrease backward speed before we can go forward.
 			if (OCR0B == 130)
 			{
 				OCR0B = 255;
@@ -187,26 +174,13 @@ ISR(TIMER1_OVF_vect)
 	}
 }
 
-/*
-Interrupt hela tiden så att vi inte hinner skriva ut?! Testa lägga en delay i controlpadkoden.
-
-One other thing to keep in mind is that there are actually two different interrupt vectors associated with the USART transmitter:
-1) A "UART Data Register Empty" (UDRE) interrupt will fire continually as long as there's space in the double-buffered UDR for additional characters to be added to the hardware queue.
-
-2) A "UART Transmit Complete" (TXC) interrupt will fire once following the completion of the final queued character.
-*/
 
 int main(void) {
-	
-	// redirect stdout to put_char method
-	stdout = &mystdout;
-	
+	// Init every component
 	init();
 	
-	//printf("Efter USART INIT första while\n");
-	
+	// Wait for GPS fix 
 	int x = 0;
-
 	while(x < 5) {
 	
 		if(!(PINB & _BV(PB2))) {
@@ -218,20 +192,15 @@ int main(void) {
 		_delay_ms(4000);
 	}
 	
-	//_delay_ms(8000);
-	
 	int steerData = 255;
 	int turnOff = 0;
 	
 	int trashData;
 	
 	while(1) {
-		
-		//_delay_ms(1000);
-		
 		turnOff = USART_Receive();
-		
 		if (turnOff == 254) {
+			// Turn of vehicle and wait for data from controller.
 			USART_Transmit(5);
 			trashData = USART_Receive();
 		}
@@ -269,7 +238,13 @@ int main(void) {
     }
 
 }
-
+/*
+* Function: init
+* Input: - 
+* Output: -
+* Description: Initializes timers, usart, pwm, gpsparser,
+* setting global interrupt flag.
+*/
 void init() {
 	
 	/* Initialize timer. */
@@ -281,7 +256,7 @@ void init() {
 	/* Set global interrupt flag. */
 	sei();
 	
-	/* ONE enable for the H-bridges. */
+	/* EN enable for the H-bridges. */
 	DDRB |= (1<<PB0);
 	PORTB |= (1<<PB0);
 	
@@ -294,14 +269,18 @@ void init() {
 	/* Initialize ADC. */
 	adc_init();
 	
-	PORTC |= (1<<PC0)|(1<<PC1); // Pull-ups till twi
-	TWBR = 8; // twi clock frequency
-
-	/* Wait for connection. */
-//	while (!(PINB & _BV(PB1))){}
-	
+	/* Pull-ups till twi. */
+	PORTC |= (1<<PC0)|(1<<PC1); 
+	/ twi clock frequency
+	TWBR = 8; 
 }
 
+/*
+* Function: timer_init
+* Input: - 
+* Output: - 
+* Description: initiate a 16 bit timer for acceleration
+*/
 void timer_init() {
 	
 	// Setup 16-bit timer for acceleration
@@ -312,6 +291,13 @@ void timer_init() {
 	DDRD |= (1<<PD3);
 }
 
+/*
+* Function: calcHeading
+* Input: -
+* Output: - 
+* Description: Calculates the heading, turning the vehicle to the right heading,
+* drive forward until the vehicle is 4 meters from the controller.
+*/
 int calcHeading() {
 
 	double latPerson;
@@ -319,7 +305,7 @@ int calcHeading() {
 	
 	char latitude[10];
 	char longitude[11];
-	
+	/* Get the controllers coordinates */
 	USART_Transmit(5);
 	
 	for(int i = 0; i < 9; i++) {
@@ -339,7 +325,7 @@ int calcHeading() {
 	char minA[8];
 	strncpy(minA,latitude+2,7);
 	minA[7] = '\0';
-
+	/* Make the string to doubles */
 	double d,e;
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
@@ -355,51 +341,14 @@ int calcHeading() {
 	e = strtod(minA,NULL);
 	lonPerson = (d + e/60);
 
-	printf("Lat: %lf \nLon: %lf \n", latPerson, lonPerson);
-	
+	/* Parse the vehicle gps data */
 	parseGPS();
-/*	lat = 63.820401;
-	lon = 20.310892;
 	
-	latPerson = 63.820344;
-	lonPerson = 20.311167;
-*/
-	printf("LatV: %lf \nLonV: %lf \n", lat, lon);
-	
-	// Räkna ut vilken riktning fordonet ska vända sig åt av argumenten
+	/* Calculate the heading and turn the vehicle */
 	spin(latPerson, lonPerson);
 
-	// Om vinkeln stämmer ungefär, kör framåt tills koordinaterna överenstämmer
 	double dist = 0, tempDist = 0;
 	
-	/* Drive forward until the vehicle is within a two metre radius from the person,
-	 * or until the distance between the two increases. */
-	//do {
-		//
-		///* Save earlier distance in order to know whether or not we are getting closer to the person. */
-		//tempDist = dist;
-		//dist = checkDistance(latPerson,lonPerson);
-		//
-		///* Drive forward. */
-		//TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-		//OCR0A = 70;
-		//TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-		//OCR2A = 70;
-		//
-		//printf("Vinkel: %lf\n", ((double)compas_update())/10);
-		//
-		///* If we are not getting closer to the person, stop the engines and go back to main loop. */
-		//if (tempDist > dist) {
-			//OCR0A = 255;
-			//OCR0B = 255;
-			//OCR2A = 255;
-			//OCR2B = 255;
-			//dist = 0;
-		//}
-		//
-	//} while(dist > 0.00004);
-	
-	printf("Vinkel: %lf\n", ((double)compas_update())/10);
 	
 	dist = checkDistance(latPerson,lonPerson);
 	tempDist = dist;
@@ -446,7 +395,7 @@ void spin(double latPerson, double lonPerson) {
 	double currentAngle = 0;
 	
 	for (int i = 0; i < 10; i++) {
-		currentAngle += ((double) compas_update())/10;
+		currentAngle += ((double) compass_update())/10;
 	}
 	
 	currentAngle = currentAngle/10;
@@ -485,7 +434,7 @@ void spin(double latPerson, double lonPerson) {
 		currentAngle = 0;
 		
 		for (int i = 0; i < 10; i++) {
-			currentAngle += ((double) compas_update())/10;
+			currentAngle += ((double) compass_update())/10;
 		}
 		
 		currentAngle = currentAngle/10;
@@ -521,129 +470,24 @@ void spin(double latPerson, double lonPerson) {
 		absDiff = absDouble(currentAngle - wantedAngle);
 			
 	}
-	
-	///* If the wanted angle is closest to the current angle if you turn counterwise, 
-	 //* turn left until angles match. Else, turn right until they match. */
-	//if ((diff > 0 && diff <= 180) || (diff < 0 && diff <= -180)) {
-		//
-		///* Turn left until current angle and wanted angle match
-		 //* with a 10 degree accuracy. */
-		//while (absDiff > 10 && absDiff < 350) {
-			//
-			//printf("Absdiff %lf \n" , absDiff);
-			//
-			//currentAngle = 0;
-			//
-			//for (int i = 0; i < 10; i++) {
-				//currentAngle += ((double) compas_update())/10;
-			//}
-			//
-			//currentAngle = currentAngle/10;
-			//
-			//printf("currentAngle: %lf\n", currentAngle);
-			//printf("wantedAngle: %lf\n", wantedAngle);
-			//printf("Displacement: %lf\n", displacement);
-			//
-			///*forwardRight = true;
-			//prevSpeedR = 120;
-			//
-			//forwardLeft = false;
-			//prevSpeedL = 120;*/
-			//
-			//TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-			//OCR0A = 255;
-			//TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-			//OCR2A = 70;
-			//
-			////_delay_ms(1);
-			//
-			///* Turn a few degrees. */
-			//for (int i = 0; i < 10; i++) {
-				//_delay_ms(100);
-			//}
-			//
-			//OCR0A = 255;
-			//OCR0B = 255;
-			//OCR2A = 255;
-			//OCR2B = 255;
-			//
-			//
-			///* Wait for the vehicle to stop properly in order to get better compass data. */
-			//for (int i = 0; i < 30; i++) {
-				//_delay_ms(100);
-			//}
-			//
-			//absDiff = absDouble(currentAngle - wantedAngle);
-			//
-		//}
-				//
-	//} else {
-		//
-		///* Calculate the absolute difference between the angles. */
-		//double absDiff = absDouble(currentAngle - wantedAngle);
-		//
-		///* Turn left until current angle and wanted angle match
-		 //* with a 10 degree accuracy. */
-		//while (absDiff > 10 && absDiff < 350) {
-			//printf("Absdiff %lf \n" , absDiff);
-			//if (interruptCurrentLoop)
-			//{
-				//printf("Interrupt\n");
-				//break;
-			//}
-			//currentAngle = 0;
-			//
-			//for (int i = 0; i < 10; i++) {
-				//currentAngle += ((double) compas_update())/10;
-			//}
-			//
-			//currentAngle = currentAngle/10;
-			//
-			//printf("currentAngle: %lf\n", currentAngle);
-			//printf("wantedAngle: %lf\n", wantedAngle);
-			//printf("Displacement: %lf\n", displacement);
-			//
-			///*forwardRight = false;
-			//prevSpeedR = 120;
-			//
-			//forwardLeft = true;
-			//prevSpeedL = 120;*/
-			////_delay_ms(1);
-			//
-			//TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-			//OCR0A = 70;
-			//TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-			//OCR2A = 255;
-			//
-			///* Turn a few degrees. */
-			//for (int i = 0; i < 10; i++) {
-				//_delay_ms(100);
-			//}
-			//
-			//OCR0A = 255;
-			//OCR0B = 255;
-			//OCR2A = 255;
-			//OCR2B = 255;
-			//
-			///* Wait for the vehicle to stop properly in order to get better compass data. */
-			//for (int i = 0; i < 30; i++) {
-				//_delay_ms(100);
-			//}
-			//absDiff = absDouble(currentAngle - wantedAngle);	
-		//}		
-	//}
 }
 
-//Haversine formula
+/*
+* Function: checkDistance
+* Input: latPersonIn: double - the persons(controllers)latitude.
+*		 lonPersonIn: double - the persons(controllers)longitude.
+* Output: double - return the distance between the vehicle and the controller.
+* Description:
+*/
 double checkDistance(double latPersonIn, double lonPersonIn) {
 
 	parseGPS();
-/*	lat = 63.820401;
-	lon = 20.310892;
-*/	
+	
 	double latPerson =  latPersonIn;
 	double lonPerson = lonPersonIn;
 	
+	/* latPersonIn and lonPersonIn are in degrees we 
+	need to convert them to radians */
 	double dx, dy, dz;
 	lonPerson -= lon;
 	lonPerson *= TO_RAD, latPerson *= TO_RAD, lat *= TO_RAD;
@@ -656,6 +500,12 @@ double checkDistance(double latPersonIn, double lonPersonIn) {
 	return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
 }
 
+/*
+* Function: absDouble
+* Input: number: double - the floating number we want to get the absolute value
+* Output: number: double the absolute value of number.
+* Description: returns the absolute value of a double.
+*/
 double absDouble(double number) {
 	
 	if (number < 0) {
@@ -666,14 +516,14 @@ double absDouble(double number) {
 	
 }
 
-static void put_char(uint8_t c, FILE* stream)
-{
-	if (c == '\n') put_char('\r', stream);
-	while(!(UCSR1A & (1 << UDRE1)));
-	UDR1 = c;
-}
-
-
+/*
+* Function: parseBluetooth
+* Input: -
+* Output: -
+* Description: This method is used with the manual steering. The vehicle 
+* receive a coded byte of data from the controller and turn on the engine
+* according to the data. 
+*/
 int parseBluetooth() {	
 	uint8_t speed1 = 0;
 	uint8_t speed2 = 0;
@@ -683,7 +533,6 @@ int parseBluetooth() {
 	USART_Transmit(5);
 	command = USART_Receive();
 	
-	printf("%d\n",command);
 	speed1 = (command >> 4) & 0x7;
 	
 	
@@ -696,7 +545,6 @@ int parseBluetooth() {
 		speed1 = 130-(speed1 * 18);
 	}
 	
-		
 	speed2 = command & 0x7;
 	if (speed2 == 0)	{
 		speed2 = 130;
