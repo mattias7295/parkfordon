@@ -214,8 +214,6 @@ int main(void) {
 			autoDrive = true;
 		}
 		
-		//USART_Transmit(5); I funktionerna ist.
-		
 		if(autoDrive == true) {
 			
 			/* Turn off timer. */
@@ -375,7 +373,15 @@ int calcHeading() {
 	return 0;
 	
 }
-
+ 
+ 
+/*
+* Function: spin
+* Input: latPerson: double - latitude of the controller
+*		 lonPerson: double - longitude of the controller.
+* Output: -
+* Description: Calculate the heading and turn the vehicle.
+*/
 void spin(double latPerson, double lonPerson) {
 	
 	/* Calculate the displacement of the car compared to the position 
@@ -418,8 +424,7 @@ void spin(double latPerson, double lonPerson) {
 	/* If the angle is not within a 20 degree range from the wanted
 	 * angle, turn some. */
 	while (absDiff > 10 && absDiff < 350) {
-		
-		printf("Absdiff %lf \n" , absDiff);
+
 		
 		OCR0A = 255;
 		OCR0B = 255;
@@ -438,10 +443,6 @@ void spin(double latPerson, double lonPerson) {
 		}
 		
 		currentAngle = currentAngle/10;
-		
-		printf("currentAngle: %lf\n", currentAngle);
-		printf("wantedAngle: %lf\n", wantedAngle);
-		printf("Displacement: %lf\n", displacement);
 		
 		/* If the wanted angle is closest to the current angle 
 		 * if you turn counterwise, turn left. */ 
