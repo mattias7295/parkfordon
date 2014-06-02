@@ -1,20 +1,19 @@
 /*
  * GPSparser.c
  *
+ * Parser for the GPS data.
+ *
  * Created: 2014-05-13 14:34:42
  *  Author: masc0058
  */ 
 
 #include "GPS_parser.h"
 
+/* Global containers for text representation of latitude and longitude. */
 char latitude[10];
 char longitude[11];
 
-static void put_char(uint8_t c, FILE* stream);
-
 void initGPSParser(unsigned int ubrr) {
-	
-//	DDRD |= (1<<PD3);
 
 	/* Set baud rate */
 	UBRR1H = (unsigned char)(ubrr>>8);
@@ -28,6 +27,13 @@ void initGPSParser(unsigned int ubrr) {
 
 }
 
+/*
+* Function:	parseGPS
+* Input:	-
+* Output:	-
+* Description:	Parses the GPS data to latitude and longitude text
+*				representation to be sent to the vehicle.
+*/
 void parseGPS() {
 		
 	char temp = 'O';
@@ -67,14 +73,12 @@ void parseGPS() {
 	
 }
 
-static void put_char(uint8_t c, FILE* stream)
-{
-	if (c == '\n') put_char('\r', stream);
-	while(!(UCSR0A & (1 << UDRE0)));
-	UDR0 = c;
-}
-
-
+/*
+* Function:	USART_ReceiveGPS
+* Input:	-
+* Output:	unsigned char - GPS data
+* Description:	Receives data from the GPS unit.
+*/
 unsigned char USART_ReceiveGPS(void) {
 	
 	/* Wait for data to be received */
