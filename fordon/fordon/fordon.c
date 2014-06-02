@@ -7,22 +7,24 @@
 
 #include "fordon.h"
 
+/* Global variables for the previous speeds of the left and right engines. */
+uint8_t prevSpeedR;
+uint8_t prevSpeedL;
+
+/* Global variables for the soft steering. */
 bool forwardRight;
 bool forwardLeft;
 bool doNotChangeDirection = false;
 
-uint8_t prevSpeedR;
-uint8_t prevSpeedL;
+/* Global variables for the double decimal degree coordinates of the vehicle. */
 double lat;
 double lon;
-bool autoDrive;
-bool interruptCurrentLoop = false;
 
 /*
-* Function: ISR timer interrupt routin
-* Input: Timer interrupt vector
-* Output: -
-* Description: accelerate to the value we store in prevSpeedR/prevSpeedL
+* Function: ISR timer interrupt routine.
+* Input:	Timer interrupt vector
+* Output:	-
+* Description: Accelerate to the value we store in prevSpeedR/prevSpeedL.
 */
 ISR(TIMER1_OVF_vect)
 {
@@ -176,11 +178,17 @@ ISR(TIMER1_OVF_vect)
 
 
 int main(void) {
-	// Init every component
+	
+	/* Boolean value for the steer mode of the vehicle. 
+	 * If true, then we are in auto mode. */
+	bool autoDrive;
+	
+	/* Initialize every component. */
 	init();
 	
-	// Wait for GPS fix 
+	/* Wait for GPS fix. */
 	int x = 0;
+	
 	while(x < 5) {
 	
 		if(!(PINB & _BV(PB2))) {
@@ -192,14 +200,19 @@ int main(void) {
 		_delay_ms(4000);
 	}
 	
+	/* Variables for steer and power data. */
 	int steerData = 255;
 	int turnOff = 0;
 	
+	/* Temporary trash data. */
 	int trashData;
 	
 	while(1) {
+		
 		turnOff = USART_Receive();
+		
 		if (turnOff == 254) {
+
 			// Turn of vehicle and wait for data from controller.
 			USART_Transmit(5);
 			trashData = USART_Receive();
@@ -208,6 +221,7 @@ int main(void) {
 		USART_Transmit(5);
 		
 		steerData = USART_Receive();
+
 		if (steerData == 0) {
 			autoDrive = false;
 		} else if (steerData == 1) {
@@ -220,15 +234,15 @@ int main(void) {
 			TCCR1B = 0;
 			
 			/* Drive in auto mode. */
-			calcHeading();
+			automaticSteering();
 			
 		} else {
 			
-			/* Turn on timer. */
+			/* Turn on timer for soft driving. */
 			TCCR1B |= (1<<CS10);
 			
 			/* Drive in man mode. */
-			parseBluetooth();
+			manualSteering();
 		}
 		
 		USART_Transmit(5);
@@ -236,12 +250,13 @@ int main(void) {
     }
 
 }
+
 /*
 * Function: init
-* Input: - 
-* Output: -
-* Description: Initializes timers, usart, pwm, gpsparser,
-* setting global interrupt flag.
+* Input:	- 
+* Output:	-
+* Description:	Initializes timers, USART, PWM and GPS parser 
+*				and sets the global interrupt flag.
 */
 void init() {
 	
@@ -267,17 +282,18 @@ void init() {
 	/* Initialize ADC. */
 	adc_init();
 	
-	/* Pull-ups till twi. */
+	/* Pull-ups to TWI. */
 	PORTC |= (1<<PC0)|(1<<PC1); 
-	/ twi clock frequency
+	
+	/* TWI clock frequency. */
 	TWBR = 8; 
 }
 
 /*
 * Function: timer_init
-* Input: - 
-* Output: - 
-* Description: initiate a 16 bit timer for acceleration
+* Input:	- 
+* Output:	- 
+* Description: Initialize a 16 bit timer for acceleration.
 */
 void timer_init() {
 	
@@ -290,70 +306,78 @@ void timer_init() {
 }
 
 /*
-* Function: calcHeading
-* Input: -
-* Output: - 
-* Description: Calculates the heading, turning the vehicle to the right heading,
-* drive forward until the vehicle is 4 meters from the controller.
+* Function: automaticSteering
+* Input:	-
+* Output:	- 
+* Description:	Performs one step of the automatic driving through calculating 
+*				the current and wanted heading angles and turns the vehicle to 
+*				the correct heading and driving forward, unless the vehicle is 
+*				within a 2 meter radius from the control pad or is about to 
+*				collide, in those cases it stops instead of driving forward.
 */
-int calcHeading() {
+int automaticSteering() {
 
+	/* Decimal degree values of the latitude and longitude of the person (control pad). */
 	double latPerson;
 	double lonPerson;
 	
+	/* String storage for the coordinates. */
 	char latitude[10];
 	char longitude[11];
-	/* Get the controllers coordinates */
+	
+	/* Parse the GPS values of the vehicle. */
+	parseGPS();
+	
 	USART_Transmit(5);
 	
-	for(int i = 0; i < 9; i++) {
+	/* Get the latitude of the control pad. */
+	for (int i = 0; i < 9; i++) {
 		latitude[i] = USART_Receive();
 	}
 	
 	USART_Transmit(2);
 	
-	for(int i = 0;i<10;i++) {
+	/* Get the longitude of the control pad. */
+	for (int i = 0; i < 10; i++) {
 		longitude[i] = USART_Receive();
 	}
 	
+	/* Prepare for conversion. */
 	char degA[3];
-	strncpy(degA, latitude,2);
+	strncpy(degA, latitude, 2);
 	degA[2] = '\0';
 
 	char minA[8];
-	strncpy(minA,latitude+2,7);
+	strncpy(minA, latitude+2, 7);
 	minA[7] = '\0';
-	/* Make the string to doubles */
+	
+	/* Convert the text value to double decimal degree value. */
 	double d,e;
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
 	latPerson = (d + e/60);
 	
-	strncpy(degA,longitude+1,2);
+	/* Prepare for conversion. */
+	strncpy(degA, longitude+1 ,2);
 	degA[2] = '\0';
 
-	strncpy(minA, longitude+3,7);
+	strncpy(minA, longitude+3, 7);
 	minA[7] = '\0';
 
+	/* Convert the text value to double decimal degree value. */
 	d = strtod(degA,NULL);
 	e = strtod(minA,NULL);
 	lonPerson = (d + e/60);
 
-	/* Parse the vehicle gps data */
-	parseGPS();
-	
-	/* Calculate the heading and turn the vehicle */
-	spin(latPerson, lonPerson);
-
 	double dist = 0, tempDist = 0;
 	
-	
-	dist = checkDistance(latPerson,lonPerson);
+	/* Save previous distance and get the next distance. */
 	tempDist = dist;
+	dist = getDistance(latPerson, lonPerson);
 	
-	/* If the vehicle is within a two metre radius from the person
-	 *  or the vehicle is getting further away from the person, stop. */
-	if (dist <= 0.00004 || tempDist > dist) {
+	/* If the vehicle is within a two meter radius from the person
+	 * or the vehicle is getting further away from the person, stop. */
+	if (dist <= 0.002 || tempDist > dist) {
 		
 		/* Stop. */
 		OCR0A = 255;
@@ -363,11 +387,27 @@ int calcHeading() {
 		
 	} else {
 		
-		/* Drive forward. */
-		TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-		OCR0A = 100; // 70 standard
-		TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-		OCR2A = 100;
+		/* Calculate the heading and turn the vehicle */
+		spin(latPerson, lonPerson);
+		
+		/* If the vehicle is about to collide, stop. Else, continue driving ahead. */
+		if (adc_read(FORWARDADC)>20) {
+			
+			/* Stop. */
+			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
+			OCR0A = 255;
+			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
+			OCR2A = 255;
+			
+		} else {
+		
+			/* Drive forward. */
+			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
+			OCR0A = 100;
+			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
+			OCR2A = 100;
+		}
+		
 	}
 
 	return 0;
@@ -377,10 +417,11 @@ int calcHeading() {
  
 /*
 * Function: spin
-* Input: latPerson: double - latitude of the controller
-*		 lonPerson: double - longitude of the controller.
-* Output: -
-* Description: Calculate the heading and turn the vehicle.
+* Input:	latPerson: double - The latitude of the control pad.
+*			lonPerson: double - The longitude of the control pad.
+* Output:	-
+* Description:	Calculates the current and wanted angles and turns 
+*				the vehicle to the correct heading.
 */
 void spin(double latPerson, double lonPerson) {
 	
@@ -424,7 +465,6 @@ void spin(double latPerson, double lonPerson) {
 	/* If the angle is not within a 20 degree range from the wanted
 	 * angle, turn some. */
 	while (absDiff > 10 && absDiff < 350) {
-
 		
 		OCR0A = 255;
 		OCR0B = 255;
@@ -444,6 +484,10 @@ void spin(double latPerson, double lonPerson) {
 		
 		currentAngle = currentAngle/10;
 		
+		/* Update angle difference variables. */
+		diff = currentAngle - wantedAngle;
+		absDiff = absDouble(currentAngle - wantedAngle);
+		
 		/* If the wanted angle is closest to the current angle 
 		 * if you turn counterwise, turn left. */ 
 		if ((diff > 0 && diff <= 180) || (diff < 0 && diff <= -180)) {
@@ -452,13 +496,13 @@ void spin(double latPerson, double lonPerson) {
 			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
 			OCR0A = 255;
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
-			OCR2A = 70;
+			OCR2A = 60;
 		
 		} else {
 		
 			/* Turn right. */
 			TCCR0A = (1<<COM0A0)|(1<<COM0A1)|(1<<WGM00);
-			OCR0A = 70;
+			OCR0A = 60;
 			TCCR2A = (1<<COM2A0)|(1<<COM2A1)|(1<<WGM20);
 			OCR2A = 255;
 		}
@@ -467,45 +511,39 @@ void spin(double latPerson, double lonPerson) {
 		for (int i = 0; i < 20; i++) {
 			_delay_ms(100);
 		}
-
-		absDiff = absDouble(currentAngle - wantedAngle);
 			
 	}
 }
 
 /*
-* Function: checkDistance
-* Input: latPersonIn: double - the persons(controllers)latitude.
-*		 lonPersonIn: double - the persons(controllers)longitude.
-* Output: double - return the distance between the vehicle and the controller.
-* Description:
+* Function: getDistance
+* Input:	latPerson: double - The person's (control pad's) latitude.
+*			lonPerson: double - The person's (control pad's) longitude.
+* Output:	double - The distance between the vehicle and the control pad.
+* Description:	Uses the haversine formula for the distance between two points
+*				on the shell of a sphere to get the distance between the vehicle
+*				and the person with the control pad.
 */
-double checkDistance(double latPersonIn, double lonPersonIn) {
+double getDistance(double latPerson, double lonPerson) {
 
-	parseGPS();
-	
-	double latPerson =  latPersonIn;
-	double lonPerson = lonPersonIn;
-	
-	/* latPersonIn and lonPersonIn are in degrees we 
-	need to convert them to radians */
-	double dx, dy, dz;
-	lonPerson -= lon;
-	lonPerson *= TO_RAD, latPerson *= TO_RAD, lat *= TO_RAD;
-	
-	dz = sin(latPerson) - sin(lat);
-	dx = cos(lonPerson) * cos(latPerson) - cos(lat);
-	dy = sin(lonPerson) * cos(latPerson);
-	
-	/* Return the distance between the vehicle and the person. */
-	return asin(sqrt(dx * dx + dy * dy + dz * dz) / 2) * 2 * R;
+	/* Difference in latitude and longitude measured in radians. */
+	double deltaLatRad = (latPerson - lat)*TO_RAD;
+	double deltaLonRad = (lonPerson - lon)*TO_RAD;
+
+	/* Temporary variable for the expression under the square root in the
+	 * get-distance-form of the haversine formula. */
+	double temp = sin(deltaLatRad/2) * sin(deltaLatRad/2) +
+	cos(lat*TO_RAD) * cos(latPerson*TO_RAD) * sin(deltaLonRad/2) * sin(deltaLonRad/2);
+
+	/* Return the distance in kilometers. */
+	return 2 * R * asin(sqrt(temp));
 }
 
 /*
 * Function: absDouble
-* Input: number: double - the floating number we want to get the absolute value
-* Output: number: double the absolute value of number.
-* Description: returns the absolute value of a double.
+* Input:	number: double - The floating point number we want to get the absolute value of.
+* Output:	double -  The absolute value of the input number.
+* Description: Returns the absolute value of a double.
 */
 double absDouble(double number) {
 	
@@ -518,14 +556,17 @@ double absDouble(double number) {
 }
 
 /*
-* Function: parseBluetooth
-* Input: -
-* Output: -
-* Description: This method is used with the manual steering. The vehicle 
-* receive a coded byte of data from the controller and turn on the engine
-* according to the data. 
+* Function: manualSteering
+* Input:	-
+* Output:	-
+* Description:	This method is used for the manual steering. The vehicle 
+*				receives a coded byte of data from the control pad and 
+*				turns on the engines according to the data. The seventh bit
+*				is the direction of the left engines (1 forward, 0 backwards),
+*				bits 6-4 is the strength of the left engines and the low
+*				nipple is interpreted in the same way but for the right engines.
 */
-int parseBluetooth() {	
+int manualSteering() {	
 	uint8_t speed1 = 0;
 	uint8_t speed2 = 0;
 	
@@ -536,84 +577,74 @@ int parseBluetooth() {
 	
 	speed1 = (command >> 4) & 0x7;
 	
-	
-	if (speed1 == 0)	{
+	if (speed1 == 0) {
 		speed1 = 130;
 		doNotChangeDirection = true;
-	}
-	else {
+	} else {
 		doNotChangeDirection = false;
 		speed1 = 130-(speed1 * 18);
 	}
 	
 	speed2 = command & 0x7;
-	if (speed2 == 0)	{
+	
+	if (speed2 == 0) {
 		speed2 = 130;
 		doNotChangeDirection = true;
-	}
-	else {
+	} else {
 		doNotChangeDirection = false;
 		speed2 = 130-(speed2 * 18);
 	}
 	
+	if (CHECK_BIT(command,7)) {
 		
-	if(CHECK_BIT(command,7)){
-		if (!doNotChangeDirection)
-		{
+		if (!doNotChangeDirection) {
 			forwardRight = true;
 		}
-		if(adc_read(FORWARDADC)>20)
-		{
+		
+		if (adc_read(FORWARDADC)>20) {
 			prevSpeedR = 130;
-		}
-		else
-		{
+		} else {
 			prevSpeedR = speed1;
 		}
-	}else {	
-		if (!doNotChangeDirection)
-		{
+		
+	} else {	
+		
+		if (!doNotChangeDirection) {
 			forwardRight = false;
 		}
-		if(adc_read(BACKWARDADC)>20)
-		{
+		
+		if (adc_read(BACKWARDADC)>20) {
 			prevSpeedR = 130;
-		}
-		else
-		{
+		} else {
 			prevSpeedR = speed1;
 		}
 	}
 	
 	
 	if (CHECK_BIT(command, 3)) {
-		if (!doNotChangeDirection)
-		{
+	
+		if (!doNotChangeDirection) {
 			forwardLeft = true;
 		}
-		if(adc_read(FORWARDADC)>20)
-		{
+		
+		if (adc_read(FORWARDADC)>20) {
 			prevSpeedL = 130;
-		}
-		else
-		{
+		} else {
 			prevSpeedL = speed2;
 		}
 		
-	}else {
+	} else {
 
-		if (!doNotChangeDirection)
-		{
+		if (!doNotChangeDirection) {
 			forwardLeft = false;
 		}
-		if(adc_read(BACKWARDADC)>20)
-		{
+		
+		if (adc_read(BACKWARDADC)>20) {
 			prevSpeedL = 130;
-		}
-		else
-		{
+		} else {
 			prevSpeedL = speed2;
 		}
+		
 	}
 	
 	return 0;

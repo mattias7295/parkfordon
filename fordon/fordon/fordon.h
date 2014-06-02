@@ -12,35 +12,42 @@
 #include "usart.h"
 #include "adc.h"
 #include "pwm.h"
-#include "spi.h"
 #include "twi.h"
 #include "GPSparser.h"
-//#include "autodrive.h"
 
 #define FORWARDADC	1
 #define BACKWARDADC 0
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
-//#define R 6371
-#define R  6362.697
+
+#define R  6362.697 // Earth radius in Sweden.
 #define PI 3.1415926535897932385
 #define TO_RAD (PI / 180)
 #define TO_DEG (180 / PI)
 
+/* Boolean type. */
 typedef int bool;
 #define true 1
 #define false 0
 
+/* Global variables for the previous speeds of the left and right engines. */
 extern uint8_t prevSpeedR;
 extern uint8_t prevSpeedL;
+
+/* Global variables for the soft steering. */
+extern bool forwardRight;
+extern bool forwardLeft;
+extern bool doNotChangeDirection;
+
+/* Global variables for the double decimal degree coordinates of the vehicle. */
 extern double lat;
 extern double lon;
 
+/* Function declarations. */
 void init();
 void timer_init();
-int parseBluetooth();
-static void put_char(uint8_t c, FILE* stream);
+int manualSteering();
 void spin(double latPerson, double lonPerson);
-int calcHeading();
+int automaticSteering();
 double absDouble(double number);
 double getDistance(double latPerson, double lonPerson);
 ISR(TIMER1_OVF_vect);

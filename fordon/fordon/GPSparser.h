@@ -13,10 +13,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/* Global variables for containment of the vehicle coordinates in double decimal degree form. */
 extern double lat;
 extern double lon;
 
+/* Global variables for containment of the vehicle coordinates in text form. */
+extern char latitude[10];
+extern char longitude[11];
 
+/* Function declarations. */
 void setupGpsParser(unsigned int baud);
 void parseGPS();
 unsigned char USART_ReceiveGPS( void );

@@ -9,12 +9,13 @@
 
 /*
 * Function: USART_Init
-* Input: baud: unsigned int  - UBBR value
-* Output: -
-* Description: init the first uart
+* Input:	baud: unsigned int  - Value to put to the UBRR register.
+* Output:	-
+* Description: Initialize the UART for the bluetooth communication.
 */
-void USART_Init( unsigned int baud )
-{
+void USART_Init(unsigned int baud) {
+	
+	/* Set the pin as output. */
 	DDRD |= (1<<PD1);
 	
 	/* Set baud rate */
@@ -30,30 +31,30 @@ void USART_Init( unsigned int baud )
 
 /*
 * Function: USART_Transmit
-* Input: data: uint8_t - data to send with bluetooth.
-* Output: -
+* Input:	data: uint8_t - Data to send with bluetooth.
+* Output:	-
 * Description: Send a byte of data with bluetooth.
 */
-void USART_Transmit( uint8_t data )
-{
+void USART_Transmit(uint8_t data) {
+	
 	/* Wait for empty transmit buffer */
-	while ( !( UCSR0A & (1<<UDRE0)) )
-	;
-	/* Put data into buffer, sends the data */
+	while (!(UCSR0A & (1<<UDRE0)));
+	
+	/* Put data into buffer, sends the data. */
 	UDR0 = data;
 }
 
 /*
 * Function: USART_Receive
-* Input: -
-* Output: UDR0: unsigned char - buffer
+* Input:	-
+* Output:	unsigned char - The received data.
 * Description: Get and return received data from buffer.
 */
-unsigned char USART_Receive( void )
-{
+unsigned char USART_Receive(void) {
+	
 	/* Wait for data to be received */
-	while ( !(UCSR0A & (1<<RXC0)) )
-	;
+	while (!(UCSR0A & (1<<RXC0)));
+	
 	/* Get and return received data from buffer */
 	return UDR0;
 }

@@ -17,14 +17,15 @@ uint8_t prevSpeedL = 130;
 * Description: init two 8-bit timers and set some outputs
 */
 void init_pwm() {
-	//turn on two 8-bit timers
+	
+	/* Turn on two 8-bit timers. */
 	TCCR0B = (1<<CS00);
 	TCCR2B = (1<<CS20);
 	
-	//set OC0A and 0C0B as outputs
+	/* Set OC0A and 0C0B as outputs. */
 	DDRB |= (1<<PB3) | (1<<PB4);
 	
-	//set OC2A and 0C2B as outputs
+	/* Set OC2A and 0C2B as outputs. */
 	DDRD |= (1<<PD6) | (1<<PD7);
 	
 	OCR0A = 255;

@@ -5,18 +5,15 @@
  *  Author: masc0058
  */ 
 
-
 #ifndef ADC_H_
 #define ADC_H_
 
 #include <avr/io.h>
 
-#define ADC_PIN			0
+#define ADC_PIN 0
 
 void adc_init();
-
 uint8_t adc_read(uint8_t adcx);
-
 
 
 #endif /* ADC_H_ */
