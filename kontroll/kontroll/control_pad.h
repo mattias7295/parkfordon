@@ -1,8 +1,12 @@
 /*
- * kontroll.h
+ * control_pad.h
+ *
+ * Routines for a control pad used for driving a vehicle either 
+ * manually or automatically, depending on the position of a 
+ * switch on the control pad.
  *
  * Created: 2014-05-09 11:56:39
- *  Author: erbe0036
+ *  Author: anjo0409
  */ 
 
 #include <avr/io.h>
@@ -25,12 +29,15 @@
 #define X_AXIS PA0
 #define Y_AXIS PA1
 
-/* Power to bluetooth port. */ 
+/* Power to bluetooth port. */
 #define POWER_PORT_3V PA3
 #define POWER_PORT_5V PA2
 
 /* Bluetooth connection port. */
 #define BT_CONNECTION_PORT PD6
+
+/* GPS fix port. */
+#define GPS_fix_port PB3
 
 /* The ADC value we will consider the cutoff point for turning the LED
 * on or off. The ADC we are using is 10-bits so can be a value from

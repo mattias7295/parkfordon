@@ -1,8 +1,12 @@
 /*
- * kontroll.c
+ * control_pad.c
+ *
+ * Routines for a control pad used for driving a vehicle either 
+ * manually or automatically, depending on the position of a 
+ * switch on the control pad.
  *
  * Created: 2014-05-09 09:20:57
- *  Author: masc0058
+ *  Author: anjo0409
  */ 
 
 #include "control_pad.h"
@@ -22,24 +26,14 @@ void setThrottles(engine_data *edata, const double angle, const int x_value, con
 unsigned char compactData(engine_data *edata);
 void sleepMode();
 
-static void put_char(uint8_t c, FILE* stream);
-static FILE mystdout = FDEV_SETUP_STREAM(put_char, NULL, _FDEV_SETUP_WRITE);
-
-
 /* Global joystick coordinate variables. */
 int x_value;
 int y_value;
-/*
-typedef int bool;
-#define true 1
-#define false 0
-*/
 
 int main(void) {
 	
+	/* Temp variable for thrash data. */
 	int trashData;
-	
-	stdout = &mystdout;
 	
 	/* Data to be sent via bluetooth. */
 	unsigned char send_data;
@@ -50,16 +44,13 @@ int main(void) {
 	
 	/* Initialize setup. */
 	init();
-	
-//	bool changeToAuto = false;
-//	bool changeToMan = false;
 
 	/* Wait for fix. */
 	int x = 0;
 	
 	while(x < 5) {
 		
-		if(!(PINB & _BV(PB3))) {
+		if(!(PINB & _BV(GPS_fix_port))) {
 			x++;
 		} else {
 			x = 0;
@@ -85,19 +76,21 @@ int main(void) {
 			USART_Transmit(5);
 		
 		} else {
+			
+			/* Send on data. */
 			USART_Transmit(47);
 		}
 		
 		trashData = USART_Receive();
 		
+		/* Send steer mode data, 0 for man, 1 for auto. */
 		if (steer == MAN) {
 			USART_Transmit(0);
 		} else {
 			USART_Transmit(1);
 		}
 		
-		//USART_Receive();
-		
+		/* Do one drive cycle in auto or man mode. */
 		if (steer == MAN) {
 			
 			/* Get coordinates. */
@@ -122,9 +115,11 @@ int main(void) {
 		
 		} else {	
 
+			/* Prepare GPS data to be sent to vehicle via bluetooth. */
 			trashData = USART_Receive();
 			parseGPS();
 			
+			/* Send latitude data. */
 			for (int i = 0; i < 9; i++) {
 				USART_Transmit(latitude[i]);
 				_delay_ms(1);
@@ -132,6 +127,7 @@ int main(void) {
 			
 			trashData = USART_Receive();
 			
+			/* Send longitude data. */
 			for (int i = 0; i < 10; i++) {
 				USART_Transmit(longitude[i]);
 				_delay_ms(1);
@@ -144,21 +140,12 @@ int main(void) {
 	} 
 }
 
-static void put_char(uint8_t c, FILE* stream)
-{
-	if (c == '\n') put_char('\r', stream);
-	while(!(UCSR0A & (1 << UDRE0)));
-	UDR0 = c;
-}
-
-
-
 /*
 * Function:	init
 * Input:	- 
 * Output:	- 
 * Description:	Initializes ports, joystick, ADC, USART (bluetooth)
-*				and timer.
+*				and the global steer and power flags.
 */
 void init() {
 	
@@ -208,7 +195,7 @@ void init() {
 	
 	/* Set global interrupt flag. */
 	sei();
-	
+	 
 	/* Wait for bluetooth connection. */
 	while (!(PIND & _BV(BT_CONNECTION_PORT))){}
 }
@@ -268,7 +255,7 @@ unsigned char USART_Receive() {
 * Input:	adcx: uint8_t - The analog pin we want to use.
 * Output:	uint16_t - The analog reading on input pin.
 * Description:  Reads the ADC from input pin and returns the analog reading. 
-*				Borrowed from the ATMega328P datasheet and modified.
+*				Borrowed from the ATMega1284P datasheet and modified.
 */
 uint16_t adc_read(uint8_t adcx) {
 	
