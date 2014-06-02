@@ -20,8 +20,9 @@
 #define FORWARDADC	1
 #define BACKWARDADC 0
 #define CHECK_BIT(var,pos) ((var) & (1<<(pos)))
-#define R 6371
-#define PI 3.1415926536
+//#define R 6371
+#define R  6362.697
+#define PI 3.1415926535897932385
 #define TO_RAD (PI / 180)
 #define TO_DEG (180 / PI)
 
@@ -41,5 +42,5 @@ static void put_char(uint8_t c, FILE* stream);
 void spin(double latPerson, double lonPerson);
 int calcHeading();
 double absDouble(double number);
-double checkDistance(double latPersonIn, double lonPersonIn);
+double getDistance(double latPerson, double lonPerson);
 ISR(TIMER1_OVF_vect);

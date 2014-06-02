@@ -1,0 +1,132 @@
+
+currentAngle: 290.179990
+wantedAngle: 280.130370
+Displacement: 169.869610
+diff: 10.049622
+absDiff: 10.049622
+
+
+currentAngle: 284.429990
+wantedAngle: 280.130370
+Displacement: 169.869610
+diff: 4.299622
+absDiff: 4.299622
+
+
+LatPerson: 63.820248 
+LonPerson: 20.311598 
+LatVehicle: 63.820053 
+LonVehicle: 20.312872 
+Vinkel: 274.299990
+
+
+LatPerson: 63.820248 
+LonPerson: 20.311588 
+LatVehicle: 63.820053 
+LonVehicle: 20.312864 
+Vinkel: 278.899990
+
+
+LatPerson: 63.820248 
+LonPerson: 20.311571 
+LatVehicle: 63.820053 
+LonVehicle: 20.312859 
+Vinkel: 274.500000
+
+
+LatPerson: 63.820229 
+LonPerson: 20.311634 
+LatVehicle: 63.820053 
+LonVehicle: 20.312855 
+Vinkel: 268.500000
+
+
+LatPerson: 63.820229 
+LonPerson: 20.311693 
+LatVehicle: 63.820053 
+LonVehicle: 20.312855 
+Vinkel: 270.000000
+
+
+LatPerson: 63.820229 
+LonPerson: 20.311790 
+LatVehicle: 63.820061 
+LonVehicle: 20.312849 
+Vinkel: 269.000000
+
+
+currentAngle: 270.539980
+wantedAngle: 279.009740
+Displacement: 170.990260
+diff: -8.469757
+absDiff: 8.469757
+
+
+LatPerson: 63.820221 
+LonPerson: 20.311947 
+LatVehicle: 63.820068 
+LonVehicle: 20.312841 
+Vinkel: 268.399990
+
+
+currentAngle: 266.879970
+wantedAngle: 279.680110
+Displacement: 170.319900
+diff: -12.800140
+absDiff: 12.800140
+
+
+currentAngle: 266.679990
+wantedAngle: 279.680110
+Displacement: 170.319900
+diff: -13.000122
+absDiff: 13.000122
+
+
+currentAngle: 270.910000
+wantedAngle: 279.680110
+Displacement: 170.319900
+diff: -8.770111
+absDiff: 8.770111
+
+
+LatPerson: 63.820232 
+LonPerson: 20.312143 
+LatVehicle: 63.820076 
+LonVehicle: 20.312832 
+Vinkel: 282.100010
+
+
+LatPerson: 63.820240 
+LonPerson: 20.312187 
+LatVehicle: 63.820080 
+LonVehicle: 20.312830 
+Vinkel: 282.500000
+
+
+LatPerson: 63.820255 
+LonPerson: 20.312269 
+LatVehicle: 63.820084 
+LonVehicle: 20.312828 
+Vinkel: 283.200010
+
+
+LatPerson: 63.820251 
+LonPerson: 20.312286 
+LatVehicle: 63.820087 
+LonVehicle: 20.312826 
+Vinkel: 285.399990
+
+
+LatPerson: 63.820225 
+LonPerson: 20.312262 
+LatVehicle: 63.820087 
+LonVehicle: 20.312819 
+Vinkel: 278.500000
+
+
+LatPerson: 63.820221 
+LonPerson: 20.312239 
+LatVehicle: 63.820087 
+LonVehicle: 20.312813 
+Vinkel: 272.500000

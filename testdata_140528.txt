@@ -1,0 +1,159 @@
+LatPerson: 63.820343 
+LonPerson: 20.311167 
+LatVehicle: 63.820675 
+LonVehicle: 20.309113 
+Vinkel: 312.100010
+
+currentAngle: 310.120030
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 210.942630
+absDiff: 210.942630
+
+currentAngle: 310.200010
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 211.022610
+absDiff: 211.022610
+
+currentAngle: 307.460020
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 208.282620
+absDiff: 208.282620
+
+currentAngle: 309.160000
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 209.982600
+absDiff: 209.982600
+
+currentAngle: 305.769990
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 206.592590
+absDiff: 206.592590
+
+currentAngle: 305.149960
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 205.972560
+absDiff: 205.972560
+
+currentAngle: 306.350010
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 207.172610
+absDiff: 207.172610
+
+currentAngle: 329.720030
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 230.542630
+absDiff: 230.542630
+
+currentAngle: 338.110020
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 238.932620
+absDiff: 238.932620
+
+currentAngle: 314.960020
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 215.782620
+absDiff: 215.782620
+
+currentAngle: 26.340000
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: -72.837402
+absDiff: 72.837402
+
+currentAngle: 49.869999
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: -49.307400
+absDiff: 49.307400
+
+currentAngle: 63.200001
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: -35.977398
+absDiff: 35.977398
+
+currentAngle: 76.360008
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: -22.817390
+absDiff: 22.817390
+
+currentAngle: 84.869995
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: -14.307404
+absDiff: 14.307404
+
+currentAngle: 97.569992
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: -1.607407
+absDiff: 1.607407
+
+LatPerson: 63.820343 
+LonPerson: 20.311167 
+LatVehicle: 63.820683 
+LonVehicle: 20.309164 
+Vinkel: 106.100000
+
+LatPerson: 63.820343 
+LonPerson: 20.311167 
+LatVehicle: 63.820683 
+LonVehicle: 20.309168 
+Vinkel: 107.100000
+
+LatPerson: 63.820343 
+LonPerson: 20.311167 
+LatVehicle: 63.820686 
+LonVehicle: 20.309170 
+Vinkel: 63.099998
+
+LatPerson: 63.820343 
+LonPerson: 20.311167 
+LatVehicle: 63.820690 
+LonVehicle: 20.309170 
+Vinkel: 334.500000
+
+-----Data ovanifrån för jfr------------------
+
+LatPerson: 63.820343 
+LonPerson: 20.311167 
+LatVehicle: 63.820675 
+LonVehicle: 20.309113 
+Vinkel: 312.100010
+
+currentAngle: 310.120030
+wantedAngle: 99.177399
+Displacement: 350.822600
+diff: 210.942630
+absDiff: 210.942630
+
+-----------------------------------------------
+
+currentAngle: 230.510010
+wantedAngle: 99.861176
+Displacement: 350.138820
+diff: 130.648830
+absDiff: 130.648830
+
+currentAngle: 312.000030
+wantedAngle: 99.861176
+Displacement: 350.138820
+diff: 212.138850
+absDiff: 212.138850
+
+currentAngle: 290.040010
+wantedAngle: 99.861176
+Displacement: 350.138820
+diff: 190.178830
+absDiff: 190.178830
